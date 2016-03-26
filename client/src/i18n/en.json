@@ -865,6 +865,22 @@
    "SYMBOL_TXT"    : "the symbol with which the currency is identified and rendered.  Appears after the amount",
    "TITLE"         : "Currency Management"
    },
+"CUSTOMER" : {
+
+    "ALL_DEBTOR_GROUPS" : "All Debtor Groups",
+    "DEBT"              : "Debts",
+    "DEBT_REPORT"       : "Customer Debts Report",
+    "DEBTOR_GROUP"      : "Debtor Groups",
+    "NO_DATA"           : "No data found",
+    "LESS_THREE_MONTH"  : "Debts of less than three months",
+    "OVER_SIX_MONTH"    : "Debts of more than six months",
+    "OVER_THREE_MONTH"  : "Debts of more than three months",
+    "OVER_YEAR"         : "Debts of more than a year",
+    "QUARTER_ONE"       : "1 Year",
+    "QUARTER_TWO"       : "6 Months",
+    "QUARTER_THREE"     : "3 Months",
+    "QUARTER_FOUR"      : "1 Months"
+  },
 "DAILY_CONSUMPTION": {
    "ALL_PROJECTS"       : "All Projects",
    "CONFIGURE_REPORT"   : "Configure report : Daily Consumption",
@@ -3023,6 +3039,7 @@
    "CREDITOR_GRP"              : "Creditor Group",
    "CREDIT_NOTE"               : "Credit note",
    "CURRENCY"                  : "Currency",
+   "CUSTOMER_DEBT_REPORT"      : "Customers Debts",
    "DAILY_CONSUMPTION"         : "Daily Consumption",
    "DASHBOARD" : {
       "FINANCE" : "Finance Dashboard",

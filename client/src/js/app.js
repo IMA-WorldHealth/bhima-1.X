@@ -762,6 +762,12 @@ function bhimaconfig($routeProvider) {
   .when('/dashboards/finance', {
     templateUrl : 'partials/dashboard/finance.html'
   })
+
+  /** customer debt */
+  .when('/reports/customer_debt', {
+    controller : 'CustomerDebtController as ReportCtrl',
+    templateUrl : '/partials/reports/customer_debt/customer_debt.html'
+  })
   .otherwise({ redirectTo : '/' });
 }
 

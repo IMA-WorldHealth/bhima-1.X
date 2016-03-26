@@ -43,7 +43,8 @@ var auth            = require('../controllers/auth'),
     patient         = require('../controllers/patient'),
     depot           = require('../controllers/depot'),
     budget          = require('../controllers/budget'),
-    cashflow        = require('../controllers/cashflow');
+    cashflow        = require('../controllers/cashflow'),
+    customerDebt    = require('../controllers/customer_debt');
 
 var patient         = require('../controllers/patient');
 
@@ -301,5 +302,8 @@ exports.initialise = function (app) {
   // cashflow
   app.get('/cash_flow/report/', cashflow.cashReport);
   app.get('/liquidity_flow/report/', cashflow.liquidityReport);
+
+  // customer debts 
+  app.get('/customer_debt/', customerDebt.periodicDebts);
 
 };

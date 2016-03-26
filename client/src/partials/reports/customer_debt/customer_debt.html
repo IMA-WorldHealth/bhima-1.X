@@ -1,0 +1,146 @@
+<div ng-switch="ReportCtrl.state">
+  <div ng-switch-default>
+    <main>
+      <div class="col-xs-6 col-md-offset-3">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <b> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> {{ "CUSTOMER.DEBT_REPORT" | translate }}
+          </div>
+
+          <div class="panel-body">
+            
+            <form name="configForm" novalidate>
+
+              <div class="form-group">
+                <label class="control-label">
+                  {{ 'SELECT.DEBITOR_GROUP' | translate }}
+                </label>
+                <div class="input-group">
+                  <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-th"></span>
+                  </span>  
+                  <select
+                    class="form-bhima"
+                    ng-model="ReportCtrl.selectedGroup"
+                    ng-options="group as group.name for group in ReportCtrl.debtorGroups.data | orderBy:'name'" >
+                    <option value="" disabled>--- {{ 'SELECT.DEBITOR_GROUP' | translate }} ---</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>
+                  <input type="checkbox" ng-model="ReportCtrl.allDebtorGroup">
+                  {{ "CUSTOMER.ALL_DEBTOR_GROUPS" | translate }}
+                </label>
+              </div>           
+
+              <div class="pull-right">
+                <button class="btn btn-sm btn-success" type="button" 
+                  ng-click="ReportCtrl.setSelectedGroup()" 
+                  ng-disabled="(!ReportCtrl.selectedGroup && !ReportCtrl.allDebtorGroup)">
+                  {{ "REPORT.GENERATE" | translate }}
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>  
+  </div>
+  <div ng-switch-when="generate">  
+    <header>
+      {{ "CUSTOMER.DEBT_REPORT" | translate }}: 
+      <span ng-show="ReportCtrl.selectedGroup && !ReportCtrl.allDebtorGroup"><strong>{{ ReportCtrl.selectedGroup.name }}</strong></span>
+      <span ng-show="ReportCtrl.allDebtorGroup"><strong>{{ 'CUSTOMER.ALL_DEBTOR_GROUPS' | translate }}</strong></span>
+    </header>
+
+    <nav>
+
+      <div class="pull-right">        
+        <button class="btn btn-sm btn-default" ng-click="ReportCtrl.print()">
+          <span class="glyphicon glyphicon-print"></span>
+          {{ "UTIL.PRINT" | translate }}
+        </button>
+
+        <button
+          style="margin-left: 5px;"
+          ng-click="ReportCtrl.reconfigure()"
+          class="btn btn-sm btn-default pull-right">
+          <span class="glyphicon glyphicon-repeat"></span>
+        </button>
+      </div>
+    
+    </nav>
+
+    <div class="report">
+      <div class="reportBody">
+        <div class="reportFrame">
+          <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+          
+          <h4 class="visible-print">
+            {{ "CUSTOMER.DEBT_REPORT" | translate }}: 
+            <span ng-show="ReportCtrl.selectedGroup && !ReportCtrl.allDebtorGroup"><strong>{{ ReportCtrl.selectedGroup.name }}</strong></span>
+            <span ng-show="ReportCtrl.allDebtorGroup"><strong>{{ 'CUSTOMER.ALL_DEBTOR_GROUPS' | translate }}</strong></span>
+          </h4>
+          <table class="custom-report table table-stripped table-hover">
+            <thead>
+              <tr class="heading">
+                <th colspan="2">
+                  {{ "CUSTOMER.DEBT" | translate }} 
+                  <span ng-show="ReportCtrl.selectedGroup && !ReportCtrl.allDebtorGroup">
+                    <strong>{{ ReportCtrl.selectedGroup.name }}</strong>
+                  </span>
+                  <span ng-show="ReportCtrl.allDebtorGroup">
+                    <strong>{{ 'CUSTOMER.ALL_DEBTOR_GROUPS' | translate }}</strong>
+                  </span>
+                </th>
+                <th style="background-color: #7986AC;">>= {{ "CUSTOMER.QUARTER_ONE" | translate }}</th>
+                <th style="background-color: #4F608F;">>= {{ "CUSTOMER.QUARTER_TWO" | translate }}</th>
+                <th style="background-color: #162756;">>= {{ "CUSTOMER.QUARTER_THREE" | translate }}</th>
+                <th style="background-color: #061439;"><= {{ "CUSTOMER.QUARTER_FOUR" | translate }}</th>
+                <th>{{ "COLUMNS.TOTAL" | translate }}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat='record in ReportCtrl.session.debtorList'>
+                <td>{{ $index + 1 }}</td>
+                <td>{{ record.text }}</td>
+                <td>
+                  {{ record.balance_fourth | currency }}
+                </td>
+                <td>
+                  {{ record.balance_third | currency }}
+                </td>
+                <td>
+                  {{ record.balance_second | currency }}
+                </td>
+                <td>
+                  {{ record.balance_first | currency }}
+                </td>
+                <td>{{ record.balance_first + record.balance_second + record.balance_third + record.balance_fourth | currency }}</td>            
+              </tr>
+              <tr ng-if="ReportCtrl.loading">
+                <td class="text-center" colspan="7">
+                  <loading-indicator></loading-indicator>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot class="label-section">
+              <tr>
+                <th colspan="2">{{ "COLUMNS.TOTAL" | translate }}</th>
+                <th>{{ ReportCtrl.session.totalFourth | currency }}</th>
+                <th>{{ ReportCtrl.session.totalThird | currency }}</th>
+                <th>{{ ReportCtrl.session.totalSecond | currency }}</th>
+                <th>{{ ReportCtrl.session.totalFirst | currency }}</th>
+                <th>{{ ReportCtrl.session.totalTotal | currency }}</th>
+              </tr>
+            </tfoot>
+          </table>          
+        </div>
+      </div>
+    </div>
+
+  </div>    
+</div>  
