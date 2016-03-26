@@ -122,7 +122,7 @@
                     <th></th>
                     <th>{{=it.i18nBilan.TOTAL}} {{=gref.greferenceLabel}}</th>
                     <th>{{=gref.totalNet_view}}</th>
-                    {{~it.previous : data : i}} <td class="text-center">{{=gref['totalPreviousNet_view' + i]}}</td> {{~}}
+                    {{~it.previous : data : i}} <th class="text-center">{{=gref['totalPreviousNet_view' + i]}}</th> {{~}}
                   </tr>
               {{~}}
               <tr class="text-center">
