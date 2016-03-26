@@ -148,7 +148,7 @@ function EmployeeController($translate, validate, uuid, messenger, connect, util
     var debitor = {
       uuid : debitor_uuid,
       group_uuid : session.employee.debitor_group_uuid,
-      text : 'Debiteur [' + prenom + session.employee.name + ' - ' + session.employee.postnom + ']'
+      text : 'Employee Debiteur [' + prenom + session.employee.name + ' - ' + session.employee.postnom + ']'
     };
 
     return connect.post('debitor', [debitor], ['uuid']);
@@ -229,7 +229,7 @@ function EmployeeController($translate, validate, uuid, messenger, connect, util
     var debitor = {
       uuid : session.employee.debitor_uuid,
       group_uuid : session.employee.debitor_group_uuid,
-      text : 'Debiteur [' + prenom + session.employee.name + ' - ' + session.employee.postnom + ']'
+      text : 'Employee Debiteur [' + prenom + session.employee.name + ' - ' + session.employee.postnom + ']'
     };
 
     var employee = {

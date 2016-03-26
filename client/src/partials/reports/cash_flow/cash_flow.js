@@ -10,6 +10,7 @@ CashFlowReportController.$inject = [
   * Cash Flow Controller
   * This controller is responsible of cash flow report, that report include
   * all incomes minus all depenses
+  * @todo remove selection by period_number is not effective when more than one fiscal year
   */
 function CashFlowReportController ($q, $http, connect, validate, messenger, util, Appcache, exchange, SessionService, transactionSource, $translate) {
   var vm = this,
@@ -91,6 +92,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
   function setSelectedCash (obj) {
     vm.state = 'generate';
     session.selectedCash = obj;
+    session.currency_id  = session.selectedCash.currency_id; 
     cache.put('selectedCash', obj);
     fill();
   }
@@ -129,7 +131,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     initialization();
 
     session.periodicData = rows.data.flows;
-    session.openningBalance = rows.data.openningBalance.balance;
+    session.openningBalance = exchange.convertir(rows.data.openningBalance.balance, SessionService.enterprise.currency_id, session.currency_id, new Date());
 
     session.periodicData.forEach(function (flow) {
       groupingResult(flow.incomes, flow.expenses, flow.period.period_number);
@@ -162,14 +164,14 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     
     if(session.summationIncome[period]) {
       session.summationIncome[period].forEach(function (transaction) {
-        session.sum_incomes[period] += exchange.convertir(transaction.value, transaction.currency_id, SessionService.enterprise.currency_id, new Date());
+        session.sum_incomes[period] += exchange.convertir(transaction.value, transaction.currency_id, session.currency_id, new Date());
         session.incomesLabels.push(transaction.service_txt);
       });
     }
 
     if(session.summationExpense[period]) {
       session.summationExpense[period].forEach(function (transaction) {
-        session.sum_expense[period] += exchange.convertir(transaction.value, transaction.currency_id, SessionService.enterprise.currency_id, new Date());
+        session.sum_expense[period] += exchange.convertir(transaction.value, transaction.currency_id, session.currency_id, new Date());
         session.expensesLabels.push(transaction.service_txt);
       });
     }
@@ -194,7 +196,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
       session.incomesLabels.forEach(function (label) {
         session.summationIncome[flow.period.period_number].forEach(function (transaction) {
           if (transaction.service_txt === label) {
-            session.incomes[flow.period.period_number][label] = transaction.value;
+            session.incomes[flow.period.period_number][label] = exchange.convertir(transaction.value, transaction.currency_id, session.currency_id, new Date());
           }
         });
       });
@@ -204,7 +206,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     session.periodicData.forEach(function (flow) {
       session.totalIncomes[flow.period.period_number] = 0;
       session.summationIncome[flow.period.period_number].forEach(function (transaction) {
-        session.totalIncomes[flow.period.period_number] += transaction.value;
+        session.totalIncomes[flow.period.period_number] += exchange.convertir(transaction.value, transaction.currency_id, session.currency_id, new Date());
       });
     });
 
@@ -214,7 +216,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
       session.expensesLabels.forEach(function (label) {
         session.summationExpense[flow.period.period_number].forEach(function (transaction) {
           if (transaction.service_txt === label) {
-            session.expenses[flow.period.period_number][label] = transaction.value;
+            session.expenses[flow.period.period_number][label] = exchange.convertir(transaction.value, transaction.currency_id, session.currency_id, new Date());
           }
         });
       });
@@ -224,7 +226,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     session.periodicData.forEach(function (flow) {
       session.totalExpenses[flow.period.period_number] = 0;
       session.summationExpense[flow.period.period_number].forEach(function (transaction) {
-        session.totalExpenses[flow.period.period_number] += transaction.value;
+        session.totalExpenses[flow.period.period_number] += exchange.convertir(transaction.value, transaction.currency_id, session.currency_id, new Date());
       });
     });
 
@@ -262,7 +264,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
 
         if (tempIncome[item.service_txt] === true) {
           var value = incomes.reduce(function (a, b) {
-            return b.service_txt === item.service_txt ? b.debit_equiv + a : a;
+            return b.service_txt === item.service_txt ? b.debit + a : a;
           }, 0);
           session.summationIncome[period].push({
             'service_txt' : item.service_txt,
@@ -280,7 +282,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
 
         if (tempExpense[item.service_txt] === true) {
           var value = expenses.reduce(function (a, b) {
-            return b.service_txt === item.service_txt ? b.credit_equiv + a : a;
+            return b.service_txt === item.service_txt ? b.credit + a : a;
           }, 0);
           session.summationExpense[period].push({
             'service_txt' : item.service_txt,
@@ -303,7 +305,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
       'pcash_employee'        : 'CASH.FLOW.PCASH_EMPLOYEE',
       'cash_return'           : 'CASH.FLOW.CASH_RETURN',
       'cotisation_paiement'   : 'CASH.FLOW.COTISATION_PAYMENT',
-      'tax_paiement'          : 'CASH.FLOW.TAX_PAYMENT',
+      'tax_payment'           : 'CASH.FLOW.TAX_PAYMENT',
       'salary_advance'        : 'CASH.FLOW.SALARY_ADVANCE'
     };
 

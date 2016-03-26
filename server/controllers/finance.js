@@ -234,10 +234,10 @@ exports.getDebtors = function (req, res, next) {
   'use strict';
 
   var sql =
-    'SELECT d.uuid, d.text, CONCAT(p.first_name, p.middle_name, p.last_name) AS patientname, ' +
-      'dg.name AS groupname, a.id AS account_id, a.account_number ' +
-    'FROM debitor AS d JOIN patient AS p JOIN debitor_group AS dg JOIN account AS a ON ' +
-      'd.uuid = p.debitor_uuid AND d.group_uuid = dg.uuid AND dg.account_id = a.id;';
+    'SELECT d.uuid, d.text, ' +
+    'dg.name AS groupname, a.id AS account_id, a.account_number ' +
+    'FROM debitor AS d JOIN debitor_group AS dg JOIN account AS a ON ' +
+      'd.group_uuid = dg.uuid AND dg.account_id = a.id;';
 
   db.exec(sql)
   .then(function (rows) {

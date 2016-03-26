@@ -57,8 +57,11 @@ function ReportBalanceMensuelleController($translate, $window, $http, messenger,
 
     url = '/reports/balance_mensuelle?' +
         'enterpriseId=' + Session.enterprise.id +
-        '&classe=' + session.classe.number +
-        '&date=' + Dates.util.str(session.periode);
+        '&classe=' + session.classe.number;
+
+    url += (vm.isPeriodPlage) ? 
+      '&dateFrom=' + Dates.util.str(session.periodeFrom) + '&dateTo=' + Dates.util.str(session.periodeTo) : 
+      '&date=' + Dates.util.str(session.periode);
 
     // get the data
     $http.get(url)
