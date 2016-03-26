@@ -64,6 +64,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
   vm.fill            = fill;
   vm.reconfigure     = reconfigure;
   vm.mappingText     = transactionSource.mappingText;
+  vm.util            = util;
   vm.print           = function () { print(); };
 
   // setting date default for a year
@@ -134,12 +135,16 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     session.openningBalance = exchange.convertir(rows.data.openningBalance.balance, SessionService.enterprise.currency_id, session.currency_id, new Date());
 
     session.periodicData.forEach(function (flow) {
-      groupingResult(flow.incomes, flow.expenses, flow.period.period_number);
+      groupingResult(flow.incomes, flow.expenses, util.htmlDate(flow.period.period_start));
+    });
+
+    session.periodStartArray = session.periodicData.map(function (flow) {
+      return util.htmlDate(flow.period.period_start);
     });
 
     /** openning balance by period */
     session.periodicData.forEach(function (flow) {
-      summarization(flow.period.period_number);
+      summarization(util.htmlDate(flow.period.period_start));
     });
   }
 
@@ -176,13 +181,31 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
       });
     }
 
-    session.periodicBalance[period] = (period === 1) ? 
+    session.periodicBalance[period] = isFirstPeriod(period) ? 
       session.openningBalance + session.sum_incomes[period] - session.sum_expense[period] : 
-      session.periodicBalance[period - 1] + session.sum_incomes[period] - session.sum_expense[period];
+      session.periodicBalance[previousPeriod(period)] + session.sum_incomes[period] - session.sum_expense[period];
 
-    session.periodicOpenningBalance[period] = (period === 1) ? 
+    session.periodicOpenningBalance[period] = isFirstPeriod(period) ? 
       session.openningBalance : 
-      session.periodicBalance[period - 1];
+      session.periodicBalance[previousPeriod(period)];
+
+  }
+
+  function isFirstPeriod(period) {
+    var reference = session.periodStartArray[0];
+
+    var bool = (new Date(reference).getDate() === 1 && new Date(reference).getMonth() === 0) ?
+      new Date(period).getDate() === 1 && new Date(period).getMonth() === 0 : 
+      new Date(period).getDate() === new Date(reference).getDate() && 
+        new Date(period).getMonth() === new Date(reference).getMonth() && 
+        new Date(period).getYear() === new Date(reference).getYear();
+
+    return bool;
+  }
+
+  function previousPeriod(period) {
+    var currentIndex = session.periodStartArray.indexOf(util.htmlDate(period));
+    return (currentIndex !== 0) ? session.periodStartArray[currentIndex - 1] : session.periodStartArray[currentIndex];
   }
 
   function labelization () {
@@ -192,11 +215,11 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
 
     /** incomes rows */
     session.periodicData.forEach(function (flow) {
-      session.incomes[flow.period.period_number] = {};
+      session.incomes[util.htmlDate(flow.period.period_start)] = {};
       session.incomesLabels.forEach(function (label) {
-        session.summationIncome[flow.period.period_number].forEach(function (transaction) {
+        session.summationIncome[util.htmlDate(flow.period.period_start)].forEach(function (transaction) {
           if (transaction.service_txt === label) {
-            session.incomes[flow.period.period_number][label] = exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
+            session.incomes[util.htmlDate(flow.period.period_start)][label] = exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
           }
         });
       });
@@ -204,19 +227,19 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
 
     /** totals incomes rows */
     session.periodicData.forEach(function (flow) {
-      session.totalIncomes[flow.period.period_number] = 0;
-      session.summationIncome[flow.period.period_number].forEach(function (transaction) {
-        session.totalIncomes[flow.period.period_number] += exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
+      session.totalIncomes[util.htmlDate(flow.period.period_start)] = 0;
+      session.summationIncome[util.htmlDate(flow.period.period_start)].forEach(function (transaction) {
+        session.totalIncomes[util.htmlDate(flow.period.period_start)] += exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
       });
     });
 
     /** expense rows */
     session.periodicData.forEach(function (flow) {
-      session.expenses[flow.period.period_number] = {};
+      session.expenses[util.htmlDate(flow.period.period_start)] = {};
       session.expensesLabels.forEach(function (label) {
-        session.summationExpense[flow.period.period_number].forEach(function (transaction) {
+        session.summationExpense[util.htmlDate(flow.period.period_start)].forEach(function (transaction) {
           if (transaction.service_txt === label) {
-            session.expenses[flow.period.period_number][label] = exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
+            session.expenses[util.htmlDate(flow.period.period_start)][label] = exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
           }
         });
       });
@@ -224,9 +247,9 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
 
     /** totals expenses rows */
     session.periodicData.forEach(function (flow) {
-      session.totalExpenses[flow.period.period_number] = 0;
-      session.summationExpense[flow.period.period_number].forEach(function (transaction) {
-        session.totalExpenses[flow.period.period_number] += exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
+      session.totalExpenses[util.htmlDate(flow.period.period_start)] = 0;
+      session.summationExpense[util.htmlDate(flow.period.period_start)].forEach(function (transaction) {
+        session.totalExpenses[util.htmlDate(flow.period.period_start)] += exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
       });
     });
 

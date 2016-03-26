@@ -22,7 +22,7 @@ function queryIncomeExpense (params, dateFrom, dateTo) {
 
 	var requette =
 			'SELECT `t`.`uuid`, `t`.`trans_id`, `t`.`trans_date`, `a`.`account_number`, SUM(`t`.`debit_equiv`) AS debit_equiv,  ' +
-			'SUM(`t`.`credit_equiv`) AS credit_equiv, SUM(`t`.`debit`) AS debit, SUM(`t`.`credit`) AS credit, `t`.`currency_id`, `t`.`description`, `t`.`comment`, `t`.`inv_po_id`, `o`.`service_txt`, `u`.`first`, `u`.`last` ' +
+			'SUM(`t`.`credit_equiv`) AS credit_equiv, `t`.`debit`, `t`.`credit`, `t`.`currency_id`, `t`.`description`, `t`.`comment`, `t`.`inv_po_id`, `o`.`service_txt`, `u`.`first`, `u`.`last` ' +
 			'FROM (' +
 				'(' +
 					'SELECT `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, ' +
@@ -30,7 +30,7 @@ function queryIncomeExpense (params, dateFrom, dateTo) {
 						'`posting_journal`.`currency_id`, `posting_journal`.`doc_num`, posting_journal.trans_id, `posting_journal`.`description`, `posting_journal`.`comment`, `posting_journal`.`origin_id`, `posting_journal`.`user_id` ' +
 					'FROM `posting_journal` ' +
 					'WHERE `posting_journal`.`account_id`= ? AND `posting_journal`.`trans_date` >= ? AND `posting_journal`.`trans_date` <= ? ' +
-				') UNION ALL (' +
+				') UNION (' +
 					'SELECT `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
 						'`general_ledger`.`credit_equiv`, `general_ledger`.`debit`, `general_ledger`.`credit`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
 						'`general_ledger`.`doc_num`, general_ledger.trans_id, `general_ledger`.`description`, `general_ledger`.`comment`, `general_ledger`.`origin_id`, `general_ledger`.`user_id` ' +
@@ -38,7 +38,7 @@ function queryIncomeExpense (params, dateFrom, dateTo) {
 					'WHERE `general_ledger`.`account_id`= ? AND `general_ledger`.`trans_date` >= ? AND `general_ledger`.`trans_date` <= ? ' +
 				')' +
 			') AS `t`, account AS a, transaction_type as o, user as u WHERE `t`.`account_id` = `a`.`id` AND `t`.`origin_id` = `o`.`id` AND `t`.`user_id` = `u`.`id` ' + 
-			'GROUP BY `t`.`trans_id` ;';
+			'GROUP BY `t`.`trans_id`, MONTH(`t`.`trans_date`), YEAR(`t`.`trans_date`) ;';
 
 	return db.exec(requette, [params.account_id, params.dateFrom, params.dateTo, params.account_id, params.dateFrom, params.dateTo]);
 }
