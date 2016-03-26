@@ -144,6 +144,43 @@ exports.compile = function (options) {
       return newItem;
     }
 
+    function forceTotalResultatProcessing (dataCharge, dataProfit){
+      var ref = 'UZ';
+
+      var reference = infos.references.filter(function (item){
+        return item.ref === ref;
+      })[0];
+
+      var newItem = {
+        referenceId: reference.id,
+        referenceAbbr: reference.ref,
+        referencePosition : reference.position,
+        referenceLabel: reference.text,
+      };
+
+      var referenceMeta = null;
+
+      referenceMeta = getReferenceMeta(reference.ref); 
+
+      if(!referenceMeta) {return {};}
+
+      newItem.net = 
+      getTotalMetadataList(dataProfit, referenceMeta.produits, 0, 'net') - 
+      getTotalMetadataList(dataCharge, referenceMeta.charges, 1, 'net') ;
+
+      newItem.net_view = numeral(newItem.net).format(formatDollar);
+
+      infos.previous.forEach(function (previousYearData, index){
+        newItem['previous' + index] =  
+        getTotalMetadataList(dataProfit, referenceMeta.produits, 0, 'previous'+index) -                
+        getTotalMetadataList(dataCharge, referenceMeta.charges, 1, 'previous'+index);
+
+        newItem['previous_view' + index] = numeral(newItem['previous' + index]).format(formatDollar);
+      });
+
+      return newItem;
+    }
+
     function processComplement (dataCharge, dataProfit, isCharge){   
 
       var data = isCharge === 1 ? dataCharge : dataProfit;   
@@ -179,7 +216,7 @@ exports.compile = function (options) {
 
           if(referenceMeta){
 
-            if(referenceMeta.type === 'MAR' || referenceMeta.type === 'CHI' || referenceMeta.type === 'INF' || referenceMeta.type === 'VAL' || referenceMeta.type === 'EXC'){
+            if(referenceMeta.type === 'MAR' || referenceMeta.type === 'CHI' || referenceMeta.type === 'INF' || referenceMeta.type === 'VAL' || referenceMeta.type === 'EXC' || referenceMeta.type === 'RES'){
 
               newItem.net = getTotalMetadataList(dataProfit, referenceMeta.produits, isCharge, 'net') - 
                             getTotalMetadataList(dataCharge, referenceMeta.charges, isCharge, 'net');
@@ -193,35 +230,7 @@ exports.compile = function (options) {
 
                 newItem['previous_view' + index] = numeral(newItem['previous' + index]).format(formatDollar);
               });
-            }
-            // else if(referenceMeta.type === 'VAL'){
-            //   //we will need to save it
-            //   newItem.net = getTotalMetadataList(dataProfit, referenceMeta.produits, 0, 'net') - 
-            //                 getTotalMetadataList(dataCharge, referenceMeta.charges, 1, 'net');
-
-            //   newItem.net_view = numeral(newItem.net).format(formatDollar);
-
-            //   infos.previous.forEach(function (previousYearData, index){
-            //     newItem['previous' + index] = 
-            //     getTotalMetadataList(dataProfit, referenceMeta.produits, isCharge, 'previous'+index) -                
-            //     getTotalMetadataList(dataCharge, referenceMeta.charges, isCharge, 'previous'+index);
-
-            //     newItem['previous_view' + index] = numeral(newItem['previous' + index]).format(formatDollar);
-            //   });
-
-            //   VAL = newItem;
-            // }
-            // else if (referenceMeta.type === 'EXC'){
-            //  newItem.net = VAL.net - getTotalMetadataList(dataCharge, referenceMeta.charges, 1, 'net');
-
-            //   newItem.net_view = numeral(newItem.net).format(formatDollar);
-
-            //   infos.previous.forEach(function (previousYearData, index){
-            //     newItem['previous' + index] = 
-            //     VAL['previous'+index] - getTotalMetadataList(dataCharge, referenceMeta.charges, isCharge, 'previous'+index);
-            //     newItem['previous_view' + index] = numeral(newItem['previous' + index]).format(formatDollar);
-            //   });
-            // }
+            }           
             else if (referenceMeta.type === 'TOT'){
 
               newItem.net = isCharge === 1 ? getTotalMetadataList(dataCharge, referenceMeta.charges, isCharge, 'net') : getTotalMetadataList(dataProfit, referenceMeta.produits, isCharge, 'net');
@@ -265,6 +274,11 @@ exports.compile = function (options) {
 
       var itemTotal = forceTotalProcessing(dataCharge, dataProfit, isCharge); 
       data[data.length - 1].refs.push(itemTotal);
+
+      if(isCharge === 0){
+        var itemTotalResult = forceTotalResultatProcessing(dataCharge, dataProfit); 
+        data[data.length - 1].refs.push(itemTotalResult);
+      }
       
       return data;
     }

@@ -30,6 +30,6 @@ INSERT INTO reference (is_report, ref, text, position, reference_group_id, secti
 
 UPDATE reference SET position = 12 WHERE ref="UP";
 
-INSERT INTO reference (is_report, ref, text, position, reference_group_id, section_resultat_id) VALUES (0, "UT", "TOTAL GENERAL DES PRODUITS", 13, NULL, 11);
+INSERT INTO reference (is_report, ref, text, position, reference_group_id, section_resultat_id) VALUES (0, "UT", "TOTAL GENERAL DES PRODUITS", 13, NULL, NULL);
 
 INSERT INTO reference (is_report, ref, text, position, reference_group_id, section_resultat_id) VALUES (0, "UZ", "RESULAT NET", 14, NULL, NULL);
