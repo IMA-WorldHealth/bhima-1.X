@@ -40,20 +40,8 @@
                   <td class="text-center">{{=ref.net_view}}</td>
                   {{~it.previous : data : i}} <td class="text-center">{{=ref['previous_view' + i]}}</td> {{~}}                       
                 </tr>
-              {{~}}
-            <tr>
-              <th></th>
-              <th>{{=it.i18nAccountResult.TOTAL}} {{=section.sectionResultLabel}}</th>
-              <th>{{=section.total_view}}</th>
-              {{~it.previous : data : i}} <th>{{=section['totalPrevious_view' + i]}}</th> {{~}}
-            </tr>
-          {{~}}
-          <tr>
-            <th></th>
-            <th>{{=it.i18nAccountResult.TOTAL_GENERAL}}</th>
-            <th>{{=it.chargeGeneral}}</th>
-            {{~it.previous : data : i}} <th>{{=it['chargeGeneralPrevious' + i]}}</th> {{~}}
-          </tr>
+              {{~}}            
+          {{~}}          
         </tbody>
       </table>
 
@@ -81,20 +69,8 @@
                   <td class="text-center">{{=ref.net_view}}</td>
                   {{~it.previous : data : i}} <td class="text-center">{{=ref['previous_view' + i]}}</td> {{~}}                       
                 </tr>
-              {{~}}
-            <tr>
-              <th></th>
-              <th>{{=it.i18nAccountResult.TOTAL}} {{=section.sectionResultLabel}}</th>
-              <th>{{=section.total_view}}</th>
-              {{~it.previous : data : i}} <th>{{=section['totalPrevious_view' + i]}}</th> {{~}}
-            </tr>
-          {{~}}
-          <tr>
-            <th></th>
-            <th>{{=it.i18nAccountResult.TOTAL_GENERAL}}</th>
-            <th>{{=it.produitGeneral}}</th>
-            {{~it.previous : data : i}} <th>{{=it['produitGeneralPrevious' + i]}}</th> {{~}}
-          </tr>
+              {{~}}            
+          {{~}}          
         </tbody>
       </table>
   </section>
