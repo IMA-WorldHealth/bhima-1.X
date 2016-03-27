@@ -74,7 +74,12 @@
     <header>
       {{ "BALANCE_MENSUELLE.TITLE" | translate }}
       <small ng-if="ReportCtrl.session.periode">{{ ReportCtrl.session.periode | date: "MMMM, yyyy" }}</small>
-      <small ng-if="ReportCtrl.session.classe"> / {{ "BALANCE_MENSUELLE.CLASS" | translate }} [{{ ReportCtrl.session.classe.number }}] {{ ReportCtrl.session.classe.name}}</small>
+      <small ng-if="ReportCtrl.session.periodeFrom && ReportCtrl.session.periodeTo">
+        {{ ReportCtrl.session.periodeFrom | date: "MMMM, yyyy" }} - {{ ReportCtrl.session.periodeTo | date: "MMMM, yyyy" }}
+      </small>
+      <small ng-if="ReportCtrl.session.classe">
+         / {{ "BALANCE_MENSUELLE.CLASS" | translate }} [{{ ReportCtrl.session.classe.number }}] {{ ReportCtrl.session.classe.name}}
+      </small>
     </header>
 
     <nav>
@@ -105,6 +110,9 @@
 
           <h4 class="visible-print">{{ "BALANCE_MENSUELLE.TITLE" | translate }}
             <small ng-if="ReportCtrl.session.periode">: {{ ReportCtrl.session.periode | date: "MMMM, yyyy" }}</small>
+            <small ng-if="ReportCtrl.session.periodeFrom && ReportCtrl.session.periodeTo">
+              {{ ReportCtrl.session.periodeFrom | date: "MMMM, yyyy" }} - {{ ReportCtrl.session.periodeTo | date: "MMMM, yyyy" }}
+            </small>
             <small ng-if="ReportCtrl.session.classe"> / {{ "BALANCE_MENSUELLE.CLASS" | translate }} [{{ ReportCtrl.session.classe.number }}] {{ ReportCtrl.session.classe.name}}</small>
           </h4>
 
