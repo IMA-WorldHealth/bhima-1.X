@@ -35,7 +35,7 @@
             </tr>
               {{~section.refs : ref : ind2}}
                 {{? ref.type == 'TOT'}}
-                  <tr>
+                  <tr class="gray-line">
                     <td class="text-center"><b>{{=ref.referenceAbbr}}</b></td>
                     <td><b>{{=ref.referenceLabel}}</b></td>
                     <td class="text-center"><b>{{=ref.net_view}}</b></td>
@@ -73,7 +73,7 @@
             </tr>
               {{~section.refs : ref : ind2}}
                 {{? ref.type == 'MAR' || ref.type == 'RES' || ref.type == 'EXC' || ref.type == 'VAL' || ref.type == 'CHI'}}
-                  <tr>
+                  <tr class="gray-line">
                     <td class="text-center"><b><i>{{=ref.referenceAbbr}}</i></b></td>
                     <td><b><i>{{=ref.referenceLabel}}</i></b></td>
                     <td class="text-center"><b><i>{{=ref.net_view}}</i></b></td>
@@ -81,7 +81,7 @@
                   </tr>
 
                   {{?? ref.type == 'TOT'}}
-                    <tr>
+                    <tr class="gray-line">
                       <td class="text-center"><b>{{=ref.referenceAbbr}}</b></td>
                       <td><b>{{=ref.referenceLabel}}</b></td>
                       <td class="text-center"><b>{{=ref.net_view}}</b></td>
