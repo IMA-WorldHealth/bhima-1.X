@@ -253,18 +253,18 @@ exports.compile = function (options) {
     }
 
     function getPreviousNet (reference, previous, isActif){
-      var somDebit = 0, somCredit = 0;
+      var somDebitBrut = 0, somCreditBrut = 0, somDebitAmorProv = 0, somCreditAmorProv = 0;
 
       previous.forEach(function (item){
         if(item.referenceId == reference.referenceId && item.accountIsBrutLink == 0){
-          somDebit+=(item.generalLegderDebit) * -1;
-          somCredit+=(item.generalLegderCredit) * -1;
+          somDebitAmorProv += (item.generalLegderDebit) * -1;
+          somCreditAmorProv += (item.generalLegderCredit) * -1;
         }else if(item.referenceId == reference.referenceId && item.accountIsBrutLink == 1){
-          somDebit+=item.generalLegderDebit;
-          somCredit+=item.generalLegderCredit;
+          somDebitBrut += item.generalLegderDebit;
+          somCreditBrut += item.generalLegderCredit;
         }
       });
-      return isActif == 1 ? somDebit - somCredit : somCredit - somDebit;
+      return isActif == 1 ? (somDebitBrut - somCreditBrut) - (somDebitAmorProv - somCreditAmorProv) : (somCreditBrut - somDebitBrut) - (somCreditAmorProv - somDebitAmorProv);
     }
 
     deferred.resolve(context);
