@@ -40,16 +40,28 @@
 	{
 		"ref" : "TN",
 		"charges" : [
-						{"ref" : "RE", "variation" : 0},
-						{"ref" : "RH", "variation" : 1},
-						{"ref" : "RI", "variation" : 0},
-						{"ref" : "RJ", "variation" : 0},
-						{"ref" : "RK", "variation" : 0},
-						{"ref" : "RL", "variation" : 0}
+						{"ref" : "RE"},
+						{"ref" : "RH"},
+						{"ref" : "RI"},
+						{"ref" : "RJ"},
+						{"ref" : "RK"},
+						{"ref" : "RL"},
+						{"ref" : "RA"},
+						{"ref" : "RB"},
+						{"ref" : "RC"},
+						{"ref" : "RD"}
 					],
 		"produits" : [
-						{"ref" : "TK", "variation" : 0},
-						{"ref" : "TL", "variation" : 0}
+						{"ref" : "TK"},
+						{"ref" : "TL"},
+						{"ref" : "TA"},
+						{"ref" : "TC"},
+						{"ref" : "TD"},
+						{"ref" : "TE"},
+						{"ref" : "TF"},
+						{"ref" : "TH"}
+
+
 					],
 		"type" : "VAL"
 	},
@@ -57,12 +69,27 @@
 	{
 		"ref" : "TQ",
 		"charges" : [
-						{"ref" : "RP", "variation" : 0},
-						{"ref" : "RQ", "variation" : 0}
+						{"ref" : "RE"},
+						{"ref" : "RH"},
+						{"ref" : "RI"},
+						{"ref" : "RJ"},
+						{"ref" : "RK"},
+						{"ref" : "RL"},
+						{"ref" : "RA"},
+						{"ref" : "RB"},
+						{"ref" : "RC"},
+						{"ref" : "RD"},
+						{"ref" : "RP"}
 					],
 		"produits" : [
-						{"ref" : "TK", "variation" : 0},
-						{"ref" : "TL", "variation" : 0}
+						{"ref" : "TK"},
+						{"ref" : "TL"},
+						{"ref" : "TA"},
+						{"ref" : "TC"},
+						{"ref" : "TD"},
+						{"ref" : "TE"},
+						{"ref" : "TF"},
+						{"ref" : "TH"}
 					],
 		"type" : "EXC"
 	},

@@ -34,12 +34,21 @@
               <th colspan="{{=2+it.previous.length}}"></th>
             </tr>
               {{~section.refs : ref : ind2}}
-                <tr>
-                  <td class="text-center">{{=ref.referenceAbbr}}</td>
-                  <td>{{=ref.referenceLabel}}</td>
-                  <td class="text-center">{{=ref.net_view}}</td>
-                  {{~it.previous : data : i}} <td class="text-center">{{=ref['previous_view' + i]}}</td> {{~}}                       
-                </tr>
+                {{? ref.type == 'TOT'}}
+                  <tr class="gray-line">
+                    <td class="text-center"><b>{{=ref.referenceAbbr}}</b></td>
+                    <td><b>{{=ref.referenceLabel}}</b></td>
+                    <td class="text-center"><b>{{=ref.net_view}}</b></td>
+                    {{~it.previous : data : i}} <td class="text-center"><b>{{=ref['previous_view' + i]}}</b></td> {{~}}                       
+                  </tr>
+                  {{??}}
+                    <tr>
+                      <td class="text-center">{{=ref.referenceAbbr}}</td>
+                      <td>{{=ref.referenceLabel}}</td>
+                      <td class="text-center">{{=ref.net_view}}</td>
+                      {{~it.previous : data : i}} <td class="text-center">{{=ref['previous_view' + i]}}</td> {{~}}                       
+                    </tr> 
+                {{?}}               
               {{~}}            
           {{~}}          
         </tbody>
@@ -63,12 +72,30 @@
               <th colspan="{{=2+it.previous.length}}"></th>
             </tr>
               {{~section.refs : ref : ind2}}
-                <tr>
-                  <td class="text-center">{{=ref.referenceAbbr}}</td>
-                  <td>{{=ref.referenceLabel}}</td>
-                  <td class="text-center">{{=ref.net_view}}</td>
-                  {{~it.previous : data : i}} <td class="text-center">{{=ref['previous_view' + i]}}</td> {{~}}                       
-                </tr>
+                {{? ref.type == 'MAR' || ref.type == 'RES' || ref.type == 'EXC' || ref.type == 'VAL' || ref.type == 'CHI'}}
+                  <tr class="gray-line">
+                    <td class="text-center"><b><i>{{=ref.referenceAbbr}}</i></b></td>
+                    <td><b><i>{{=ref.referenceLabel}}</i></b></td>
+                    <td class="text-center"><b><i>{{=ref.net_view}}</i></b></td>
+                    {{~it.previous : data : i}} <td class="text-center"><b><i>{{=ref['previous_view' + i]}}</i></b></td> {{~}}                       
+                  </tr>
+
+                  {{?? ref.type == 'TOT'}}
+                    <tr class="gray-line">
+                      <td class="text-center"><b>{{=ref.referenceAbbr}}</b></td>
+                      <td><b>{{=ref.referenceLabel}}</b></td>
+                      <td class="text-center"><b>{{=ref.net_view}}</b></td>
+                      {{~it.previous : data : i}} <td class="text-center"><b>{{=ref['previous_view' + i]}}</b></td> {{~}}                       
+                    </tr>                  
+                  {{??}}
+
+                  <tr>
+                    <td class="text-center">{{=ref.referenceAbbr}}</td>
+                    <td>{{=ref.referenceLabel}}</td>
+                    <td class="text-center">{{=ref.net_view}}</td>
+                    {{~it.previous : data : i}} <td class="text-center">{{=ref['previous_view' + i]}}</td> {{~}}                       
+                  </tr>                 
+                {{?}}                
               {{~}}            
           {{~}}          
         </tbody>
