@@ -38,8 +38,6 @@ exports.compile = function (options) {
     return db.exec(sql, [options.fy, 1, 1]);
   })  
   .then(function (currentAccountDetails) {
-    var t = currentAccountDetails.filter(function (it){return it.sectionResultId == 3;});
-    console.log(t);
     
     infos.currentAccountDetails = currentAccountDetails;
     return q.all(options.parentIds.map(function (fid){
@@ -121,7 +119,7 @@ exports.compile = function (options) {
         referenceId: reference.id,
         referenceAbbr: reference.ref,
         referencePosition : reference.position,
-        referenceLabel: reference.text,
+        referenceLabel: reference.text
       };
 
       var referenceMeta = null;
@@ -130,6 +128,7 @@ exports.compile = function (options) {
 
       if(!referenceMeta) {return {};}
 
+      newItem.type = referenceMeta.type;
       newItem.net = isCharge === 1 ? getTotalMetadataList(dataCharge, referenceMeta.charges, isCharge, 'net') : getTotalMetadataList(dataProfit, referenceMeta.produits, isCharge, 'net');
       newItem.net_view = numeral(newItem.net).format(formatDollar);
 
@@ -164,6 +163,7 @@ exports.compile = function (options) {
 
       if(!referenceMeta) {return {};}
 
+      newItem.type = referenceMeta.type;
       newItem.net = 
       getTotalMetadataList(dataProfit, referenceMeta.produits, 0, 'net') - 
       getTotalMetadataList(dataCharge, referenceMeta.charges, 1, 'net') ;
