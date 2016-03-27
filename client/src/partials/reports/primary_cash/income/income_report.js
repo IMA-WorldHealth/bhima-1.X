@@ -2,6 +2,7 @@ angular.module('bhima.controllers')
 .controller('primary_cash.incomeReport', [
   '$scope',
   '$q',
+  '$modal',
   'connect',
   'validate',
   'messenger',
@@ -9,7 +10,7 @@ angular.module('bhima.controllers')
   'appcache',
   'exchange',
   'SessionService',
-  function ($scope, $q, connect, validate, messenger, util, Appcache, exchange, SessionService) {
+  function ($scope, $q, $modal, connect, validate, messenger, util, Appcache, exchange, SessionService) {
     var session = $scope.session = {};
     var dependencies = {};
     var cache = new Appcache('income_report'),
@@ -92,6 +93,8 @@ angular.module('bhima.controllers')
         request.account_id = null;
       }
 
+      session.request = request;
+
       dependencies.records.query = '/reports/income_report/?' + JSON.stringify(request);      
       validate.refresh(dependencies, ['records','currencies'])
       .then(prepareReport)
@@ -120,7 +123,6 @@ angular.module('bhima.controllers')
             transaction.primary_cash_uuid = transaction.document_uuid;
           }          
           session.sum_debit += exchange.convertir(transaction.debit, transaction.currency_id, session.currency, new Date()); //transaction.trans_date
-          // console.log('From '+transaction.currency_id+' To '+session.currency);
         });        
       }
     }
@@ -136,6 +138,24 @@ angular.module('bhima.controllers')
       $scope.session.dateTo = null;
     }
 
+    function openIncomeReceipt() {
+      $scope.request = session.request;
+      $scope.type    = 'income';
+
+      var modalInstance = $modal.open({
+        backdrop: 'static',
+        keyboard : false, 
+        templateUrl: '/partials/reports/primary_cash/templates/income_expense.modal.html',
+        controller: 'IncomeExpenseModalController',
+        resolve : {
+          request : function () { return $scope.request; },
+          type    : function () { return $scope.type; }
+        }
+      });
+
+    }
+
+    $scope.openIncomeReceipt = openIncomeReceipt;
     $scope.convert = convert;
     $scope.reconfigure = reconfigure;
   }
