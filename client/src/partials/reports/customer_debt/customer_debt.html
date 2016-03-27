@@ -30,6 +30,21 @@
 
               <div class="form-group">
                 <label>
+                  <input type="checkbox" ng-model="ReportCtrl.withUntilDate">
+                  {{ "CUSTOMER.DEFINE_UNTIL_DATE" | translate }}
+                </label>
+              </div>
+              
+              <div class="form-group" ng-if="ReportCtrl.withUntilDate">
+                <label>{{ "CUSTOMER.UNTIL_DATE" | translate }}</label>
+                <div class="input-group">
+                  <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                  <input class="form-control" type="date" ng-model="ReportCtrl.untilDate">
+                </div>
+              </div> 
+
+              <div class="form-group">
+                <label>
                   <input type="checkbox" ng-model="ReportCtrl.allDebtorGroup">
                   {{ "CUSTOMER.ALL_DEBTOR_GROUPS" | translate }}
                 </label>
@@ -106,7 +121,7 @@
             <tbody>
               <tr ng-repeat='record in ReportCtrl.session.debtorList'>
                 <td>{{ $index + 1 }}</td>
-                <td>{{ record.text }}</td>
+                <td><b ng-show="record.reference">[{{ record.reference }}]</b> {{ record.text }}</td>
                 <td>
                   {{ record.balance_fourth | currency }}
                 </td>

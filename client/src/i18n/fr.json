@@ -871,6 +871,7 @@
     "DEBT"              : "Dettes",
     "DEBT_REPORT"       : "Rapport de dettes des clients",
     "DEBTOR_GROUP"      : "Groupe Debiteur",
+    "DEFINE_UNTIL_DATE" : "Definir une date limite",
     "LESS_THREE_MONTH"  : "Dettes de moins de trois mois",
     "NO_DATA"           : "Aucune données trouvées",
     "OVER_SIX_MONTH"    : "Dettes de plus de six mois",
@@ -879,7 +880,8 @@
     "QUARTER_ONE"       : "1 Année",
     "QUARTER_TWO"       : "6 Mois",
     "QUARTER_THREE"     : "3 Mois",
-    "QUARTER_FOUR"      : "1 Mois"
+    "QUARTER_FOUR"      : "1 Mois",
+    "UNTIL_DATE"        : "jusqu’à "
   },
 "DAILY_CONSUMPTION": {
    "ALL_PROJECTS"       : "Tous les projets",

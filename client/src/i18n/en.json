@@ -866,11 +866,11 @@
    "TITLE"         : "Currency Management"
    },
 "CUSTOMER" : {
-
     "ALL_DEBTOR_GROUPS" : "All Debtor Groups",
     "DEBT"              : "Debts",
     "DEBT_REPORT"       : "Customer Debts Report",
     "DEBTOR_GROUP"      : "Debtor Groups",
+    "DEFINE_UNTIL_DATE" : "Define a limit date",
     "NO_DATA"           : "No data found",
     "LESS_THREE_MONTH"  : "Debts of less than three months",
     "OVER_SIX_MONTH"    : "Debts of more than six months",
@@ -879,7 +879,8 @@
     "QUARTER_ONE"       : "1 Year",
     "QUARTER_TWO"       : "6 Months",
     "QUARTER_THREE"     : "3 Months",
-    "QUARTER_FOUR"      : "1 Months"
+    "QUARTER_FOUR"      : "1 Months",
+    "UNTIL_DATE"        : "Until"
   },
 "DAILY_CONSUMPTION": {
    "ALL_PROJECTS"       : "All Projects",
