@@ -215,6 +215,8 @@ exports.compile = function (options) {
           referenceMeta = getReferenceMeta(item.ref);   
 
           if(referenceMeta){
+            
+            newItem.type = referenceMeta.type;
 
             if(referenceMeta.type === 'MAR' || referenceMeta.type === 'CHI' || referenceMeta.type === 'INF' || referenceMeta.type === 'VAL' || referenceMeta.type === 'EXC' || referenceMeta.type === 'RES'){
 
