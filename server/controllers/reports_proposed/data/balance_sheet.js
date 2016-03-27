@@ -82,13 +82,15 @@ exports.compile = function (options) {
       params = {},
       fiscalYearId = options.fy;
 
+      console.log('fiscal', fiscalYearId);
+
   context.reportDate = balanceDate.toDateString();
 
   // FIXME/TODO -- n
   sql =
     'SELECT account.id, account.account_number, account.account_txt, account.account_type_id, ' +
-      'account.parent, IFNULL(totals.debit, 0) AS debit, IFNULL(totals.credit, 0) AS credit, ' +
-      'IFNULL(totals.balance, 0) AS balance, account_type.type ' +
+      'account.parent, IFNULL(SUM(totals.debit), 0) AS debit, IFNULL(SUM(totals.credit), 0) AS credit, ' +
+      'IFNULL(SUM(totals.balance), 0) AS balance, account_type.type ' +
     'FROM account LEFT JOIN (' +
       'SELECT pt.account_id, IFNULL(pt.debit, 0) AS debit, IFNULL(pt.credit, 0) as credit, ' +
         'IFNULL(SUM(pt.debit - pt.credit), 0) as balance ' +
