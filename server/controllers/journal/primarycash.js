@@ -368,16 +368,20 @@ function convention(id, userId, cb) {
 
   var sql, dayExchange = {}, reference = {}, cfg = {};
 
-  // FIXME - select * is bad pratice.  Sigh
-  // TODO - this is LAZY.  Why not doe a join between primary
+  // TODO - Why not doe a join between primary
   // cash and primary cash item?
-  sql = 'SELECT * FROM primary_cash WHERE primary_cash.uuid = ?;';
+  sql = 
+    'SELECT pc.reference, pc.uuid, pc.project_id, pc.type, pc.date, pc.deb_cred_uuid, pc.deb_cred_type, ' +
+      'pc.currency_id, pc.account_id, pc.cost, pc.user_id, pc.description, pc.cash_box_id, pc.origin_id ' +
+    'FROM primary_cash pc WHERE pc.uuid = ?;';
 
   db.exec(sql, [id])
   .then(function (records) {
     if (records.length === 0) { throw new Error('Could not find a primary cash record with id:' +  id); }
     reference.reference_pcash = records[0];
-    sql = 'SELECT * FROM primary_cash_item WHERE primary_cash_item.primary_cash_uuid = ?;';
+    sql = 
+      'SELECT pci.uuid, pci.primary_cash_uuid, pci.debit, pci.credit, pci.inv_po_id, pci.document_uuid ' + 
+      'FROM primary_cash_item pci WHERE pci.primary_cash_uuid = ?;';
     return db.exec(sql, [id]);
   })
   .then(function (records) {
@@ -414,6 +418,13 @@ function convention(id, userId, cb) {
           'AND cash_box_account_currency.currency_id = ?;';
 
       value = parseFloat((1 / dayExchange.rate) * item.debit).toFixed(4);
+
+      /**
+       * @fixme We need an identifier which represent correctly the convention payment
+       * inv_po_id represent only the sale receipt, we have no reference for the all
+       * sale receipts paid by this convention (primary_cash_uuid)
+       * -- We need a column to store this information in the posting journal
+       */
 
       params = [
         uuid(), reference.reference_pcash.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
