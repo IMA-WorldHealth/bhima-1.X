@@ -3242,6 +3242,8 @@
    "LANGUAGE"          : "Language",
    "LOADING"           : "Loading",
    "LINK"              : "Link",
+   "MODAL_FIND_RECEIPT": "Find Receipt",
+   "MODAL_FINISH"      : "Finish",
    "MONTHS"            : "Months",
    "NAVIGATION"        : "Navigation",
    "NEW_SUCCESS"       : "Successfully added",

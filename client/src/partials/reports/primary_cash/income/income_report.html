@@ -75,7 +75,11 @@
 
     <nav>
 
-      <div class="pull-right">        
+      <div class="pull-right">  
+        <button class="btn btn-sm btn-success" ng-click="openIncomeReceipt()">
+          <span class="glyphicon glyphicon-search"></span> {{ 'UTIL.MODAL_FIND_RECEIPT' | translate }}
+        </button>
+
         <button class="btn btn-sm btn-default" ng-click="print()">
           <span class="glyphicon glyphicon-print"></span>
           {{ "UTIL.PRINT" | translate }}
@@ -111,23 +115,19 @@
                 <th>{{ "COLUMNS.DATE" | translate }}</th>
                 <th>{{ "COLUMNS.SOURCE" | translate }}</th>
                 <th>{{ "COLUMNS.BY" | translate }}</th>
-                <th class="hidden-print">{{ "COLUMNS.ACTION" | translate }}</th>
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat='record in session.model.records.data'>
+              <tr ng-repeat='record in session.model.records.data | orderBy: "service_txt"'>
                 <td>{{ record.trans_id }}</td>
                 <td>{{ record.description }}</td>
                 <td>{{ record.debit | currency:record.currency_id }}</td>
                 <td>{{ record.trans_date | date }}</td>
                 <td>{{ record.service_txt }}</td>
-                <td>{{ record.first }} {{record.last}}</td>
-                <td class="hidden-print">
-                  <a ng-href="/#/invoice/{{record.service_txt}}/{{record.primary_cash_uuid}}/"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
-                </td>            
+                <td>{{ record.first }} {{record.last}}</td>          
               </tr>
               <tr ng-if="!session.model.records.data.length">
-                <td colspan="7">
+                <td colspan="6">
                   <span class="glyphicon glyphicon-stats"></span>
                   {{ "PRIMARY_CASH.REPORT.INCOME.EMPTY_REPORT" | translate }}
                 </td>
