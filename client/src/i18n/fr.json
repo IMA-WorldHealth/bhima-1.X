@@ -1903,7 +1903,7 @@
    "TITLE"              : "Etat Financier du Patient"
    },
 "PATIENT_VISIT" : {
-  "CASES"            : "Cas",
+  "PATIENT"          : "Patient",
   "DATE"             : "Visite Date",
   "DETAILS"          : "Details",
   "FILE_NR"          : "Numero Fiche",
@@ -1912,9 +1912,9 @@
   "GROUP_BY_DAY"     : "Jours",
   "LEGEND"           : "Legend",
   "NAME"             : "Nom",
-  "NEW_CASES"        : "Nouveaux cas",
+  "NEW_PATIENT"        : "Nouveaux patient",
   "NEW_VISIT_SAVED"  : "Nouvelle visite enregistrée",
-  "OLD_CASES"        : "Anciens cas",
+  "OLD_PATIENT"        : "Anciens patient",
   "REGISTER_VISIT"   : "Enregistrer Visite",
   "TITLE"            : "Visitations Patients"
 },

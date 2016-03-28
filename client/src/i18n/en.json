@@ -1901,7 +1901,7 @@
    "TITLE"              : "Patient Standing Report"
    },
 "PATIENT_VISIT" : {
-   "CASES"            : "Cases",
+   "PATIENT"            : "Patient",
    "DATE"             : "Date Visite",
    "DETAILS"          : "Details",
    "FILE_NR"          : "File Number",
@@ -1910,9 +1910,9 @@
    "GROUP_BY_DAY"     : "Days",
    "LEGEND"           : "Legend",
    "NAME"             : "Nom",
-   "NEW_CASES"        : "New Cases",
+   "NEW_PATIENT"        : "New patient",
    "NEW_VISIT_SAVED"  : "New of visitation of the patient registered",
-   "OLD_CASES"        : "Old Cases",
+   "OLD_PATIENT"        : "Old patient",
    "REGISTER_VISIT"   : "Register Visit",
    "TITLE"            : "Patients Visit"
  },
