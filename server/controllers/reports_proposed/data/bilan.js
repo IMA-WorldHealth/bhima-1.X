@@ -127,8 +127,7 @@ exports.compile = function (options) {
         section.grefs.forEach(function (gref){
           gref.refs = getReferences(gref, currents);
           gref.refs.forEach(function (item){
-            var br = getBrut(item, currents, section.sectionBilanIsActif); //tapon pour stocker le brute
-            item.net = br < 0 ? br * -1 : br;
+            item.net = getBrut(item, currents, section.sectionBilanIsActif); // brut is the net
             item.net_view = numeral(item.net).format(formatDollar);
             section.totalNet += item.net;
 

@@ -214,3 +214,7 @@ table.clean-table tfoot tr:first-child {
   border-color: #E05252;
   background: #FBE9E9;
 }
+
+.gray-line {
+  background-color: #DDD;
+}

@@ -1016,7 +1016,7 @@ function operatingAccount(params) {
     'JOIN account ON account.id = period_total.account_id ' +
     'JOIN account_type ON account_type.id = account.account_type_id ' +
     'WHERE period_total.period_id = ' + params.period_id + ' ' +
-    'AND account_type.type = \'income/expense\' ' +
+    'AND account_type.type = \'income/expense\' AND account.is_ohada = 1 ' +
     'ORDER BY account.account_number ASC';
 
   if (params.period_id === 'all') {
@@ -1027,7 +1027,7 @@ function operatingAccount(params) {
       'JOIN account ON account.id = period_total.account_id ' +
       'JOIN account_type ON account_type.id = account.account_type_id ' +
       'WHERE period_total.fiscal_year_id = ' + fiscal_id + ' ' +
-      'AND account_type.type = \'income/expense\' ' +
+      'AND account_type.type = \'income/expense\' AND account.is_ohada = 1 ' +
       'GROUP BY account.account_number ' +
       'ORDER BY account.account_number ASC ';
   }
