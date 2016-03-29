@@ -880,7 +880,7 @@
     "QUARTER_TWO"       : "6 Months",
     "QUARTER_THREE"     : "3 Months",
     "QUARTER_FOUR"      : "1 Months",
-    "UNTIL_DATE"        : "Until"
+    "UNTIL_DATE"        : "Until the date"
   },
 "DAILY_CONSUMPTION": {
    "ALL_PROJECTS"       : "All Projects",

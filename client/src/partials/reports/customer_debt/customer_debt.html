@@ -12,23 +12,6 @@
             <form name="configForm" novalidate>
 
               <div class="form-group">
-                <label class="control-label">
-                  {{ 'SELECT.DEBITOR_GROUP' | translate }}
-                </label>
-                <div class="input-group">
-                  <span class="input-group-addon">
-                    <span class="glyphicon glyphicon-th"></span>
-                  </span>  
-                  <select
-                    class="form-bhima"
-                    ng-model="ReportCtrl.selectedGroup"
-                    ng-options="group as group.name for group in ReportCtrl.debtorGroups.data | orderBy:'name'" >
-                    <option value="" disabled>--- {{ 'SELECT.DEBITOR_GROUP' | translate }} ---</option>
-                  </select>
-                </div>
-              </div>
-
-              <div class="form-group">
                 <label>
                   <input type="checkbox" ng-model="ReportCtrl.withUntilDate">
                   {{ "CUSTOMER.DEFINE_UNTIL_DATE" | translate }}
@@ -41,19 +24,11 @@
                   <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
                   <input class="form-control" type="date" ng-model="ReportCtrl.untilDate">
                 </div>
-              </div> 
-
-              <div class="form-group">
-                <label>
-                  <input type="checkbox" ng-model="ReportCtrl.allDebtorGroup">
-                  {{ "CUSTOMER.ALL_DEBTOR_GROUPS" | translate }}
-                </label>
-              </div>           
+              </div>          
 
               <div class="pull-right">
-                <button class="btn btn-sm btn-success" type="button" 
-                  ng-click="ReportCtrl.setSelectedGroup()" 
-                  ng-disabled="(!ReportCtrl.selectedGroup && !ReportCtrl.allDebtorGroup)">
+                <button class="btn btn-lg btn-success" type="button" 
+                  ng-click="ReportCtrl.generate()">
                   {{ "REPORT.GENERATE" | translate }}
                 </button>
               </div>
@@ -67,8 +42,7 @@
   <div ng-switch-when="generate">  
     <header>
       {{ "CUSTOMER.DEBT_REPORT" | translate }}: 
-      <span ng-show="ReportCtrl.selectedGroup && !ReportCtrl.allDebtorGroup"><strong>{{ ReportCtrl.selectedGroup.name }}</strong></span>
-      <span ng-show="ReportCtrl.allDebtorGroup"><strong>{{ 'CUSTOMER.ALL_DEBTOR_GROUPS' | translate }}</strong></span>
+      <small>{{ "CUSTOMER.UNTIL_DATE" | translate }} {{ ReportCtrl.untilDate | date }}</small>
     </header>
 
     <nav>
@@ -96,8 +70,7 @@
           
           <h4 class="visible-print">
             {{ "CUSTOMER.DEBT_REPORT" | translate }}: 
-            <span ng-show="ReportCtrl.selectedGroup && !ReportCtrl.allDebtorGroup"><strong>{{ ReportCtrl.selectedGroup.name }}</strong></span>
-            <span ng-show="ReportCtrl.allDebtorGroup"><strong>{{ 'CUSTOMER.ALL_DEBTOR_GROUPS' | translate }}</strong></span>
+            <small>{{ "CUSTOMER.UNTIL_DATE"}} {{ ReportCtrl.untilDate }}</small>
           </h4>
           <table class="custom-report table table-stripped table-hover">
             <thead>
@@ -111,7 +84,7 @@
                     <strong>{{ 'CUSTOMER.ALL_DEBTOR_GROUPS' | translate }}</strong>
                   </span>
                 </th>
-                <th style="background-color: #7986AC;">{{ "CUSTOMER.OVER_YEAR" | translate }}</th>
+                <th style="background-color: #660000;">{{ "CUSTOMER.OVER_YEAR" | translate }}</th>
                 <th style="background-color: #4F608F;">{{ "CUSTOMER.OVER_SIX_MONTH" | translate }}</th>
                 <th style="background-color: #162756;">{{ "CUSTOMER.OVER_THREE_MONTH" | translate }}</th>
                 <th style="background-color: #061439;">{{ "CUSTOMER.LESS_THREE_MONTH" | translate }}</th>
@@ -119,7 +92,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat='record in ReportCtrl.session.debtorList'>
+              <tr ng-repeat='record in ReportCtrl.session.debtorList | orderBy: "text"'>
                 <td>{{ $index + 1 }}</td>
                 <td><b ng-show="record.reference">[{{ record.reference }}]</b> {{ record.text }}</td>
                 <td>

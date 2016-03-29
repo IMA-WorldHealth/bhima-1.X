@@ -881,7 +881,7 @@
     "QUARTER_TWO"       : "6 Mois",
     "QUARTER_THREE"     : "3 Mois",
     "QUARTER_FOUR"      : "1 Mois",
-    "UNTIL_DATE"        : "jusqu’à "
+    "UNTIL_DATE"        : "jusqu’à la date"
   },
 "DAILY_CONSUMPTION": {
    "ALL_PROJECTS"       : "Tous les projets",
