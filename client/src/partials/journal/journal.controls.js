@@ -327,7 +327,6 @@ angular.module('bhima.controllers')
 
       // FIXME : Review this decision
       data.project_id = $scope.project.id;
-      data.origin_id = 4;
 
       return data;
     }
