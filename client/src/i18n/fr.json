@@ -866,6 +866,23 @@
    "SYMBOL_TXT"    : "La signe qui va demarquer le monaie",
    "TITLE"         : "Gestion des Monaies"
    },
+"CUSTOMER" : {
+    "ALL_DEBTOR_GROUPS" : "Tous les groupes debiteurs",
+    "DEBT"              : "Dettes",
+    "DEBT_REPORT"       : "Rapport de dettes des clients",
+    "DEBTOR_GROUP"      : "Groupe Debiteur",
+    "DEFINE_UNTIL_DATE" : "Definir une date limite",
+    "LESS_THREE_MONTH"  : "Dettes de moins de trois mois",
+    "NO_DATA"           : "Aucune données trouvées",
+    "OVER_SIX_MONTH"    : "Dettes de plus de six mois",
+    "OVER_THREE_MONTH"  : "Dettes de plus de trois mois",
+    "OVER_YEAR"         : "Dettes de plus d'une année",
+    "QUARTER_ONE"       : "1 Année",
+    "QUARTER_TWO"       : "6 Mois",
+    "QUARTER_THREE"     : "3 Mois",
+    "QUARTER_FOUR"      : "1 Mois",
+    "UNTIL_DATE"        : "jusqu’à la date"
+  },
 "DAILY_CONSUMPTION": {
    "ALL_PROJECTS"       : "Tous les projets",
    "CONFIGURE_REPORT"   : "Configuration du rapport : Consommation journaliere",
@@ -3015,6 +3032,7 @@
    "CAUTION"                   : "Paiement Anticipatif",
    "CHART_OF_ACCOUNTS"         : "Plan Comptable",
    "CLIENT"                    : "Client",
+   "CUSTOMER_DEBT_REPORT"      : "Créances des clients",
    "SECTION_RESULTAT"          : "Section Resultat",
    "COMPTE_RESULTAT"           : "Compte Resultat",
    "CONFIG_ACCOUNTING"         : "Configuration Comptes",
