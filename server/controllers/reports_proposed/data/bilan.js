@@ -198,7 +198,7 @@ exports.compile = function (options) {
             //previous net processing
             infos.previous.forEach(function (previousYearData, index){
               item['previousNet' + index] = getPreviousNet(item, previousYearData.passifs, section.sectionBilanIsActif);
-              item['previousNet' + index] = item['previousNet' + index] < 0 ? item['previousNet' + index] * -1 : item['previousNet' + index];
+              // item['previousNet' + index] = item['previousNet' + index] < 0 ? item['previousNet' + index] * -1 : item['previousNet' + index];
 
               item['previousNet_view' + index] = numeral(item['previousNet' + index]).format(formatDollar);
               gref['totalPreviousNet' + index] += item['previousNet' + index];
