@@ -44,30 +44,12 @@ function debtorGroupDebts(untilDate) {
 
 	  glb.sqlTemplate =
 	    'SELECT t.project_id, t.inv_po_id, t.trans_date, SUM(t.debit_equiv) AS debit,  ' +
-	      'SUM(t.credit_equiv) AS credit, SUM(t.debit_equiv - t.credit_equiv) as balance, ' +
-	      't.account_id, t.deb_cred_uuid, t.currency_id, t.doc_num, t.description, t.account_id, ' +
-	      't.comment, t.name, t.uuid ' +
-	    'FROM (' +
-	      '(' +
-	        'SELECT t.project_id, t.inv_po_id, t.trans_date, t.debit, ' +
-	          't.credit, t.debit_equiv, t.credit_equiv, ' +
-	          't.account_id, t.deb_cred_uuid, t.currency_id, ' +
-	          't.doc_num, t.trans_id, t.description, t.comment, ' +
-	          'dg.name, dg.uuid ' + 
-	        'FROM posting_journal t ' +
-	        'JOIN debitor_group dg ON dg.account_id = t.account_id ' + 
-	        'WHERE (%PERIOD%) ' +
-	      ') UNION (' +
-	        'SELECT t.project_id, t.inv_po_id, t.trans_date, t.debit, ' +
-	          't.credit, t.debit_equiv, t.credit_equiv, ' +
-	          't.account_id, t.deb_cred_uuid, t.currency_id, ' +
-	          't.doc_num, t.trans_id, t.description, t.comment, ' +
-	          'dg.name, dg.uuid ' + 
-	        'FROM general_ledger t ' +
-	    		'JOIN debitor_group dg ON dg.account_id = t.account_id ' + 
-	    		'WHERE (%PERIOD%) ' +
-	      ')' +
-	    ') AS `t` ' +
+		    'SUM(t.credit_equiv) AS credit, SUM(t.debit_equiv - t.credit_equiv) as balance, ' +
+		    't.account_id, t.deb_cred_uuid, t.currency_id, t.doc_num, t.description, t.account_id, ' +
+		    't.comment, dg.name, dg.uuid ' +
+	    'FROM general_ledger t ' +
+        'JOIN debitor_group dg ON dg.account_id = t.account_id ' + 
+        'WHERE (%PERIOD%) ' +
 	    'GROUP BY t.account_id HAVING balance > 0 ;\n';
 
 	  if (!untilDate) {
@@ -104,3 +86,39 @@ function debtorGroupDebts(untilDate) {
 
 	return defer.promise;
 }
+
+/**
+ * @todo : implements a function to get details of a debtor group's debts 
+ */
+
+/**
+function debtorGroupDetail(req, res, next) {
+	var query, params, glb = {};
+
+	params = req.query;
+
+
+	query = 
+		'SELECT t.project_id, t.inv_po_id, t.trans_date, t.debit_equiv, ' +
+		    't.credit_equiv, t.debit_equiv - t.credit_equiv as balance, ' +
+		    't.account_id, t.deb_cred_uuid, t.currency_id, t.doc_num, t.description, t.account_id, ' +
+		    't.comment, dg.name, dg.uuid ' +
+	    'FROM general_ledger t ' +
+        'JOIN debitor_group dg ON dg.account_id = t.account_id ' + 
+        'WHERE (%PERIOD%) AND account_id = ? ' +
+	    'GROUP BY t.inv_po_id HAVING balance > 0 ;\n';
+
+	if (!params.untilDate) {
+  	params.untilDate = util.toMysqlDate(new Date());
+  }
+
+	query = query.replace(/%PERIOD%/g, 't.trans_date <= "' + params.untilDate + '"');
+
+	db.exec(query, [params.account_id])
+	.then(function (rows) {
+		res.status(200).send(rows);
+	})
+	.catch(next);
+
+} */
+

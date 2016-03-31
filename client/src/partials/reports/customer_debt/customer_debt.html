@@ -92,10 +92,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat='record in ReportCtrl.session.debtorList | orderBy: "text"'>
+              <tr ng-repeat='record in ReportCtrl.session.debtorList | orderBy: "text"'
+                ng-click="ReportCtrl.proof(record, ReportCtrl.session.untilDate)">
                 <td>{{ $index + 1 }}</td>
                 <td><b ng-show="record.reference">[{{ record.reference }}]</b> {{ record.text }}</td>
-                <td>
+                <td style="background-color: #fee; font-weight: bolder;">
                   {{ record.balance_fourth | currency }}
                 </td>
                 <td>
@@ -107,7 +108,7 @@
                 <td>
                   {{ record.balance_first | currency }}
                 </td>
-                <td>{{ record.balance_first + record.balance_second + record.balance_third + record.balance_fourth | currency }}</td>            
+                <td>{{ record.total | currency }}</td>            
               </tr>
               <tr ng-if="ReportCtrl.loading">
                 <td class="text-center" colspan="7">
@@ -122,7 +123,7 @@
                 <th>{{ ReportCtrl.session.totalThird | currency }}</th>
                 <th>{{ ReportCtrl.session.totalSecond | currency }}</th>
                 <th>{{ ReportCtrl.session.totalFirst | currency }}</th>
-                <th>{{ ReportCtrl.session.totalTotal | currency }}</th>
+                <th>{{ ReportCtrl.session.totalLine | currency }}</th>
               </tr>
             </tfoot>
           </table>          

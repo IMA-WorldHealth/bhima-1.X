@@ -145,11 +145,14 @@ function CustomerDebtController ($q, $http, $location, validate, util, exchange,
     session.totalSecond = 0;
     session.totalThird  = 0;
     session.totalFourth = 0;
+    session.totalLine   = 0;
     session.debtorList.forEach(function (item) {
       session.totalFirst  += item.balance_first;
       session.totalSecond += item.balance_second;
       session.totalThird  += item.balance_third;
       session.totalFourth += item.balance_fourth;
+      item.total = item.balance_first + item.balance_second + item.balance_third + item.balance_fourth;
+      session.totalLine += item.total;
     });
     session.totalTotal  = session.totalFirst + session.totalSecond + session.totalThird + session.totalFourth;
   }
