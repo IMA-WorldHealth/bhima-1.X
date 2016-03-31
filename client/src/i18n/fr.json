@@ -3139,7 +3139,8 @@
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte",
    "UPDATE_STOCK"              : "Mettre à Jour les Stocks",
    "USERS"                     : "Utilisateurs",
-   "VALIDATE_PURCHASE"         : "Validation"
+   "VALIDATE_PURCHASE"         : "Validation",
+   "CUSTOMER_DEBT"             : "Dette client par plage date"
    },
 "TRIAL_BALANCE": {
    "ACCOUNT"          : "Compte",
