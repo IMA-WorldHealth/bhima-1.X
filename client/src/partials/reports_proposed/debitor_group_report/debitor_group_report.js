@@ -21,6 +21,9 @@ var DebtorGroupReportController = function ($http, $translate, validate, reportC
   vm.generate_doc = $translate.instant('DEBITOR_GROUP_REPORT.GENERATE_DOC');
   vm.loading = $translate.instant('DEBITOR_GROUP_REPORT.LOADING');
 
+  vm.dateFrom = new Date();
+  vm.dateTo = new Date();
+
   validate.process(dependencies).then(setDefaultConfiguration);
 
   // Expose configuration to scope - set module state
@@ -46,6 +49,8 @@ var DebtorGroupReportController = function ($http, $translate, validate, reportC
     configurationObject.dg = vm.debitorGroup.get(vm.debitor_group_uuid);
     configurationObject.unsoldOnly = vm.unsold_only;
     configurationObject.involveJournal = vm.involve_journal;
+    configurationObject.dateFrom = vm.dateFrom;
+    configurationObject.dateTo = vm.dateTo;
 
     // Update state
     vm.building = true;

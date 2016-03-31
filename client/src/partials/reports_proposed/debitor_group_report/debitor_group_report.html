@@ -21,15 +21,31 @@
           </div>
         </div>
 
+        <div class="form-group row">
+          <div class="col-xs-6">
+            <div class="input-group">
+              <span class="input-group-addon">{{ "UTIL.DATE_FROM" | translate }}</span>
+              <input class="form-bhima" type="date" ng-model="debtorGroupReportCtrl.dateFrom" rows="20" required>
+            </div>
+          </div>
+
+          <div class="col-xs-6">
+            <div class="input-group">
+              <span class="input-group-addon">{{ "UTIL.DATE_TO" | translate }}</span>
+              <input class="form-bhima" type="date" ng-model="debtorGroupReportCtrl.dateTo" rows="20" required>
+            </div>
+          </div>
+        </div>
+
         <div class="form-group">
-          <label class="control-label col-xs-4">{{ "DEBITOR_GROUP_REPORT.INVOLVE_JOURNAL" | translate }}</label>
+          <label class="control-label">{{ "DEBITOR_GROUP_REPORT.INVOLVE_JOURNAL" | translate }}</label>
           <div>
             <input type="checkbox" ng-value=1 ng-model="debtorGroupReportCtrl.involve_journal">
           </div>
         </div>
 
         <div class="form-group">
-          <label class="control-label col-xs-4">
+          <label class="control-label">
             {{ "DEBITOR_GROUP_REPORT.NOTSOLD_ONLY" | translate }}
           </label>
           <div>

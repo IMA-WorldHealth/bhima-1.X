@@ -104,7 +104,8 @@
 	    "ACCOUNTING_DEPT" : "Service de Comptabilite",
 	    "BILLING_OFFICE" :  "Bureau de Facturation",
 	    "NO_DATA" : "Il n'y a pas des donnees trouver pour l'annee fiscal!",
-	    "TOTAL" : "Total"
+	    "TOTAL" : "Total",
+	    "ANNUAL_MOVEMENT" : "Mouvement de l'annee"
     },
 
     "VARIATION_EXPLOITATION" : {

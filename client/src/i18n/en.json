@@ -3153,7 +3153,8 @@
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions by Account",
    "UPDATE_STOCK"              : "Update stock",
    "USERS"                     : "Users",
-   "VALIDATE_PURCHASE"         : "Validation"
+   "VALIDATE_PURCHASE"         : "Validation",
+   "CUSTOMER_DEBT"             : "Client debt by plage date"
    },
 "TRIAL_BALANCE": {
    "ACCOUNT"          : "Account",
