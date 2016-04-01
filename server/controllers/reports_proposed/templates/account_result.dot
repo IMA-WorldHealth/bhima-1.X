@@ -22,8 +22,8 @@
           <tr>
             <th>{{=it.i18nAccountResult.REFERENCE}}</th>
             <th>{{=it.i18nAccountResult.CHARGE}}</th>
-            <th>Exercice N</th>
-            {{~it.previous : data : i}} <th>Ex. N-{{=i+1}}</th> {{~}}            
+            <th>Exercice {{=it.options.fy_txt}}</th>
+            {{~it.previous : data : i}} <th>Exercice {{=data.charges[0].fiscal}}</th> {{~}}            
           </tr>
         </thead>
         <tbody>
@@ -60,8 +60,8 @@
           <tr>
             <th>{{=it.i18nAccountResult.REFERENCE}}</th>
             <th>{{=it.i18nAccountResult.PROFIT}}</th>
-            <th>Exercice N</th>
-            {{~it.previous : data : i}} <th>Ex. N-{{=i+1}}</th> {{~}}            
+            <th>Exercice {{=it.options.fy_txt}}</th>
+            {{~it.previous : data : i}} <th>Exercice {{=data.produits[0].fiscal}}</th> {{~}}            
           </tr>
         </thead>
         <tbody>
