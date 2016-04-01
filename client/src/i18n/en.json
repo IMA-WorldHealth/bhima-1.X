@@ -180,12 +180,12 @@
    "CLASS"               : "Class",
    "INFO_FILL_INPUT"     : "Please select period and class",
    "LABEL"               : "Label",
-   "MONTH_MOVEMENT"      : "Month Movement",
+   "MONTH_MOVEMENT"      : "Movement",
    "NEW_SOLD"            : "New Balance",
    "NO_DATA"             : "There is no data for that period!",
    "OLD_SOLD"            : "Old Balance",
-   "REPORT"              : "Monthly Balance Report",
-   "TITLE"               : "Monthly Balance by Class"
+   "REPORT"              : "Balance",
+   "TITLE"               : "Balance"
    },
 "BILAN" : {
   "BUILD_BILAN"     : "Build bilan",
@@ -3012,7 +3012,7 @@
    "ALL_TRANSACTIONS"          : "All Transactions",
    "AUTHORIZE_PURCHASE"        : "Authorization",
    "AUXILLARY_CASH_RECORD"     : "Auxillary Cash Records",
-   "BALANCE_MENSUELLE"         : "Monthly balance",
+   "BALANCE_MENSUELLE"         : "Balance",
    "BALANCE_SHEET"             : "Balance sheet",
    "BENEFICIARY"               : "Beneficaries",
    "BILAN"                     : "Bilan",
@@ -3153,7 +3153,8 @@
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions by Account",
    "UPDATE_STOCK"              : "Update stock",
    "USERS"                     : "Users",
-   "VALIDATE_PURCHASE"         : "Validation"
+   "VALIDATE_PURCHASE"         : "Validation",
+   "CUSTOMER_DEBT"             : "Client debt by plage date"
    },
 "TRIAL_BALANCE": {
    "ACCOUNT"          : "Account",
