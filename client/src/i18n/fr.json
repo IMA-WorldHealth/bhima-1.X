@@ -181,12 +181,12 @@
    "CLASS"               : "Classe",
    "INFO_FILL_INPUT"     : "Veuillez selectionner la periode et la classe",
    "LABEL"               : "Intitulé",
-   "MONTH_MOVEMENT"      : "Mouvement du mois",
+   "MONTH_MOVEMENT"      : "Mouvement",
    "NEW_SOLD"            : "Nouveau Solde",
    "NO_DATA"             : "Il n'y a pas des donnees pour la periode!",
    "OLD_SOLD"            : "Ancien Solde",
-   "REPORT"              : "Rapport Balance Mensuelle",
-   "TITLE"               : "Balance Mensuelle par Classe"
+   "REPORT"              : "Rapport Balance",
+   "TITLE"               : "Balance"
    },
 "BILAN" : {
   "BUILD_BILAN"     : "Génération bilan",
@@ -3016,7 +3016,7 @@
    "ALL_TRANSACTIONS"          : "Toutes les Transactions",
    "AUTHORIZE_PURCHASE"        : "Authorisation",
    "AUXILLARY_CASH_RECORD"     : "Historique Caisse Auxilliaire",
-   "BALANCE_MENSUELLE"         : "Balance Mensuelle",
+   "BALANCE_MENSUELLE"         : "Balance",
    "BALANCE_SHEET"             : "Feuille de Balance",
    "BENEFICIARY"               : "Bénéficiaire",
    "BILAN"                     : "Bilan",
