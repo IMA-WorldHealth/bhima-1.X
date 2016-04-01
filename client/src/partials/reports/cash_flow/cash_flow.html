@@ -110,7 +110,7 @@
           </h4>
 
           <!-- Cashflow report -->
-          <table class="cashflow table table-stripped">
+          <table class="custom-report navy cashflow table table-stripped table-bordered">
 
             <thead>
               <!-- heading  -->
@@ -132,7 +132,7 @@
               </tr>
 
               <!-- cash incomes label  -->
-              <tr class="label-section">
+              <tr class="label-section important">
                 <td><strong>{{ 'CASH.FLOW.CASH_INCOME' | translate }}<strong></td>
                 <td colspan="{{ ReportCtrl.session.periodicData.length }}"></td>
               </tr>
@@ -146,7 +146,7 @@
               </tr>
 
               <!-- total incomes -->
-              <tr class="label-section">
+              <tr class="label-section important">
                 <td><strong>{{ 'CASH.FLOW.TOTALS' | translate | uppercase }}<strong></td>
                 <td ng-repeat="flow in ReportCtrl.session.periodicData">
                   <b>{{ ReportCtrl.session.totalIncomes[ReportCtrl.util.htmlDate(flow.period.period_start)] | currency:ReportCtrl.session.currency_id }}</b>
@@ -159,7 +159,7 @@
               </tr>
 
               <!-- cash expenses label  -->
-              <tr class="label-section">
+              <tr class="label-section important">
                 <td><strong>{{ 'CASH.FLOW.CASH_EXPENSE' | translate }}<strong></td>
                 <td colspan="{{ ReportCtrl.session.periodicData.length }}"></td>
               </tr>
@@ -173,7 +173,7 @@
               </tr>
 
               <!-- total expenses -->
-              <tr class="label-section">
+              <tr class="label-section important">
                 <td><strong>{{ 'CASH.FLOW.TOTALS' | translate | uppercase }}<strong></td>
                 <td ng-repeat="flow in ReportCtrl.session.periodicData">
                   <b>{{ ReportCtrl.session.totalExpenses[ReportCtrl.util.htmlDate(flow.period.period_start)] | currency:ReportCtrl.session.currency_id }}</b>
@@ -194,7 +194,7 @@
               </tr>
 
               <!-- balance (month closing) -->
-              <tr class="openning">
+              <tr class="openning very-important">
                 <td><strong>{{ 'CASH.FLOW.CLOSING_BALANCE' | translate }}<strong></td>
                 <td ng-repeat="flow in ReportCtrl.session.periodicData">
                   {{ ReportCtrl.session.periodicBalance[ReportCtrl.util.htmlDate(flow.period.period_start)] | currency:ReportCtrl.session.currency_id }}

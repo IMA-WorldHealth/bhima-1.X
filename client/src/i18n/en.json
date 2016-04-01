@@ -876,10 +876,10 @@
     "OVER_SIX_MONTH"    : "Debts between 6 months and 1 year",
     "OVER_THREE_MONTH"  : "Debts between 3 and 6 months",
     "OVER_YEAR"         : "Debts of more than a year",
-    "QUARTER_ONE"       : "1 Year",
-    "QUARTER_TWO"       : "6 Months",
-    "QUARTER_THREE"     : "3 Months",
-    "QUARTER_FOUR"      : "1 Months",
+    "QUARTER_ONE"       : "0 - 90 days",
+    "QUARTER_TWO"       : "91 - 180 days",
+    "QUARTER_THREE"     : "181 - 365 days",
+    "QUARTER_FOUR"      : "+365 days",
     "UNTIL_DATE"        : "Until the date"
   },
 "DAILY_CONSUMPTION": {

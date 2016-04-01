@@ -108,10 +108,10 @@ function incomeExpenseByPeriod(periodicFlows) {
 	periodicFlows.forEach(function (pf) {
 		var incomes, expenses;
 		incomes = pf.flows.filter(function (posting) {
-			return posting.debit > 0;
+			return posting.debit_equiv > 0;
 		});
 		expenses = pf.flows.filter(function (posting) {
-			return posting.credit > 0;
+			return posting.credit_equiv > 0;
 		});
 		grouping.push({ period: pf.period, incomes : incomes, expenses : expenses });
 	});

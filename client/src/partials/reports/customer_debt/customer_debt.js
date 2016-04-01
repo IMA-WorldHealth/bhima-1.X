@@ -127,7 +127,7 @@ function CustomerDebtController ($q, $http, $location, validate, util, exchange,
         uniqueTmp[item.uuid].balance_first  += item.balance_first;
         uniqueTmp[item.uuid].balance_second += item.balance_second;
         uniqueTmp[item.uuid].balance_third  += item.balance_third;
-        uniqueTmp[item.uuid].balance_first  += item.balance_first;
+        uniqueTmp[item.uuid].balance_fourth  += item.balance_fourth;
       }
     });
 

@@ -877,10 +877,11 @@
     "OVER_SIX_MONTH"    : "Dettes entre 6 mois et 1 année",
     "OVER_THREE_MONTH"  : "Dettes entre 3 et 6 mois",
     "OVER_YEAR"         : "Dettes de plus d'une année",
-    "QUARTER_ONE"       : "1 Année",
-    "QUARTER_TWO"       : "6 Mois",
-    "QUARTER_THREE"     : "3 Mois",
-    "QUARTER_FOUR"      : "1 Mois",
+    "OVER_YEAR"         : "Debts of more than a year",
+    "QUARTER_ONE"       : "0 - 90 jours",
+    "QUARTER_TWO"       : "91 - 180 jours",
+    "QUARTER_THREE"     : "181 - 365 jours",
+    "QUARTER_FOUR"      : "+365 jours",
     "UNTIL_DATE"        : "jusqu’à la date"
   },
 "DAILY_CONSUMPTION": {

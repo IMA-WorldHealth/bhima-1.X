@@ -50,7 +50,7 @@ function debtorGroupDebts(untilDate) {
 	    'FROM general_ledger t ' +
         'JOIN debitor_group dg ON dg.account_id = t.account_id ' + 
         'WHERE (%PERIOD%) ' +
-	    'GROUP BY t.account_id HAVING balance > 0 ;\n';
+	    'GROUP BY t.account_id HAVING balance <> 0 ;\n';
 
 	  if (!untilDate) {
 	  	untilDate = util.toMysqlDate(new Date());
@@ -60,9 +60,9 @@ function debtorGroupDebts(untilDate) {
 	  
 		var requette2 = glb.sqlTemplate.replace(/%PERIOD%/g, '(DATEDIFF("' + untilDate + '", t.trans_date) BETWEEN 91 AND 180) AND ("'+untilDate+'" >= t.trans_date)');
 		
-		var requette3 = glb.sqlTemplate.replace(/%PERIOD%/g, '(DATEDIFF("' + untilDate + '", t.trans_date) BETWEEN 181 AND 360) AND ("'+untilDate+'" >= t.trans_date)');
+		var requette3 = glb.sqlTemplate.replace(/%PERIOD%/g, '(DATEDIFF("' + untilDate + '", t.trans_date) BETWEEN 181 AND 365) AND ("'+untilDate+'" >= t.trans_date)');
 		
-		var requette4 = glb.sqlTemplate.replace(/%PERIOD%/g, '(DATEDIFF("' + untilDate + '", t.trans_date) > 360) AND ("'+untilDate+'" >= t.trans_date)');
+		var requette4 = glb.sqlTemplate.replace(/%PERIOD%/g, '(DATEDIFF("' + untilDate + '", t.trans_date) > 365) AND ("'+untilDate+'" >= t.trans_date)');
 
 	  dbQueries.push(db.exec(requette1));
 	  dbQueries.push(db.exec(requette2));
