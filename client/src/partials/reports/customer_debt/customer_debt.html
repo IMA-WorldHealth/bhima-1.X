@@ -70,9 +70,9 @@
           
           <h4 class="visible-print">
             {{ "CUSTOMER.DEBT_REPORT" | translate }}: 
-            <small>{{ "CUSTOMER.UNTIL_DATE"}} {{ ReportCtrl.untilDate }}</small>
+            <small>{{ "CUSTOMER.UNTIL_DATE" | translate }} {{ ReportCtrl.untilDate | date }}</small>
           </h4>
-          <table class="custom-report table table-stripped table-hover">
+          <table class="custom-report navy table table-stripped table-hover table-bordered">
             <thead>
               <tr class="heading">
                 <th colspan="2">
@@ -84,18 +84,20 @@
                     <strong>{{ 'CUSTOMER.ALL_DEBTOR_GROUPS' | translate }}</strong>
                   </span>
                 </th>
-                <th style="background-color: #660000;">{{ "CUSTOMER.OVER_YEAR" | translate }}</th>
-                <th style="background-color: #4F608F;">{{ "CUSTOMER.OVER_SIX_MONTH" | translate }}</th>
-                <th style="background-color: #162756;">{{ "CUSTOMER.OVER_THREE_MONTH" | translate }}</th>
-                <th style="background-color: #061439;">{{ "CUSTOMER.LESS_THREE_MONTH" | translate }}</th>
+                <th>{{ "CUSTOMER.QUARTER_FOUR" | translate }}</th>
+                <th>{{ "CUSTOMER.QUARTER_THREE" | translate }}</th>
+                <th>{{ "CUSTOMER.QUARTER_TWO" | translate }}</th>
+                <th>{{ "CUSTOMER.QUARTER_ONE" | translate }}</th>
                 <th>{{ "COLUMNS.TOTAL" | translate }}</th>
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat='record in ReportCtrl.session.debtorList | orderBy: "text"'>
+              <tr ng-repeat='record in ReportCtrl.session.debtorList | orderBy: "text"'
+                ng-click="ReportCtrl.proof(record, ReportCtrl.session.untilDate)"
+               >
                 <td>{{ $index + 1 }}</td>
                 <td><b ng-show="record.reference">[{{ record.reference }}]</b> {{ record.text }}</td>
-                <td>
+                <td style="background-color: #fee; font-weight: bolder;">
                   {{ record.balance_fourth | currency }}
                 </td>
                 <td>
@@ -107,7 +109,7 @@
                 <td>
                   {{ record.balance_first | currency }}
                 </td>
-                <td>{{ record.balance_first + record.balance_second + record.balance_third + record.balance_fourth | currency }}</td>            
+                <td>{{ record.total | currency }}</td>            
               </tr>
               <tr ng-if="ReportCtrl.loading">
                 <td class="text-center" colspan="7">
@@ -115,14 +117,14 @@
                 </td>
               </tr>
             </tbody>
-            <tfoot class="label-section">
-              <tr>
+            <tfoot>
+              <tr class="footer text-right">
                 <th colspan="2">{{ "COLUMNS.TOTAL" | translate }}</th>
                 <th>{{ ReportCtrl.session.totalFourth | currency }}</th>
                 <th>{{ ReportCtrl.session.totalThird | currency }}</th>
                 <th>{{ ReportCtrl.session.totalSecond | currency }}</th>
                 <th>{{ ReportCtrl.session.totalFirst | currency }}</th>
-                <th>{{ ReportCtrl.session.totalTotal | currency }}</th>
+                <th>{{ ReportCtrl.session.totalLine | currency }}</th>
               </tr>
             </tfoot>
           </table>          

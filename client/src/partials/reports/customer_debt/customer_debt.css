@@ -1,22 +1,14 @@
-table.custom-report {
-	width: 100% !important;
+table.custom-report > thead > tr > th {
+	font-size: 12px;
+	padding: 5px;
 }
-
-table.custom-report tr td {
+table.custom-report > tbody > tr > td {
 	font-size: 10px;
 	padding: 5px;
 }
-
-table.custom-report .heading {
-	background-color: #036; color:#FFF; font-size: 13px;
-	text-transform: uppercase;
-	font-weight: bolder;
+table.custom-report.navy > thead > tr.heading {
+	background-color: #036 !important; color:#FFF;
 }
-table.custom-report .heading th {
-	font-size: 12px;
-	padding: 5px 10px;
-}
-
-table.custom-report .label-section {
-	background-color: #ccc; color:#333; font-size: 12px;
+table.custom-report.navy > tfoot > tr.footer {
+	background-color: #ddd !important;
 }
