@@ -7,7 +7,7 @@
   * {
     text-shadow: none !important;
     color: #000 !important;
-    background: transparent !important;
+    background-color: transparent !important;
     box-shadow: none !important;
   }
 
@@ -91,7 +91,7 @@
 
   .table td,
   .table th {
-    background-color: #fff !important;
+    background-color: #fff;
   }
   .btn > .caret,
   .dropup > .btn > .caret {
@@ -173,4 +173,28 @@
   {
       display: none !important;
   }
+
+  /* custome report colorized */
+  table.custom-report {
+    -webkit-print-color-adjust: exact;
+  }
+  table.custom-report > thead > tr > th {
+    font-size: 11px;
+    padding: 5px;
+  }
+  table.custom-report > tbody > tr > td {
+    font-size: 10px;
+    padding: 5px;
+  }
+  table.custom-report.navy > thead > tr.heading,
+  table.custom-report.navy .very-important {
+    background-color: #ccc !important;
+  }
+  table.custom-report.navy > tfoot > tr.footer {
+    background-color: #ddd !important;
+  }
+  table.custom-report.navy .important {
+    background-color: #efefef !important;
+  }
+
 }

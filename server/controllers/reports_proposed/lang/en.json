@@ -46,7 +46,17 @@
 		"TOTAL_GENERAL"         : "TOTAL GENERAL",
 		"PROFIT"                : "Profit",
 		"DATE"                  : "Date : ",
-		"TOTAL"                 : "TOTAL"
+		"TOTAL"                 : "TOTAL",
+		"RUBRICS"               : "Rubriques",
+		"DESCRIPTION"           : "Description",
+		"MARGE_MARCHANDISE"     : "MARGE BRUTE ON STOCK",
+		"MARGE_MARCHANDISE_DESC" : "If positive, the enterprise is able to cover expenses relative to the drug purchase (in pill, box, sirop, ...) by the sale of these drugs.",
+		"MARGE_MATIERE"         : "MARGE BRUTE ON MATIERE",
+		"MARGE_MATIERE_DESC"    : "If positive, the enterprise was able to cover expenses relatives to furnitures purchases (Nursing et office), by saling services.",
+		"VALEUR_AJOUTEE"        : "VALEUR AJOUTEE",
+		"VALEUR_AJOUTEE_DESC"   : "Express the capacit of the enterprise to create richness, represente also what the enterprise have to supporte employee charge.",
+		"EXCEDENT_BRUT"         : "EXCEDENT BRUT D'EXPLOITATION",
+		"EXCEDENT_BRUT_DESC"    : "If positive, the enterprise is able to cover the employee charge by his valeur ajoutee"
 	},
 
 	"EMPLOYEE_STATE" : {
@@ -93,7 +103,8 @@
 	  "ACCOUNTING_DEPT" : "Accounting Department",
 	  "BILLING_OFFICE" :  "Office of Billing",
 	  "NO_DATA" : "No data found for the give fiscal year!",
-	  "TOTAL" : "Total"
+	  "TOTAL" : "Total",
+	  "ANNUAL_MOVEMENT" : "Annual movement"
 	},
 
 	"VARIATION_EXPLOITATION" : {

@@ -41,3 +41,8 @@ client/src/upload/
 #ignore utilitie folfer
 
 utilities/*
+
+#ignore cmd and plugins folders
+
+cmd/
+plugins/

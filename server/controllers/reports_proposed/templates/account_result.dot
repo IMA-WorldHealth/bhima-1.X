@@ -22,8 +22,8 @@
           <tr>
             <th>{{=it.i18nAccountResult.REFERENCE}}</th>
             <th>{{=it.i18nAccountResult.CHARGE}}</th>
-            <th>Exercice N</th>
-            {{~it.previous : data : i}} <th>Ex. N-{{=i+1}}</th> {{~}}            
+            <th>Exercice {{=it.options.fy_txt}}</th>
+            {{~it.previous : data : i}} <th>Exercice {{=data.charges[0].fiscal}}</th> {{~}}            
           </tr>
         </thead>
         <tbody>
@@ -60,8 +60,8 @@
           <tr>
             <th>{{=it.i18nAccountResult.REFERENCE}}</th>
             <th>{{=it.i18nAccountResult.PROFIT}}</th>
-            <th>Exercice N</th>
-            {{~it.previous : data : i}} <th>Ex. N-{{=i+1}}</th> {{~}}            
+            <th>Exercice {{=it.options.fy_txt}}</th>
+            {{~it.previous : data : i}} <th>Exercice {{=data.produits[0].fiscal}}</th> {{~}}            
           </tr>
         </thead>
         <tbody>
@@ -98,6 +98,37 @@
                 {{?}}                
               {{~}}            
           {{~}}          
+        </tbody>
+      </table>
+
+    <!-- description -->
+      <table class="clean-table" border="1">
+        <thead>
+          <tr>
+            <th width="35%">{{=it.i18nAccountResult.RUBRICS}}</th>
+            <th>{{=it.i18nAccountResult.DESCRIPTION}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>{{=it.i18nAccountResult.MARGE_MARCHANDISE}}</th>
+            <td>{{=it.i18nAccountResult.MARGE_MARCHANDISE_DESC}}</td>
+          </tr> 
+
+          <tr>
+            <th>{{=it.i18nAccountResult.MARGE_MATIERE}}</th>
+            <td>{{=it.i18nAccountResult.MARGE_MATIERE_DESC}}</td>
+          </tr>
+
+           <tr>
+            <th>{{=it.i18nAccountResult.VALEUR_AJOUTEE}}</th>
+            <td>{{=it.i18nAccountResult.VALEUR_AJOUTEE_DESC}}</td>
+          </tr> 
+
+          <tr>
+            <th>{{=it.i18nAccountResult.EXCEDENT_BRUT}}</th>
+            <td>{{=it.i18nAccountResult.EXCEDENT_BRUT_DESC}}</td>
+          </tr>          
         </tbody>
       </table>
   </section>

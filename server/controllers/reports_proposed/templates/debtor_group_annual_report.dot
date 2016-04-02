@@ -22,12 +22,13 @@
       <tr class="text-uppercase">
         <th rowspan="2">{{= it.i18n.ACCOUNT_NUMBER }}</th>
         <th rowspan="2">{{= it.i18n.DESIGNATION }}</th>
-        <th colspan="2">{{= it.i18n.BALANCE }} {{= it.meta.openingDate }}</th>
-        <th rowspan="2">{{= it.i18n.BILLED }}</th>
-        <th rowspan="2">{{= it.i18n.PAID }}</th>
+        <th colspan="2">{{= it.i18n.BALANCE }} {{= it.meta.openingDate }}</th>        
+        <th colspan="2">{{= it.i18n.ANNUAL_MOVEMENT }}</th>
         <th rowspan="2">{{= it.i18n.BALANCE }}<br /> {{= it.meta.stop }}</th>
       </tr>
       <tr class="text-uppercase">
+        <th>{{= it.i18n.DEBIT }}</th>
+        <th>{{= it.i18n.CREDIT }}</th>
         <th>{{= it.i18n.DEBIT }}</th>
         <th>{{= it.i18n.CREDIT }}</th>
       </tr>

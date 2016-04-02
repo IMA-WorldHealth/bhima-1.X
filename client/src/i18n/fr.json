@@ -181,12 +181,12 @@
    "CLASS"               : "Classe",
    "INFO_FILL_INPUT"     : "Veuillez selectionner la periode et la classe",
    "LABEL"               : "Intitulé",
-   "MONTH_MOVEMENT"      : "Mouvement du mois",
+   "MONTH_MOVEMENT"      : "Mouvement",
    "NEW_SOLD"            : "Nouveau Solde",
    "NO_DATA"             : "Il n'y a pas des donnees pour la periode!",
    "OLD_SOLD"            : "Ancien Solde",
-   "REPORT"              : "Rapport Balance Mensuelle",
-   "TITLE"               : "Balance Mensuelle par Classe"
+   "REPORT"              : "Rapport Balance",
+   "TITLE"               : "Balance"
    },
 "BILAN" : {
   "BUILD_BILAN"     : "Génération bilan",
@@ -866,6 +866,24 @@
    "SYMBOL_TXT"    : "La signe qui va demarquer le monaie",
    "TITLE"         : "Gestion des Monaies"
    },
+"CUSTOMER" : {
+    "ALL_DEBTOR_GROUPS" : "Tous les groupes debiteurs",
+    "DEBT"              : "Dettes",
+    "DEBT_REPORT"       : "Rapport de dettes des clients",
+    "DEBTOR_GROUP"      : "Groupe Debiteur",
+    "DEFINE_UNTIL_DATE" : "Definir une date limite",
+    "LESS_THREE_MONTH"  : "Dettes de moins de trois mois",
+    "NO_DATA"           : "Aucune données trouvées",
+    "OVER_SIX_MONTH"    : "Dettes entre 6 mois et 1 année",
+    "OVER_THREE_MONTH"  : "Dettes entre 3 et 6 mois",
+    "OVER_YEAR"         : "Dettes de plus d'une année",
+    "OVER_YEAR"         : "Debts of more than a year",
+    "QUARTER_ONE"       : "0 - 90 jours",
+    "QUARTER_TWO"       : "91 - 180 jours",
+    "QUARTER_THREE"     : "181 - 365 jours",
+    "QUARTER_FOUR"      : "+365 jours",
+    "UNTIL_DATE"        : "jusqu’à la date"
+  },
 "DAILY_CONSUMPTION": {
    "ALL_PROJECTS"       : "Tous les projets",
    "CONFIGURE_REPORT"   : "Configuration du rapport : Consommation journaliere",
@@ -1903,7 +1921,7 @@
    "TITLE"              : "Etat Financier du Patient"
    },
 "PATIENT_VISIT" : {
-  "CASES"            : "Cas",
+  "PATIENT"          : "Patient",
   "DATE"             : "Visite Date",
   "DETAILS"          : "Details",
   "FILE_NR"          : "Numero Fiche",
@@ -1912,9 +1930,9 @@
   "GROUP_BY_DAY"     : "Jours",
   "LEGEND"           : "Legend",
   "NAME"             : "Nom",
-  "NEW_CASES"        : "Nouveaux cas",
+  "NEW_PATIENT"        : "Nouveaux patient",
   "NEW_VISIT_SAVED"  : "Nouvelle visite enregistrée",
-  "OLD_CASES"        : "Anciens cas",
+  "OLD_PATIENT"        : "Anciens patient",
   "REGISTER_VISIT"   : "Enregistrer Visite",
   "TITLE"            : "Visitations Patients"
 },
@@ -2999,7 +3017,7 @@
    "ALL_TRANSACTIONS"          : "Toutes les Transactions",
    "AUTHORIZE_PURCHASE"        : "Authorisation",
    "AUXILLARY_CASH_RECORD"     : "Historique Caisse Auxilliaire",
-   "BALANCE_MENSUELLE"         : "Balance Mensuelle",
+   "BALANCE_MENSUELLE"         : "Balance",
    "BALANCE_SHEET"             : "Feuille de Balance",
    "BENEFICIARY"               : "Bénéficiaire",
    "BILAN"                     : "Bilan",
@@ -3015,6 +3033,7 @@
    "CAUTION"                   : "Paiement Anticipatif",
    "CHART_OF_ACCOUNTS"         : "Plan Comptable",
    "CLIENT"                    : "Client",
+   "CUSTOMER_DEBT_REPORT"      : "Créances des clients",
    "SECTION_RESULTAT"          : "Section Resultat",
    "COMPTE_RESULTAT"           : "Compte Resultat",
    "CONFIG_ACCOUNTING"         : "Configuration Comptes",
@@ -3139,7 +3158,8 @@
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions par Compte",
    "UPDATE_STOCK"              : "Mettre à Jour les Stocks",
    "USERS"                     : "Utilisateurs",
-   "VALIDATE_PURCHASE"         : "Validation"
+   "VALIDATE_PURCHASE"         : "Validation",
+   "CUSTOMER_DEBT"             : "Dette client par plage date"
    },
 "TRIAL_BALANCE": {
    "ACCOUNT"          : "Compte",

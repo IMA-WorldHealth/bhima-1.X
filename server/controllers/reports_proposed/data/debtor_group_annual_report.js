@@ -12,6 +12,7 @@
 
 var db      = require('../../../lib/db');
 var numeral = require('numeral');
+var q       = require('q');
 
 // takes in a date object, spits out
 // dd-MM-yyyy format
@@ -37,7 +38,6 @@ exports.compile = function (options) {
   'use strict';
 
   var sql,
-      params = {},
       context = {},
       fiscalYearId = options.fy;
 
@@ -74,7 +74,7 @@ exports.compile = function (options) {
   })
   .then(function (rows) {
 
-    // this will not be null, since it is a join.
+    // this will not be null, since it is a join. (realy ???)
     var year = rows[0];
 
     if (year.stop === null) {
@@ -102,7 +102,7 @@ exports.compile = function (options) {
     // reduce the accounts into a single account object with properties for beginning balance,
     // credits, debits, and closing balance
     context.accounts = accounts.reduce(function (object, account) {
-      var id = account.number;
+      var id = account.account_number;
 
       object[id] = {};
       object[id].openingCredits = account.credit;
@@ -142,27 +142,13 @@ exports.compile = function (options) {
       var ref = context.accounts[a.account_number];
       ref.debits = a.debit;
       ref.credits = a.credit;
+
+      ref.closingBalance = (ref.openingDebits + ref.debits) - (ref.openingCredits + ref.credits);
     });
 
-    // get the ending balance (movements + beginning balances)
-    sql =
-      'SELECT account.id, account.account_number, dg.name, ' +
-        'SUM(IFNULL(pt.debit, 0) - IFNULL(pt.credit, 0)) AS balance ' +
-      'FROM debitor_group AS dg JOIN account ON account.id = dg.account_id ' +
-      'LEFT JOIN period_total AS pt ON dg.account_id = pt.account_id ' +
-      'JOIN period AS p ON pt.period_id = p.id ' +
-      'WHERE p.period_stop <= DATE(?) ' +
-      'GROUP BY account.id;';
-
-    return db.exec(sql, [context.meta.stopDate]);
+    return q.when(accounts);
   })
   .then(function (accounts) {
-
-    // put in the closing balances
-    accounts.forEach(function (account) {
-      var ref = context.accounts[account.account_number];
-      ref.closingBalance = account.balance;
-    });
 
     // record the size of the accounts object (number of accounts)
     context.meta.size = Object.keys(context.accounts).length;
@@ -179,7 +165,11 @@ exports.compile = function (options) {
     // loop through accounts and sum up all the balances
     context.totals = Object.keys(context.accounts).reduce(function (totals, account) {
       // pull in the account information
-      var a = context.accounts[account];
+      var a = context.accounts[account];   
+
+      if(!a.debits) {a.debits = 0};
+      if(!a.credits) {a.credits = 0}; 
+      if(!a.closingBalance) {a.closingBalance = (a.openingDebits + a.debits) - (a.openingCredits + a.credits);}
 
       // loop through the account's properties, adding up each to the aggregate
       Object.keys(totals).forEach(function (k) {

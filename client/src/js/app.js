@@ -733,10 +733,6 @@ function bhimaconfig($routeProvider) {
     controller : 'configureEmployeeState',
     templateUrl : 'partials/reports_proposed/employee_state/employee_state.html'
   })
-  .when('/reports/liquidity_flow/', {
-    controller : 'liquidityFlowReportController as ReportCtrl',
-    templateUrl : 'partials/reports/liquidity_flow/liquidity_flow.html'
-  })
   .when('/reports/cash_flow/', {
     controller : 'cashFlowReportController as ReportCtrl',
     templateUrl : 'partials/reports/cash_flow/cash_flow.html'
@@ -753,6 +749,12 @@ function bhimaconfig($routeProvider) {
   })
   .when('/dashboards/finance', {
     templateUrl : 'partials/dashboard/finance.html'
+  })
+
+  /** customer debt */
+  .when('/reports/customer_debt', {
+    controller : 'CustomerDebtController as ReportCtrl',
+    templateUrl : '/partials/reports/customer_debt/customer_debt.html'
   })
   .otherwise({ redirectTo : '/' });
 }

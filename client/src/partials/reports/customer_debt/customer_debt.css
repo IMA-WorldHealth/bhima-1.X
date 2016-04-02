@@ -1,0 +1,14 @@
+table.custom-report > thead > tr > th {
+	font-size: 12px;
+	padding: 5px;
+}
+table.custom-report > tbody > tr > td {
+	font-size: 10px;
+	padding: 5px;
+}
+table.custom-report.navy > thead > tr.heading {
+	background-color: #036 !important; color:#FFF;
+}
+table.custom-report.navy > tfoot > tr.footer {
+	background-color: #ddd !important;
+}

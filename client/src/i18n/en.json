@@ -180,12 +180,12 @@
    "CLASS"               : "Class",
    "INFO_FILL_INPUT"     : "Please select period and class",
    "LABEL"               : "Label",
-   "MONTH_MOVEMENT"      : "Month Movement",
+   "MONTH_MOVEMENT"      : "Movement",
    "NEW_SOLD"            : "New Balance",
    "NO_DATA"             : "There is no data for that period!",
    "OLD_SOLD"            : "Old Balance",
-   "REPORT"              : "Monthly Balance Report",
-   "TITLE"               : "Monthly Balance by Class"
+   "REPORT"              : "Balance",
+   "TITLE"               : "Balance"
    },
 "BILAN" : {
   "BUILD_BILAN"     : "Build bilan",
@@ -865,6 +865,23 @@
    "SYMBOL_TXT"    : "the symbol with which the currency is identified and rendered.  Appears after the amount",
    "TITLE"         : "Currency Management"
    },
+"CUSTOMER" : {
+    "ALL_DEBTOR_GROUPS" : "All Debtor Groups",
+    "DEBT"              : "Debts",
+    "DEBT_REPORT"       : "Customer Debts Report",
+    "DEBTOR_GROUP"      : "Debtor Groups",
+    "DEFINE_UNTIL_DATE" : "Define a limit date",
+    "NO_DATA"           : "No data found",
+    "LESS_THREE_MONTH"  : "Debts of less than three months",
+    "OVER_SIX_MONTH"    : "Debts between 6 months and 1 year",
+    "OVER_THREE_MONTH"  : "Debts between 3 and 6 months",
+    "OVER_YEAR"         : "Debts of more than a year",
+    "QUARTER_ONE"       : "0 - 90 days",
+    "QUARTER_TWO"       : "91 - 180 days",
+    "QUARTER_THREE"     : "181 - 365 days",
+    "QUARTER_FOUR"      : "+365 days",
+    "UNTIL_DATE"        : "Until the date"
+  },
 "DAILY_CONSUMPTION": {
    "ALL_PROJECTS"       : "All Projects",
    "CONFIGURE_REPORT"   : "Configure report : Daily Consumption",
@@ -1901,7 +1918,7 @@
    "TITLE"              : "Patient Standing Report"
    },
 "PATIENT_VISIT" : {
-   "CASES"            : "Cases",
+   "PATIENT"            : "Patient",
    "DATE"             : "Date Visite",
    "DETAILS"          : "Details",
    "FILE_NR"          : "File Number",
@@ -1910,9 +1927,9 @@
    "GROUP_BY_DAY"     : "Days",
    "LEGEND"           : "Legend",
    "NAME"             : "Nom",
-   "NEW_CASES"        : "New Cases",
+   "NEW_PATIENT"        : "New patient",
    "NEW_VISIT_SAVED"  : "New of visitation of the patient registered",
-   "OLD_CASES"        : "Old Cases",
+   "OLD_PATIENT"        : "Old patient",
    "REGISTER_VISIT"   : "Register Visit",
    "TITLE"            : "Patients Visit"
  },
@@ -2995,7 +3012,7 @@
    "ALL_TRANSACTIONS"          : "All Transactions",
    "AUTHORIZE_PURCHASE"        : "Authorization",
    "AUXILLARY_CASH_RECORD"     : "Auxillary Cash Records",
-   "BALANCE_MENSUELLE"         : "Monthly balance",
+   "BALANCE_MENSUELLE"         : "Balance",
    "BALANCE_SHEET"             : "Balance sheet",
    "BENEFICIARY"               : "Beneficaries",
    "BILAN"                     : "Bilan",
@@ -3023,6 +3040,7 @@
    "CREDITOR_GRP"              : "Creditor Group",
    "CREDIT_NOTE"               : "Credit note",
    "CURRENCY"                  : "Currency",
+   "CUSTOMER_DEBT_REPORT"      : "Customers Debts",
    "DAILY_CONSUMPTION"         : "Daily Consumption",
    "DASHBOARD" : {
       "FINANCE" : "Finance Dashboard",
@@ -3135,7 +3153,8 @@
    "TRANSACTIONS_BY_ACCOUNT"   : "Transactions by Account",
    "UPDATE_STOCK"              : "Update stock",
    "USERS"                     : "Users",
-   "VALIDATE_PURCHASE"         : "Validation"
+   "VALIDATE_PURCHASE"         : "Validation",
+   "CUSTOMER_DEBT"             : "Client debt by plage date"
    },
 "TRIAL_BALANCE": {
    "ACCOUNT"          : "Account",
