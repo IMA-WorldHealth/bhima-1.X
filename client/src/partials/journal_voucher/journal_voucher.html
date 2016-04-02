@@ -132,7 +132,7 @@
                           class="form-bhima"
                           ng-switch-when='D'
                           ng-model="row.entity"
-                          typeahead="debtor as debtor.text for debtor in TableCtrl.debtors | filter:$viewValue | limitTo:20"
+                          typeahead="debtor as debtor.text for debtor in TableCtrl.debtors | filter:$viewValue | limitTo:50"
                           typeahead-on-select="TableCtrl.setDebtorOrCreditor(row)"
                           typeahead-template-url="entityListItem.tmpl.html"
                           placeholder="{{ 'SELECT.DEB_CRED' | translate }}"
