@@ -2,8 +2,8 @@
 -- By: Bruce M.
 -- Date: 2016-03-16
 
-INSERT INTO `unit` (`id`, `name`, `key`, `parent`, `url`, `path`) VALUES
-(140, "Cashflow Report", "TREE.CASH_FLOW", 128, "/partials/reports/cash_flow/", "/reports/cash_flow/");
+-- INSERT INTO `unit` (`id`, `name`, `key`, `parent`, `url`, `path`) VALUES
+-- (140, "Cashflow Report", "TREE.CASH_FLOW", 128, "/partials/reports/cash_flow/", "/reports/cash_flow/");
 
 -- Fix deprecated functionalities
 -- NOTA : BE SURE THE DATABASE IS THE SAME
@@ -102,3 +102,13 @@ WHERE `origin_id` IN (4, 5) AND `description` LIKE '%REMBOUR_C.P%';
 UPDATE `general_ledger` SET `origin_id` = 27 
 WHERE `origin_id` IN (4, 5) AND `description` LIKE '%REMBOUR_C.P%';
 
+
+-- Caisse principale HBB USD (account_id = 2939)
+-- Caisse principale HBB CDF (account_id = 2935)
+-- Caisse principale BCDC USD (account_id = 2923)
+-- Move to journal voucher (origin_id = 5)
+UPDATE `posting_journal` SET `origin_id` = 5 
+WHERE `origin_id` = 4 AND YEAR(`trans_date`) = "2015" AND account_id IN (2939, 2935, 2923);
+
+UPDATE `general_ledger` SET `origin_id` = 5 
+WHERE `origin_id` = 4 AND YEAR(`trans_date`) = "2015" AND account_id IN (2939, 2935, 2923);
