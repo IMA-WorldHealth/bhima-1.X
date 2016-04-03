@@ -86,6 +86,7 @@ angular.module('bhima.controllers')
     function generateDocument() {
 
       var path = $scope.session.ohada_structure === 1 ? '/report/build/bilan' : '/report/build/bilan_inline';
+
       var configurationObject = {};
 
       // Temporarily set configuration options - This shouldn't be manually compiled
@@ -97,6 +98,11 @@ angular.module('bhima.controllers')
       configurationObject.parentIds = $scope.session.parents.map(function (item){
         return item.id;
       });
+
+      if($scope.session.ohada_structure === 0) {
+
+        configurationObject.parentIds.sort(function (a, b){ return a-b;});
+      }
 
       // Update state
       session.building = true;

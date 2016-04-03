@@ -88,7 +88,7 @@
 
     <!-- passive side -->
 
-      <table class="clean-table bilan-group-reference" border="1">
+      <table class="clean-table" border="1">
         <thead>
           <tr>
             <th>{{=it.i18nBilan.REFERENCE}}</th>
@@ -127,8 +127,8 @@
               {{~}}
               <tr class="text-center gray-line">
                 <th></th>
-                <th>{{=it.i18nBilan.TOTAL}} {{=section.sectionBilanLabel}}</b></th>
-                <th>{{=section.totalNet_view}}</b></td>
+                <th>{{=it.i18nBilan.TOTAL}} {{=section.sectionBilanLabel}}</th>
+                <th>{{=section.totalNet_view}}</th>
                 {{~it.previous : data : i}} <th class="text-center">{{=section['totalPreviousNet_view' + i]}}</th> {{~}}
               </tr>
           {{~}}
