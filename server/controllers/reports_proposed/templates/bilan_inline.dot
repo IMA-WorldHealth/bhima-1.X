@@ -1,0 +1,135 @@
+<head>
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/normalize.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/skeleton.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/reports.css">
+  <meta charset="utf-8" />
+</head>
+
+<body>
+inline
+  <hgroup class="text-uppercase">
+      <h6>{{=it.options.enterprise.name}}</h6>
+      <h6>{{=it.i18nBilan.ACCOUNTING_DEPT }}</h6>      
+  </hgroup>
+
+  <h6 class="clean-title">
+    {{=it.i18nBilan.TITLE}} {{=it.options.fy_txt}}
+  </h6>
+
+  <section>
+    <!-- asset side -->
+      <table class="clean-table" border="1">
+        <thead>
+          <tr>
+            <th>{{=it.i18nBilan.ACTIF}}</th>
+            {{~it.previous : data : i}} <th>Exercice {{=data.assets[0].fiscal}}</th> {{~}}            
+            <th>Exercice {{=it.options.fy_txt}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{~it.assetSide : section : ind1}}
+            <tr>
+              <th>{{=section.sectionBilanLabel}}</th>
+              <th colspan="{{=1+it.previous.length}}"></th>
+            </tr>
+
+              {{~section.grefs : gref : ind2}}
+                <tr>
+                  <th class="bilan-group-reference">{{=gref.greferenceLabel}}</th>
+                  <th colspan="{{=1+it.previous.length}}"></th>
+                </tr>
+                  {{~gref.refs : ref : ind3}}
+                    <tr>
+                      <td>{{=ref.referenceLabel}}</td>
+                      <td class="text-center">{{=ref.brut_view}}</td>
+                      {{~it.previous : data : i}} <td class="text-center">{{=ref.brut_view}}</td> {{~}}
+                    </tr>
+                    
+                    <tr>
+                      <td>{{=it.i18nBilan.AMORT_PROV}}</td>                    
+                      <td class="text-center">{{=ref.amort_prov_view}}</td>
+                      {{~it.previous : data : i}} <td class="text-center">{{=ref.amort_prov_view}}</td> {{~}}                       
+                    </tr>
+
+                    <tr>
+                      <td>{{=it.i18nBilan.NET}}</td>
+                      <td class="text-center">{{=ref.net_view}}</td>
+                      {{~it.previous : data : i}} <td class="text-center">{{=ref['previousNet_view' + i]}}</td> {{~}}                       
+                    </tr>                    
+                  {{~}}
+                <tr class="text-center gray-line">
+                  <th>{{=it.i18nBilan.TOTAL}} {{=gref.greferenceLabel}}</th>
+                  <th>{{=gref.totalNet_view}}</th>
+                  {{~it.previous : data : i}} <th>{{=gref['totalPreviousNet_view' + i]}}</th> {{~}}
+                </tr>
+              {{~}}
+              <tr class="text-center gray-line">
+                <th>{{=it.i18nBilan.TOTAL}} {{=section.sectionBilanLabel}}</th>
+                <th>{{=section.totalNet_view}}</th>
+                {{~it.previous : data : i}} <th>{{=section['totalPreviousNet_view' + i]}}</th> {{~}}
+              </tr>
+          {{~}}
+          <tr class="text-center gray-line">
+            <th>{{=it.i18nBilan.TOTAL_GENERAL}}</th>
+            <th>{{=it.assetGeneralNet}}</th>
+            {{~it.previous : data : i}} <th>{{=it['assetGeneralPreviousNet' + i]}}</th> {{~}}
+          </tr>
+        </tbody>
+      </table>
+
+    <!-- passive side -->
+
+      <table class="clean-table bilan-group-reference" border="1">
+        <thead>
+          <tr>
+            <th>{{=it.i18nBilan.REFERENCE}}</th>
+            <th>{{=it.i18nBilan.PASSIF}}</th>
+            <th>Exercice {{=it.options.fy_txt}}</th>
+            {{~it.previous : data : i}} <th>Exercice {{=data.passifs[0].fiscal}}</th> {{~}}  
+          </tr>
+        </thead>
+        <tbody>
+          {{~it.passiveSide : section : ind1}}
+            <tr>
+              <th></th>
+              <th>{{=section.sectionBilanLabel}}</th>
+              <th colspan="{{=1+it.previous.length}}"></th>
+            </tr>
+              {{~section.grefs : gref : ind2}}
+                <tr>
+                  <th>{{=gref.greferenceAbbr}}</th>
+                  <th class="bilan-group-reference">{{=gref.greferenceLabel}}</th>
+                  <th colspan="{{=1+it.previous.length}}"></th>
+                </tr>
+                  {{~gref.refs : ref : ind3}}
+                    <tr>
+                      <td class="text-center">{{=ref.referenceAbbr}}</td>
+                      <td>{{=ref.referenceLabel}}</td>
+                      <td class="text-center">{{=ref.net_view}}</td>
+                      {{~it.previous : data : i}} <td class="text-center">{{=ref['previousNet_view' + i]}}</td> {{~}}                       
+                    </tr>
+                  {{~}}
+                  <tr class="text-center gray-line">
+                    <th></th>
+                    <th>{{=it.i18nBilan.TOTAL}} {{=gref.greferenceLabel}}</th>
+                    <th>{{=gref.totalNet_view}}</th>
+                    {{~it.previous : data : i}} <th class="text-center">{{=gref['totalPreviousNet_view' + i]}}</th> {{~}}
+                  </tr>
+              {{~}}
+              <tr class="text-center gray-line">
+                <th></th>
+                <th>{{=it.i18nBilan.TOTAL}} {{=section.sectionBilanLabel}}</b></th>
+                <th>{{=section.totalNet_view}}</b></td>
+                {{~it.previous : data : i}} <th class="text-center">{{=section['totalPreviousNet_view' + i]}}</th> {{~}}
+              </tr>
+          {{~}}
+          <tr class="text-center gray-line">
+            <th></th>
+            <th>{{=it.i18nBilan.TOTAL_GENERAL}}</th>
+            <th>{{=it.passiveGeneralNet}}</th>
+            {{~it.previous : data : i}} <th class="text-center">{{=it['passiveGeneralPreviousNet' + i]}}</th> {{~}}
+          </tr>
+        </tbody>
+      </table>
+  </section>
+</body>
