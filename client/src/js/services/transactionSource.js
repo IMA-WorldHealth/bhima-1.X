@@ -1,7 +1,7 @@
 angular.module('bhima.services')
 .service('transactionSource', ['$translate', function ($translate) {
   var sources = {
-      'group_deb_invoice'     : 'CASH.FLOW.GROUP_DEB_INVOICE',
+      'accounting'            : 'CASH.FLOW.GROUP_DEB_INVOICE',
       'pcash_convention'      : 'CASH.FLOW.CONVENTION_PAYMENT',
       'pcash_transfert'       : 'CASH.FLOW.PATIENT_PAYMENT',
       'generic_income'        : 'CASH.FLOW.GENERIC_INCOME',
@@ -11,7 +11,10 @@ angular.module('bhima.services')
       'cash_return'           : 'CASH.FLOW.CASH_RETURN',
       'cotisation_paiement'   : 'CASH.FLOW.COTISATION_PAYMENT',
       'tax_payment'           : 'CASH.FLOW.TAX_PAYMENT',
-      'salary_advance'        : 'CASH.FLOW.SALARY_ADVANCE'
+      'salary_advance'        : 'CASH.FLOW.SALARY_ADVANCE',
+      'import_automatique'    : 'CASH.FLOW.IMPORT_AUTO',
+      'cash'                  : 'CASH.FLOW.CASH',
+      'journal'               : 'CASH.FLOW.JOURNAL'
     };
 
   this.mappingText = function (text) {
