@@ -2,7 +2,8 @@
 'use strict';
 
 var q  = require('q'),
-		db = require('../lib/db');
+		db = require('../lib/db'),
+		util = require('../lib/util');
 
 module.exports = {
 	liquidityReport : liquidityflowReport,
@@ -153,16 +154,30 @@ function closingBalance(accountId, periodStart) {
 	    '(' + 
 	    	'SELECT `debit_equiv`, `credit_equiv`, `account_id`, `currency_id` ' + 
 	    	'FROM `posting_journal` ' + 
-	    	'WHERE `account_id` = ? AND `trans_date` < ? ' +
+	    	'WHERE `account_id` = ? AND `fiscal_year_id` = ? ' +
 	    ') UNION ALL (' + 
 	    	'SELECT `debit_equiv`, `credit_equiv`, `account_id`, `currency_id` ' + 
 	    	'FROM `general_ledger` ' + 
-	    	'WHERE `account_id` = ? AND `trans_date` < ? ' +
+	    	'WHERE `account_id` = ? AND `fiscal_year_id` = ? ' +
 	    ')' + 
 	  ') as `t` ' +
     'GROUP BY `account_id`';
 
-  return db.exec(query, [accountId, periodStart, accountId, periodStart]);
+    return getFiscalYear(periodStart)
+    .then(function (rows) {
+    	var fy = rows[0];
+
+    	return db.exec(query, [accountId, fy.previous_fiscal_year, accountId, fy.previous_fiscal_year]);
+    });
+}
+
+function getFiscalYear(date) {
+	var query = 
+		'SELECT fy.id, fy.previous_fiscal_year FROM fiscal_year fy ' + 
+		'JOIN period p ON p.fiscal_year_id = fy.id ' + 
+		'WHERE ? BETWEEN p.period_start AND p.period_stop';
+	date = util.toMysqlDate(date);
+	return db.exec(query, [date]);
 }
 
 /**
