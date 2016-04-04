@@ -75,7 +75,7 @@
           <table class="custom-report navy table table-stripped table-hover table-bordered">
             <thead>
               <tr class="heading">
-                <th colspan="2">
+                <th class="text-left" colspan="2">
                   {{ "CUSTOMER.DEBT" | translate }} 
                   <span ng-show="ReportCtrl.selectedGroup && !ReportCtrl.allDebtorGroup">
                     <strong>{{ ReportCtrl.selectedGroup.name }}</strong>
@@ -95,8 +95,8 @@
               <tr ng-repeat='record in ReportCtrl.session.debtorList | orderBy: "text"'
                 ng-click="ReportCtrl.proof(record, ReportCtrl.session.untilDate)"
                >
-                <td>{{ $index + 1 }}</td>
-                <td><b ng-show="record.reference">[{{ record.reference }}]</b> {{ record.text }}</td>
+                <td class="text-left">{{ $index + 1 }}</td>
+                <td class="text-left"><b ng-show="record.reference">[{{ record.reference }}]</b> {{ record.text }}</td>
                 <td style="background-color: #fee; font-weight: bolder;">
                   {{ record.balance_fourth | currency }}
                 </td>
@@ -118,8 +118,8 @@
               </tr>
             </tbody>
             <tfoot>
-              <tr class="footer text-right">
-                <th colspan="2">{{ "COLUMNS.TOTAL" | translate }}</th>
+              <tr>
+                <th class="text-left" colspan="2">{{ "COLUMNS.TOTAL" | translate }}</th>
                 <th>{{ ReportCtrl.session.totalFourth | currency }}</th>
                 <th>{{ ReportCtrl.session.totalThird | currency }}</th>
                 <th>{{ ReportCtrl.session.totalSecond | currency }}</th>
