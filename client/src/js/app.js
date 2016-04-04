@@ -725,17 +725,9 @@ function bhimaconfig($routeProvider) {
     controller : 'configureResult',
     templateUrl : 'partials/reports_proposed/result_account/result_account.html'
   })
-  .when('/reports/balance/', {
-    controller : 'configureBalance',
-    templateUrl : 'partials/reports_proposed/balance/balance.html'
-  })
   .when('/reports/debtorgroup/annual', {
     controller : 'DebtorGroupAnnualReportController as AnnualCtrl',
     templateUrl : 'partials/reports_proposed/debtor_group/annual.html'
-  })
-  .when('/reports/grand_livre/', {
-    controller : 'configureGrandLivre',
-    templateUrl : 'partials/reports_proposed/grand_livre/grand_livre.html'
   })
   .when('/reports/employee_state/', {
     controller : 'configureEmployeeState',
