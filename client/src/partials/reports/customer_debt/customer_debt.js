@@ -151,10 +151,10 @@ function CustomerDebtController ($q, $http, $location, validate, util, exchange,
       session.totalSecond += item.balance_second;
       session.totalThird  += item.balance_third;
       session.totalFourth += item.balance_fourth;
-      item.total = item.balance_first + item.balance_second + item.balance_third + item.balance_fourth;
+      item.total = item.balance_first + item.balance_second + item.balance_third;
       session.totalLine += item.total;
     });
-    session.totalTotal  = session.totalFirst + session.totalSecond + session.totalThird + session.totalFourth;
+    session.totalTotal  = session.totalFirst + session.totalSecond + session.totalThird;
   }
 
   function reconfigure() {

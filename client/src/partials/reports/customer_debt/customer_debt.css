@@ -9,6 +9,18 @@ table.custom-report > tbody > tr > td {
 table.custom-report.navy > thead > tr.heading {
 	background-color: #036 !important; color:#FFF;
 }
+table.custom-report.navy tr td, 
+table.custom-report.navy tr th {
+	text-align: right;
+	padding-right: 10px;
+}
+table.custom-report .text-left {
+	text-align: left !important;
+	padding-left: 10px;
+}
+table.custom-report .text-center {
+	text-align: center !important;
+}
 table.custom-report.navy > tfoot > tr.footer {
 	background-color: #ddd !important;
 }
