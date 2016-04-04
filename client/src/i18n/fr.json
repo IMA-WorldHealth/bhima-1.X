@@ -294,6 +294,7 @@
       "WAIT_ACCOUNT"       : "Compte d'attente"
     },
     "FLOW" : {
+      "CASH"               : "Caisse",
       "CASH_EXPENSE"       : "Cash Depenses",
       "CASH_INCOME"        : "Cash Recettes",
       "CASH_RETURN"        : "Remboursement",
@@ -303,7 +304,9 @@
       "GENERIC_EXPENSE"    : "Autres Depenses",
       "GENERIC_INCOME"     : "Autres Recettes",
       "GROUP_DEB_INVOICE"  : "Comptabilité",
+      "IMPORT_AUTO"        : "Import Automatique",
       "INDIRECT_PURCHASE"  : "Achats",
+      "JOURNAL"            : "Journal",
       "MONTH_BALANCE"      : "Cash (Balance Mensuelle)",
       "OPENNING_BALANCE"   : "Cash (Balance d'ouverture)",
       "PATIENT_PAYMENT"    : "Paiement des patients",

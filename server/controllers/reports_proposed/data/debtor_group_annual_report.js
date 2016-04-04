@@ -143,7 +143,7 @@ exports.compile = function (options) {
       ref.debits = a.debit;
       ref.credits = a.credit;
 
-      ref.closingBalance = (ref.openingDebits + ref.debits) - (ref.openingCredits + ref.credits);
+      ref.closingBalance = ref.debits - ref.credits;
     });
 
     return q.when(accounts);
@@ -169,7 +169,7 @@ exports.compile = function (options) {
 
       if(!a.debits) {a.debits = 0};
       if(!a.credits) {a.credits = 0}; 
-      if(!a.closingBalance) {a.closingBalance = (a.openingDebits + a.debits) - (a.openingCredits + a.credits);}
+      if(!a.closingBalance) {a.closingBalance = a.debits - a.credits;}
 
       // loop through the account's properties, adding up each to the aggregate
       Object.keys(totals).forEach(function (k) {
