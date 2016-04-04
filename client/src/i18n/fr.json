@@ -295,6 +295,7 @@
       "WAIT_ACCOUNT"       : "Compte d'attente"
     },
     "FLOW" : {
+      "CASH"               : "Caisse",
       "CASH_EXPENSE"       : "Cash Depenses",
       "CASH_INCOME"        : "Cash Recettes",
       "CASH_RETURN"        : "Remboursement",
@@ -304,7 +305,9 @@
       "GENERIC_EXPENSE"    : "Autres Depenses",
       "GENERIC_INCOME"     : "Autres Recettes",
       "GROUP_DEB_INVOICE"  : "Comptabilité",
+      "IMPORT_AUTO"        : "Import Automatique",
       "INDIRECT_PURCHASE"  : "Achats",
+      "JOURNAL"            : "Journal",
       "MONTH_BALANCE"      : "Cash (Balance Mensuelle)",
       "OPENNING_BALANCE"   : "Cash (Balance d'ouverture)",
       "PATIENT_PAYMENT"    : "Paiement des patients",
@@ -879,10 +882,10 @@
     "OVER_THREE_MONTH"  : "Dettes entre 3 et 6 mois",
     "OVER_YEAR"         : "Dettes de plus d'une année",
     "OVER_YEAR"         : "Debts of more than a year",
-    "QUARTER_ONE"       : "0 - 90 jours",
-    "QUARTER_TWO"       : "91 - 180 jours",
-    "QUARTER_THREE"     : "181 - 365 jours",
-    "QUARTER_FOUR"      : "+365 jours",
+    "QUARTER_ONE"       : "Moins de 3 mois",
+    "QUARTER_TWO"       : "3 à 6 Mois",
+    "QUARTER_THREE"     : "Plus de 6 mois",
+    "QUARTER_FOUR"      : "Exercices precedantes",
     "UNTIL_DATE"        : "jusqu’à la date"
   },
 "DAILY_CONSUMPTION": {

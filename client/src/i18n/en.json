@@ -294,6 +294,7 @@
       "WAIT_ACCOUNT"       : "Compte d'attente"
     },
    "FLOW" : {
+     "CASH"               : "Cashbox",
      "CASH_EXPENSE"       : "Cash Outgoing",
      "CASH_INCOME"        : "Cash Incoming",
      "CASH_RETURN"        : "Payback",
@@ -303,7 +304,9 @@
      "GENERIC_EXPENSE"    : "Other Expenses",
      "GENERIC_INCOME"     : "Other Incomes",
      "GROUP_DEB_INVOICE"  : "Accounting",
+     "IMPORT_AUTO"        : "Automatic Import",
      "INDIRECT_PURCHASE"  : "Purchases",
+     "JOURNAL"            : "Journal",
      "MONTH_BALANCE"      : "Cash (Monthly Balance)",
      "OPENNING_BALANCE"   : "Cash on Hand (Openning balance)",
      "PATIENT_PAYMENT"    : "Patients Payemnts",
@@ -877,10 +880,10 @@
     "OVER_SIX_MONTH"    : "Debts between 6 months and 1 year",
     "OVER_THREE_MONTH"  : "Debts between 3 and 6 months",
     "OVER_YEAR"         : "Debts of more than a year",
-    "QUARTER_ONE"       : "0 - 90 days",
-    "QUARTER_TWO"       : "91 - 180 days",
-    "QUARTER_THREE"     : "181 - 365 days",
-    "QUARTER_FOUR"      : "+365 days",
+    "QUARTER_ONE"       : "Less than 3 months",
+    "QUARTER_TWO"       : "Between 3 and 6 months",
+    "QUARTER_THREE"     : "More than 6 months",
+    "QUARTER_FOUR"      : "Previous Exercises",
     "UNTIL_DATE"        : "Until the date"
   },
 "DAILY_CONSUMPTION": {
