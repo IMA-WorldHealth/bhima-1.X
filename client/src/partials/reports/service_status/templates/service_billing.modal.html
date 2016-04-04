@@ -1,0 +1,51 @@
+<div class="modal-content modal-lg square">
+<div class="modal-header bg-warning">
+  <h3 class="modal-title">{{ 'UTIL.MODAL_FIND_RECEIPT' | translate }} <small>{{ serviceName}}</small></h3>
+</div>
+<div class="modal-body" style="height: 400px; overflow: auto;">
+  <div class="form-group">
+    <div class="input-group">
+      <span class="input-group-addon"><span class="glyphicon glyphicon-search"></span></span>
+      <input class="form-control" typeholder="{{ 'UTIL.MODAL_FIND_RECEIPT' | translate }}" type="text" ng-model="searchBox">
+    </div>
+  </div>
+  <table class="reportTable">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>{{ "COLUMNS.TRANSACTION_NUMBER" | translate }}</th>
+        <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
+        <th>{{ "COLUMNS.DATE" | translate }}</th>
+        <th>{{ "COLUMNS.COST" | translate }}</th>
+        <th class="hidden-print">{{ "COLUMNS.ACTION" | translate }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-if="loading">
+        <td colspan="6" class="text-center">
+          <loading-indicator></loading-indicator>
+        </td>
+      </tr>
+      <tr ng-repeat='record in data.data | filter: searchBox'>
+        <td>{{ $index + 1 }}</td>
+        <td>{{ record.reference }}</td>
+        <td>{{ record.note }}</td>
+        <td>{{ record.invoice_date | date }}</td>
+        <td>{{ record.cost | currency: record.currency_id }}</td>
+        <td class="hidden-print" ng-if="!record.primary_cash_uuid">
+          <a ng-click="goto('sale', record.inv_po_id)"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
+        </td>           
+      </tr>
+      <tr ng-if="!data.data.length && !loading">
+        <td class="text-center" colspan="6">
+          <span class="glyphicon glyphicon-stats"></span>
+          {{ "PRIMARY_CASH.REPORT.INCOME.EMPTY_REPORT" | translate }}
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<div class="modal-footer">
+  <button class="btn btn-default" ng-class="{'btn-success': found}" type="button" ng-click="ok()">{{ 'UTIL.MODAL_FINISH' | translate }}</button>
+</div>
+</div>

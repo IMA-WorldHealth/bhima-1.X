@@ -2613,6 +2613,12 @@
    "PROJECT_SELECT"         : "Sélectionner un projet",
    "REGISTER"               : "Enregistrement",
    "REGISTERED"             : "Services enregistrés",
+   "STATUS"                 : {
+      "DETAILS"             : "Details",
+      "FACT_AMOUNT"         : "Montant des factures",
+      "FACT_NUMBER"         : "Nombre des factures",
+      "TITLE"               : "Rapport des factures par service"
+    },
    "SUCCESS_MESSAGE"        : "Insertion avec succès !",
    "TITLE"                  : "Gestion des Services"
    },

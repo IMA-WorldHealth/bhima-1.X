@@ -2608,6 +2608,12 @@
    "PROJECT_SELECT"         : "Selectionner a Project",
    "REGISTER"               : "Registering",
    "REGISTERED"             : "Registered Services",
+   "STATUS"                 : {
+      "DETAILS"             : "Details",
+      "FACT_AMOUNT"         : "Montant des factures",
+      "FACT_NUMBER"         : "Nombre des factures",
+      "TITLE"               : "Billing reports by service"
+    },
    "SUCCESS_MESSAGE"        : "Operation successfully !",
    "TITLE"                  : "Services Management"
    },

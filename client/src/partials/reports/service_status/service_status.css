@@ -1,35 +1,9 @@
-table thead tr th b {
-  font-size: 2em; }
-  
-table tfoot tr td {
-  font-size: 1.4em;
-  font-weight: bold;
-  background-color: #efefef; }
-
-table.cashflow {
-	width: 100% !important;
+.chart-block {
+	page-break-before: always !important;
+	page-break-after: always !important;
+	float: left;
+	margin-left: 25px;
 }
-
-table.cashflow tr td {
-	font-size: 10px;
-	padding: 5px;
-}
-
-table.cashflow .heading {
-	background-color: #036; color:#FFF; font-size: 12px;
-}
-table.cashflow .heading th {
-	font-size: 10px;
-	padding: 5px 10px;
-}
-
-table.cashflow .openning {
-	background-color: #efefef; color:#333; font-size: 11px;
-	font-weight: bolder;
-}
-
-table.cashflow .label-section {
-	background-color: #ccc; color:#333; font-size: 13px;
-	text-transform: uppercase;
-	font-weight: bolder;
+.chart-block.more {
+	margin-left: 50px;
 }
