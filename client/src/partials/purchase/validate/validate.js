@@ -19,7 +19,7 @@ angular.module('bhima.controllers')
           project : { columns : ['abbr'] }
         },
         join : ['purchase.project_id=project.id', 'purchase.purchaser_id=employee.id'],
-        where : ['purchase.paid=0', 'AND', 'purchase.is_direct=0', 'AND', 'purchase.is_donation=0', 'AND', 'purchase.is_authorized=0', 'AND', 'purchase.is_validate=0']
+        where : ['purchase.paid=0', 'AND', 'purchase.is_direct=0', 'AND', 'purchase.is_donation<>1', 'AND', 'purchase.is_authorized<>1', 'AND', 'purchase.is_validate<>1', 'AND', 'is_return<>1']
       }
     };
 
@@ -32,7 +32,7 @@ angular.module('bhima.controllers')
           project : { columns : ['abbr'] }
         },
         join : ['purchase.project_id=project.id', 'purchase.creditor_uuid=supplier.creditor_uuid'],
-        where : ['purchase.is_direct=1', 'AND', 'purchase.is_donation=0', 'AND', 'purchase.is_authorized=0', 'AND', 'purchase.is_validate=0']
+        where : ['purchase.is_direct=1', 'AND', 'purchase.is_donation<>1', 'AND', 'purchase.is_authorized<>1', 'AND', 'purchase.is_validate<>1', 'AND', 'is_return<>1']
       }
     };
 
