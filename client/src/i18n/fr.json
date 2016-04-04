@@ -3141,6 +3141,7 @@
    "SERVICE"                   : "Services",
    "SERVICE_EXPLOITATION"      : "Exploitation Service",
    "SERVICE_STATE"             : "Etat Service",
+   "SERVICE_STATUS"            : "Rapport Factures Service",
    "STOCK"                     : "Stock",
    "STOCK_DASHBOARD"           : "Tableau de bord du Stock",
    "STOCK_DEPOT_REPORT"        : "Stocks Depots",

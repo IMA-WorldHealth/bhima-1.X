@@ -3136,6 +3136,7 @@
    "SERVICE"                   : "Services",
    "SERVICE_EXPLOITATION"      : "Services Status",
    "SERVICE_STATE"             : "Service State",
+   "SERVICE_STATUS"            : "Service Billing Report",
    "STOCK"                     : "Stock",
    "STOCK_DASHBOARD"           : "Stock Dashboard",
    "STOCK_DEPOT_REPORT"        : "Depots Stocks",
