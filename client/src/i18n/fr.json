@@ -194,7 +194,8 @@
   "FISCAL_YEAR"     : "Année Fiscale",
   "LANGUAGE"        : "Langue",
   "GENERATE_DOC"    : "Générer le document",
-  "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document"
+  "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document",
+  "OHADA_STRUCTURE" : "Structure OHADA"
   },
 "BUDGET": {
    "ANALYSIS" : {

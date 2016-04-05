@@ -36,6 +36,10 @@ var documentHandler = {
   bilan : {
     template : dots.bilan,
     context : bilanContext
+  },  
+  bilan_inline : {
+    template : dots.bilan_inline,
+    context  : bilanContext
   },
   grand_livre : {
     template : dots.grand_livre,
