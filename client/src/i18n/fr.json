@@ -304,7 +304,7 @@
       "GENERIC_EXPENSE"    : "Autres Depenses",
       "GENERIC_INCOME"     : "Autres Recettes",
       "GROUP_DEB_INVOICE"  : "Comptabilité",
-      "IMPORT_AUTO"        : "Import Automatique",
+      "IMPORT_AUTO"        : "Reports",
       "INDIRECT_PURCHASE"  : "Achats",
       "JOURNAL"            : "Journal",
       "MONTH_BALANCE"      : "Cash (Balance Mensuelle)",

@@ -33,7 +33,7 @@
         <td>{{ record.invoice_date | date }}</td>
         <td>{{ record.cost | currency: record.currency_id }}</td>
         <td class="hidden-print" ng-if="!record.primary_cash_uuid">
-          <a ng-click="goto('sale', record.inv_po_id)"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
+          <a ng-click="goto('sale', record.uuid)"><span class="glyphicon glyphicon-list-alt"></span> {{'SALERECORD.RECEIPT' | translate}}</a>
         </td>           
       </tr>
       <tr ng-if="!data.data.length && !loading">
