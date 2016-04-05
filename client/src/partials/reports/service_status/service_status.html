@@ -1,0 +1,156 @@
+<div ng-switch="ServiceCtrl.state">
+  <div ng-switch-default>
+    <main>
+      <div class="col-xs-12">
+        <div class="panel panel-default">
+          <div class="panel-heading">
+            <b><span class="glyphicon glyphicon-stats"></span> {{ "REPORT.CONFIGURE_REPORT" | translate }} : </b> 
+            {{ "SERVICE.STATUS.TITLE" | translate }}
+          </div>
+
+          <div class="panel-body">
+
+            <form name="configForm" novalidate>
+
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'COLUMNS.DATE_FROM' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                    <input class="form-bhima" type="date" ng-model="ServiceCtrl.session.dateFrom" rows="20" >
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="control-label col-xs-4 required">
+                  {{ 'COLUMNS.DATE_TO' | translate }}
+                </label>
+                <div>
+                  <div class="pull-left form-group input-group">
+                    <span class="input-group-addon">
+                      <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                    <input class="form-bhima" type="date" ng-model="ServiceCtrl.session.dateTo" rows="20" >
+                  </div>
+                </div>
+              </div>
+
+              <div class="pull-right">
+                <button class="btn btn-sm btn-success" type="button"
+                  ng-click="ServiceCtrl.generate()"
+                  ng-disabled="configForm.$invalid">
+                  {{ "REPORT.GENERATE" | translate }}
+                </button>
+              </div>
+
+            </form>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+  <div ng-switch-when="generate">
+    <header>
+      {{ "SERVICE.STATUS.TITLE" | translate }}:
+      <small>
+        {{ ServiceCtrl.session.dateFrom | date }} - {{ ServiceCtrl.session.dateTo | date }}
+      </small>
+    </header>
+
+    <nav>
+
+      <div class="pull-right">
+        <button class="btn btn-sm btn-default" ng-click="ServiceCtrl.print()">
+          <span class="glyphicon glyphicon-print"></span>
+          {{ "UTIL.PRINT" | translate }}
+        </button>
+
+        <button
+          style="margin-left: 5px;"
+          ng-click="ServiceCtrl.reconfigure()"
+          class="btn btn-sm btn-default pull-right">
+          <span class="glyphicon glyphicon-repeat"></span>
+        </button>
+      </div>
+
+    </nav>
+
+    <div class="report">
+      <div class="reportBody">
+        <div class="reportFrame">
+          <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
+
+          <h4 class="visible-print">
+            {{ "SERVICE.STATUS.TITLE" | translate }}:
+            <small>
+              {{ ServiceCtrl.session.dateFrom | date }} - {{ ServiceCtrl.session.dateTo | date }}
+            </small>
+          </h4>
+
+          <!-- Cashflow report -->
+          <table class="custom-report navy cashflow table table-stripped table-bordered">
+            
+            <thead>
+              <tr class="heading">
+                <th>#</th>
+                <th>{{ 'COLUMNS.SERVICE' | translate }}</th>
+                <th>{{ 'SERVICE.STATUS.FACT_NUMBER' | translate }}</th>
+                <th>{{ 'SERVICE.STATUS.FACT_AMOUNT' | translate }}</th>
+                <th class="hidden-print">{{ 'COLUMNS.ACTION' | translate }}</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              <tr ng-if="ServiceCtrl.session.loading">
+                <td colspan="5" class="text-center"><loading-indicator></loading-indicator></td>
+              </tr>
+              <tr ng-repeat="item in ServiceCtrl.dataList | orderBy: 'service_txt'">
+                <td>{{ $index + 1 }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.nb_facture | number }}</td>
+                <td>{{ item.cost | currency }}</td>
+                <td class="hidden-print">
+                  <a ng-click="ServiceCtrl.openReceipts(item.id)">
+                    <i class="glyphicon glyphicon-list"></i>
+                    {{ 'SERVICE.STATUS.DETAILS' | translate }}
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+
+            <tfoot>
+              <tr>
+                <th colspan="2">{{ 'COLUMNS.TOTAL' | translate }}</th>
+                <th>{{ ServiceCtrl.session.totalFacture | number }}</th>
+                <th>{{ ServiceCtrl.session.totalAmount | currency }}</th>
+                <th></th>
+              </tr>
+            </tfoot>
+
+          </table>
+
+          <!-- count billings charts -->
+          <div class="chart-block">
+            <h3>{{ 'SERVICE.STATUS.FACT_NUMBER' | translate }}</h3>
+            <canvas id="count-chart" width="650" height="400"></canvas>
+          </div>
+          <!-- end count billings charts -->
+
+          <!-- amount billings charts -->
+          <div class="chart-block more">
+            <h3>{{ 'SERVICE.STATUS.FACT_AMOUNT' | translate }}</h3>
+            <canvas id="amount-chart" width="650" height="400"></canvas>
+          </div>
+          <!-- end amount billings charts -->
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

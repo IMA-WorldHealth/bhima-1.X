@@ -756,6 +756,12 @@ function bhimaconfig($routeProvider) {
     controller : 'CustomerDebtController as ReportCtrl',
     templateUrl : '/partials/reports/customer_debt/customer_debt.html'
   })
+
+  /** service status */
+  .when('/reports/service_status', {
+    controller : 'ServiceStatusController as ServiceCtrl',
+    templateUrl : '/partials/reports/service_status/service_status.html'
+  })
   .otherwise({ redirectTo : '/' });
 }
 

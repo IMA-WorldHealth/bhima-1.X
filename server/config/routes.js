@@ -44,7 +44,8 @@ var auth            = require('../controllers/auth'),
     depot           = require('../controllers/depot'),
     budget          = require('../controllers/budget'),
     cashflow        = require('../controllers/cashflow'),
-    customerDebt    = require('../controllers/customer_debt');
+    customerDebt    = require('../controllers/customer_debt'),
+    serviceStatus   = require('../controllers/serviceStatus');
 
 var patient         = require('../controllers/patient');
 
@@ -305,5 +306,9 @@ exports.initialise = function (app) {
 
   // customer debts 
   app.get('/customer_debt/', customerDebt.periodicDebts);
+
+  // service status 
+  app.get('/service_status/', serviceStatus.list);
+  app.get('/service_status/:id', serviceStatus.detail);
 
 };

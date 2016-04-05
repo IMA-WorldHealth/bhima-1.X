@@ -303,7 +303,7 @@
      "GENERIC_EXPENSE"    : "Other Expenses",
      "GENERIC_INCOME"     : "Other Incomes",
      "GROUP_DEB_INVOICE"  : "Accounting",
-     "IMPORT_AUTO"        : "Automatic Import",
+     "IMPORT_AUTO"        : "Reports",
      "INDIRECT_PURCHASE"  : "Purchases",
      "JOURNAL"            : "Journal",
      "MONTH_BALANCE"      : "Cash (Monthly Balance)",
@@ -2608,6 +2608,12 @@
    "PROJECT_SELECT"         : "Selectionner a Project",
    "REGISTER"               : "Registering",
    "REGISTERED"             : "Registered Services",
+   "STATUS"                 : {
+      "DETAILS"             : "Details",
+      "FACT_AMOUNT"         : "Montant des factures",
+      "FACT_NUMBER"         : "Nombre des factures",
+      "TITLE"               : "Billing reports by service"
+    },
    "SUCCESS_MESSAGE"        : "Operation successfully !",
    "TITLE"                  : "Services Management"
    },
@@ -3139,6 +3145,7 @@
    "SERVICE"                   : "Services",
    "SERVICE_EXPLOITATION"      : "Services Status",
    "SERVICE_STATE"             : "Service State",
+   "SERVICE_STATUS"            : "Service Billing Report",
    "STOCK"                     : "Stock",
    "STOCK_DASHBOARD"           : "Stock Dashboard",
    "STOCK_DEPOT_REPORT"        : "Depots Stocks",

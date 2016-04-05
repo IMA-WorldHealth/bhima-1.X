@@ -1,0 +1,9 @@
+.chart-block {
+	page-break-before: always !important;
+	page-break-after: always !important;
+	float: left;
+	margin-left: 25px;
+}
+.chart-block.more {
+	margin-left: 50px;
+}

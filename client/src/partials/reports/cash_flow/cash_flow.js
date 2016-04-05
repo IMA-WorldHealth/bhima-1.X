@@ -182,7 +182,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     }
 
     session.periodicBalance[period] = isFirstPeriod(period) ? 
-      session.openningBalance + session.sum_incomes[period] - session.sum_expense[period] : 
+      session.sum_incomes[period] - session.sum_expense[period] : 
       session.periodicBalance[previousPeriod(period)] + session.sum_incomes[period] - session.sum_expense[period];
 
     session.periodicOpenningBalance[period] = isFirstPeriod(period) ? 
