@@ -46,7 +46,7 @@ exports.compile = function (options) {
         return item.sectionBilanIsActif === 0;
       });
 
-      /** transform our array of array to an object which contains to array asset and passif**/
+      /** transform our array of array to an object which contains to array assets and passifs**/
       return {assets : assets, passifs : passifs};
     });
 
@@ -112,13 +112,24 @@ exports.compile = function (options) {
 
             //previous net processing
             infos.previous.forEach(function (previousYearData, index){
+              //processing brut for previous year
+              item['brut' + index] = getBrut(item, previousYearData.assets, section.sectionBilanIsActif);
+              item['brut_view' + index] = numeral(item['brut' + index]).format(formatDollar);
+
+              //processing depreciation or provision for previous year
+              item['amort_prov' + index] = getAmortProv(item, previousYearData.assets, section.sectionBilanIsActif);
+              item['amort_prov_view' + index] = numeral(item['amort_prov' + index]).format(formatDollar);
+
+              //processing previous net for previous year
               item['previousNet' + index] = getPreviousNet(item, previousYearData.assets, section.sectionBilanIsActif);
               item['previousNet_view' + index] = numeral(item['previousNet' + index]).format(formatDollar);
+
+              //processing total previous net
               gref['totalPreviousNet' + index] += item['previousNet' + index];
             });            
           });
 
-          /** calculate total for section**/
+          /** calculate total for section **/
           section.totalBrut += gref.totalBrut;
           section.totalAmortProv += gref.totalAmortProv;
           section.totalNet += gref.totalNet;
@@ -388,10 +399,10 @@ exports.compile = function (options) {
       return (isActif === 1)? somDebit - somCredit : somCredit - somDebit;
     }
 
-    function getAmortProv (reference, currents, isActif){
+    function getAmortProv (reference, list, isActif){
       var somDebit = 0, somCredit = 0;
 
-      currents.forEach(function (item){
+      list.forEach(function (item){
         if(item.referenceId === reference.referenceId && item.accountIsBrutLink === 0){
           somDebit+=(item.generalLegderDebit);
           somCredit+=(item.generalLegderCredit);

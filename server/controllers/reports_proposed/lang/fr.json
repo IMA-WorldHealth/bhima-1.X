@@ -27,11 +27,13 @@
 		"PASSIF"                : "Passif",
 		"BRUT"                  : "Brut",
 		"AMORT_PROV"            : "Amort/Prov",
+		"AMORT_PROV_LONG"       : "Amortissement ou provision",
 		"NET"                   : "NET",
 		"TOTAL_GENERAL"         : "TOTAL GENERAL",
 		"PASSIVE"               : "Passif",
 		"DATE"                  : "Date : ",
 		"TOTAL"                 : "TOTAL",
+		"GREF_TOTAL"            : "Total",
 		"ACCOUNTING_DEPT"       : "Departement de Comptabilite"
 	},
 

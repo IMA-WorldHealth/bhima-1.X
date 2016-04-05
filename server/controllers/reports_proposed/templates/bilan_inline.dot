@@ -41,38 +41,38 @@
                   {{~gref.refs : ref : ind3}}
                     <tr>
                       <td>{{=ref.referenceLabel}}</td>
-                      <td class="text-center">{{=ref.brut_view}}</td>
-                      {{~it.previous : data : i}} <td class="text-center">{{=ref.brut_view}}</td> {{~}}
+                      <td class="text-right">{{=ref.brut_view}}</td>
+                      {{~it.previous : data : i}} <td class="text-right">{{=ref['brut_view' + i]}}</td> {{~}}
                     </tr>
                     
                     <tr>
-                      <td>{{=it.i18nBilan.AMORT_PROV}}</td>                    
-                      <td class="text-center">{{=ref.amort_prov_view}}</td>
-                      {{~it.previous : data : i}} <td class="text-center">{{=ref.amort_prov_view}}</td> {{~}}                       
+                      <td>{{=it.i18nBilan.AMORT_PROV_LONG}}</td>                    
+                      <td class="text-right">{{=ref.amort_prov_view}}</td>
+                      {{~it.previous : data : i}} <td class="text-right">{{=ref['amort_prov_view' + i]}}</td> {{~}}                       
                     </tr>
 
                     <tr>
-                      <td>{{=it.i18nBilan.NET}}</td>
-                      <td class="text-center">{{=ref.net_view}}</td>
-                      {{~it.previous : data : i}} <td class="text-center">{{=ref['previousNet_view' + i]}}</td> {{~}}                       
+                      <td><b>{{=it.i18nBilan.NET}}</b></td>
+                      <td class="text-right"><b>{{=ref.net_view}}</b></td>
+                      {{~it.previous : data : i}} <td class="text-right"><b>{{=ref['previousNet_view' + i]}}</b></td> {{~}}                       
                     </tr>                    
                   {{~}}
-                <tr class="text-center gray-line">
-                  <th>{{=it.i18nBilan.TOTAL}} {{=gref.greferenceLabel}}</th>
-                  <th>{{=gref.totalNet_view}}</th>
-                  {{~it.previous : data : i}} <th>{{=gref['totalPreviousNet_view' + i]}}</th> {{~}}
+                <tr class="gray-line">
+                  <td>{{=it.i18nBilan.GREF_TOTAL}} {{=gref.greferenceLabel}}</td>
+                  <td class="text-right">{{=gref.totalNet_view}}</td>
+                  {{~it.previous : data : i}} <td class="text-right">{{=gref['totalPreviousNet_view' + i]}}</td> {{~}}
                 </tr>
               {{~}}
-              <tr class="text-center gray-line">
-                <th>{{=it.i18nBilan.TOTAL}} {{=section.sectionBilanLabel}}</th>
-                <th>{{=section.totalNet_view}}</th>
-                {{~it.previous : data : i}} <th>{{=section['totalPreviousNet_view' + i]}}</th> {{~}}
+              <tr class="gray-line">
+                <td>{{=it.i18nBilan.TOTAL}} {{=section.sectionBilanLabel}}</td>
+                <td class="text-right">{{=section.totalNet_view}}</td>
+                {{~it.previous : data : i}} <td class="text-right">{{=section['totalPreviousNet_view' + i]}}</td> {{~}}
               </tr>
           {{~}}
-          <tr class="text-center gray-line">
-            <th>{{=it.i18nBilan.TOTAL_GENERAL}}</th>
-            <th>{{=it.assetGeneralNet}}</th>
-            {{~it.previous : data : i}} <th>{{=it['assetGeneralPreviousNet' + i]}}</th> {{~}}
+          <tr class="gray-line">
+            <td>{{=it.i18nBilan.TOTAL_GENERAL}}</td>
+            <td class="text-right">{{=it.assetGeneralNet}}</td>
+            {{~it.previous : data : i}} <td class="text-right">{{=it['assetGeneralPreviousNet' + i]}}</td> {{~}}
           </tr>
         </tbody>
       </table>
@@ -89,37 +89,37 @@
         <tbody>
           {{~it.passiveSide : section : ind1}}
             <tr>
-              <th>{{=section.sectionBilanLabel}}</th>
-              <th colspan="{{=1+it.previous.length}}"></th>
+              <td><b>{{=section.sectionBilanLabel}}</b></td>
+              <td colspan="{{=1+it.previous.length}}"></td>
             </tr>
               {{~section.grefs : gref : ind2}}
                 <tr>
-                  <th class="bilan-group-reference">{{=gref.greferenceLabel}}</th>
-                  <th colspan="{{=1+it.previous.length}}"></th>
+                  <td><b>{{=gref.greferenceLabel}}</b></td>
+                  <td colspan="{{=1+it.previous.length}}"></td>
                 </tr>
                   {{~gref.refs : ref : ind3}}
                     <tr>
                       <td>{{=ref.referenceLabel}}</td>
-                      <td class="text-center">{{=ref.net_view}}</td>
-                      {{~it.previous : data : i}} <td class="text-center">{{=ref['previousNet_view' + i]}}</td> {{~}}                       
+                      <td class="text-right">{{=ref.net_view}}</td>
+                      {{~it.previous : data : i}} <td class="text-right">{{=ref['previousNet_view' + i]}}</td> {{~}}                       
                     </tr>
                   {{~}}
-                  <tr class="text-center gray-line">
-                    <th>{{=it.i18nBilan.TOTAL}} {{=gref.greferenceLabel}}</th>
-                    <th>{{=gref.totalNet_view}}</th>
-                    {{~it.previous : data : i}} <th class="text-center">{{=gref['totalPreviousNet_view' + i]}}</th> {{~}}
+                  <tr class="gray-line">
+                    <td>{{=it.i18nBilan.GREF_TOTAL}} {{=gref.greferenceLabel}}</td>
+                    <td class="text-right">{{=gref.totalNet_view}}</td>
+                    {{~it.previous : data : i}} <td class="text-right">{{=gref['totalPreviousNet_view' + i]}}</td> {{~}}
                   </tr>
               {{~}}
-              <tr class="text-center gray-line">
-                <th>{{=it.i18nBilan.TOTAL}} {{=section.sectionBilanLabel}}</th>
-                <th>{{=section.totalNet_view}}</th>
-                {{~it.previous : data : i}} <th class="text-center">{{=section['totalPreviousNet_view' + i]}}</th> {{~}}
+              <tr class="gray-line">
+                <td>{{=it.i18nBilan.TOTAL}} {{=section.sectionBilanLabel}}</td>
+                <td class="text-right">{{=section.totalNet_view}}</td>
+                {{~it.previous : data : i}} <td class="text-right">{{=section['totalPreviousNet_view' + i]}}</td> {{~}}
               </tr>
           {{~}}
-          <tr class="text-center gray-line">
-            <th>{{=it.i18nBilan.TOTAL_GENERAL}}</th>
-            <th>{{=it.passiveGeneralNet}}</th>
-            {{~it.previous : data : i}} <th class="text-center">{{=it['passiveGeneralPreviousNet' + i]}}</th> {{~}}
+          <tr class="gray-line">
+            <td>{{=it.i18nBilan.TOTAL_GENERAL}}</td>
+            <td class="text-right">{{=it.passiveGeneralNet}}</td>
+            {{~it.previous : data : i}} <td class="text-right">{{=it['passiveGeneralPreviousNet' + i]}}</td> {{~}}
           </tr>
         </tbody>
       </table>
