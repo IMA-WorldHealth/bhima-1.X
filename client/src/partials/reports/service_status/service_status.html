@@ -100,8 +100,8 @@
                 <th>#</th>
                 <th>{{ 'COLUMNS.SERVICE' | translate }}</th>
                 <th>{{ 'SERVICE.STATUS.FACT_NUMBER' | translate }}</th>
-                <th>{{ 'SERVICE.STATUS.FACT_AMOUNT' | translate }}</th>
-                <th class="hidden-print">{{ 'COLUMNS.ACTION' | translate }}</th>
+                <!-- <th>{{ 'SERVICE.STATUS.FACT_AMOUNT' | translate }}</th>
+                <th class="hidden-print">{{ 'COLUMNS.ACTION' | translate }}</th> -->
               </tr>
             </thead>
 
@@ -113,13 +113,13 @@
                 <td>{{ $index + 1 }}</td>
                 <td>{{ item.name }}</td>
                 <td>{{ item.nb_facture | number }}</td>
-                <td>{{ item.cost | currency }}</td>
+                <!-- <td>{{ item.cost | currency }}</td>
                 <td class="hidden-print">
                   <a ng-click="ServiceCtrl.openReceipts(item.id)">
                     <i class="glyphicon glyphicon-list"></i>
                     {{ 'SERVICE.STATUS.DETAILS' | translate }}
                   </a>
-                </td>
+                </td> -->
               </tr>
             </tbody>
 
@@ -127,8 +127,8 @@
               <tr>
                 <th colspan="2">{{ 'COLUMNS.TOTAL' | translate }}</th>
                 <th>{{ ServiceCtrl.session.totalFacture | number }}</th>
-                <th>{{ ServiceCtrl.session.totalAmount | currency }}</th>
-                <th></th>
+                <!-- <th>{{ ServiceCtrl.session.totalAmount | currency }}</th>
+                <th></th> -->
               </tr>
             </tfoot>
 
@@ -142,10 +142,10 @@
           <!-- end count billings charts -->
 
           <!-- amount billings charts -->
-          <div class="chart-block more">
+          <!-- <div class="chart-block more">
             <h3>{{ 'SERVICE.STATUS.FACT_AMOUNT' | translate }}</h3>
             <canvas id="amount-chart" width="650" height="400"></canvas>
-          </div>
+          </div> -->
           <!-- end amount billings charts -->
 
         </div>

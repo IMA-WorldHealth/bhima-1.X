@@ -84,8 +84,8 @@ function ServiceStatusController ($q, $http, $modal, connect, validate, messenge
 
   function renderChart() {
     /* global Chart */
-    var ctxCount  = document.getElementById('count-chart').getContext('2d'),
-        ctxAmount = document.getElementById('amount-chart').getContext('2d');
+    var ctxCount  = document.getElementById('count-chart').getContext('2d');
+        // ctxAmount = document.getElementById('amount-chart').getContext('2d');
 
     var chartLabels = vm.dataList.map(function (item) {
       return item.name;
@@ -134,7 +134,7 @@ function ServiceStatusController ($q, $http, $modal, connect, validate, messenge
 
     // Generate Chart
     var countChart  = new Chart(ctxCount).Bar(data1, options);
-    var amountChart = new Chart(ctxAmount).Bar(data2, options);
+    // var amountChart = new Chart(ctxAmount).Bar(data2, options);
   }
 
   function errorHandler(err) {
