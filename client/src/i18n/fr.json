@@ -195,7 +195,8 @@
   "LANGUAGE"        : "Langue",
   "GENERATE_DOC"    : "Générer le document",
   "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document",
-  "OHADA_STRUCTURE" : "Structure OHADA"
+  "OHADA_STRUCTURE" : "Structure OHADA",
+  "LOADING"         : "Chargement ..."
   },
 "BUDGET": {
    "ANALYSIS" : {

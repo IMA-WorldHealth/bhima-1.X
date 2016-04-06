@@ -34,7 +34,8 @@
 		"DATE"                  : "Date : ",
 		"TOTAL"                 : "TOTAL",
 		"GREF_TOTAL"            : "Total",
-		"ACCOUNTING_DEPT"       : "Departement de Comptabilite"
+		"ACCOUNTING_DEPT"       : "Departement de Comptabilite",
+		"LOADING"               : "Chargement ..."
 	},
 
 	"ACCOUNT_RESULT" : {
