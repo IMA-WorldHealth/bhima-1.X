@@ -22,6 +22,7 @@ function ServiceStatusController ($q, $http, $modal, connect, validate, messenge
   vm.generate = generate;
   vm.reconfigure = reconfigure;
   vm.openReceipts = openReceipts;
+  vm.hideMessage = hideMessage;
   vm.print = function () { print(); };
 
   /** starting the module */
@@ -33,6 +34,7 @@ function ServiceStatusController ($q, $http, $modal, connect, validate, messenge
   }
 
   function fill() {
+    vm.showMessage = true;
     session.loading = true;
 
     var params = {
@@ -61,6 +63,10 @@ function ServiceStatusController ($q, $http, $modal, connect, validate, messenge
 
   function reconfigure() {
     vm.state = 'default';
+  }
+
+  function hideMessage() {
+    vm.showMessage = false;
   }
 
   function openReceipts(id) {

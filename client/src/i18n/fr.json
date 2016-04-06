@@ -2617,6 +2617,7 @@
       "DETAILS"             : "Details",
       "FACT_AMOUNT"         : "Montant des factures",
       "FACT_NUMBER"         : "Nombre des factures",
+      "LEDGER_INFO"         : "Les informations suivantes concernent les transactions postées",
       "TITLE"               : "Rapport des factures par service"
     },
    "SUCCESS_MESSAGE"        : "Insertion avec succès !",
