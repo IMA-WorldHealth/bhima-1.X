@@ -92,13 +92,21 @@
             </small>
           </h4>
 
+          <p ng-show="ServiceCtrl.showMessage" class="alert alert-info hidden-print">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close" ng-click="ServiceCtrl.hideMessage()">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <b><i class="glyphicon glyphicon-question-sign"></i></b>
+            {{ 'SERVICE.STATUS.LEDGER_INFO' | translate }}
+          </p>
+
           <!-- Cashflow report -->
           <table class="custom-report navy cashflow table table-stripped table-bordered">
             
             <thead>
               <tr class="heading">
                 <th>#</th>
-                <th>{{ 'COLUMNS.SERVICE' | translate }}</th>
+                <th class="text-left">{{ 'COLUMNS.SERVICE' | translate }}</th>
                 <th>{{ 'SERVICE.STATUS.FACT_NUMBER' | translate }}</th>
                 <!-- <th>{{ 'SERVICE.STATUS.FACT_AMOUNT' | translate }}</th>
                 <th class="hidden-print">{{ 'COLUMNS.ACTION' | translate }}</th> -->
@@ -111,7 +119,7 @@
               </tr>
               <tr ng-repeat="item in ServiceCtrl.dataList | orderBy: 'service_txt'">
                 <td>{{ $index + 1 }}</td>
-                <td>{{ item.name }}</td>
+                <td class="text-left">{{ item.name }}</td>
                 <td>{{ item.nb_facture | number }}</td>
                 <!-- <td>{{ item.cost | currency }}</td>
                 <td class="hidden-print">
