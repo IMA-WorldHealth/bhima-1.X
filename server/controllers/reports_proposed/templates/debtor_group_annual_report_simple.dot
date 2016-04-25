@@ -1,0 +1,71 @@
+<head>
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/normalize.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/skeleton.css">
+  <link rel="stylesheet" href="{{=it.path}}/templates/style/reports.css">
+  <meta charset="utf-8" />
+</head>
+
+<body>
+
+  <hgroup class="text-uppercase">
+    <h6>IMCK</h6>
+    <h6>{{= it.i18n.ACCOUNTING_DEPT }}</h6>
+    <h6>{{= it.i18n.BILLING_OFFICE }}</h6>
+  </hgroup>
+
+  <h6 class="clean-title">
+    {{= it.i18n.TITLE }} {{= it.meta.stop }}
+  </h6>
+
+  <table class="clean-table">
+    <thead>
+      <tr class="text-uppercase">
+        <th rowspan="2">{{= it.i18n.ACCOUNT_NUMBER }}</th>
+        <th rowspan="2">{{= it.i18n.DESIGNATION }}</th>
+        <th>{{= it.i18n.BALANCE }}<br /> {{= it.meta.openingDate }}</th>        
+        <th colspan="2">{{= it.i18n.ANNUAL_MOVEMENT }}</th>
+        <th rowspan="2">{{= it.i18n.BALANCE }}<br /> {{= it.meta.stop }}</th>
+      </tr>
+      <tr class="text-uppercase">
+        <th>{{= it.i18n.BALANCE }}</th>
+        <th>{{= it.i18n.DEBIT }}</th>
+        <th>{{= it.i18n.CREDIT }}</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      {{ for (var account in it.accounts) {  }}
+
+        <tr>
+          <td>{{= it.accounts[account].account_number }}</td>
+          <td>{{= it.accounts[account].name }}</td>
+          <td class="text-right">{{= it.accounts[account].balance }}</td>
+          <td class="text-right">{{= it.accounts[account].simpleDebits }}</td>
+          <td class="text-right">{{= it.accounts[account].simpleCredits }}</td>          
+          <td class="text-right">{{= it.accounts[account].simpleClosingBalance }}</td>
+        </tr>
+
+      {{ } }}
+
+      {{? (it.meta.size === 0) }}
+        <tr>
+          <td colspan="7" class="text-center" style="margin:0;padding:0;">
+            <div class="indicator indicator-error" style="width:100%;">
+              {{= it.i18n.NO_DATA }}
+            </div>
+          </td>
+        </tr>
+      {{?}}
+    </tbody>
+    <tfoot>
+        <tr>
+          <td colspan="2">{{= it.i18n.TOTAL }}</td>
+          <td class="text-right">{{= it.totals.balance }}</td>
+          <td class="text-right">{{= it.totals.simpleDebits }}</td>
+          <td class="text-right">{{= it.totals.simpleCredits }}</td>
+          <td class="text-right">{{= it.totals.simpleClosingBalance }}</td>
+        </tr>
+    </tfoot>
+  </table>
+</body>

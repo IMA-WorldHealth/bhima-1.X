@@ -12,6 +12,7 @@ DebtorGroupAnnualReportController.$inject = [ '$http', 'reportConfigService'];
 */
 function DebtorGroupAnnualReportController($http, ReportConfigService) {
   var vm = this;
+  var session = vm.session = {};
 
   vm.state = 'fresh';
 
@@ -23,6 +24,7 @@ function DebtorGroupAnnualReportController($http, ReportConfigService) {
   vm.generateDocument = generateDocument;
   vm.clearPath = clearPath;
 
+
   /* ------------------------------------------------------------------------ */
 
   // generic error handler
@@ -32,6 +34,9 @@ function DebtorGroupAnnualReportController($http, ReportConfigService) {
 
   // start the module up.
   function startup() {
+
+    //complete structure
+    vm.session.with_report = 1;
 
     // get the fiscal years
     $http.get('/fiscal')
@@ -52,8 +57,8 @@ function DebtorGroupAnnualReportController($http, ReportConfigService) {
   // POST configuration object to /report/build/:target
   function generateDocument(invalid) {
 
-    // TODO -- find a better path name
-    var path = '/report/build/debtor_group_annual_report';
+    var path = session.with_report === 1 ? '/report/build/debtor_group_annual_report' : '/report/build/debtor_group_annual_report_simple';
+
     var configurationObject = {};
 
     // if it did not pass Angular's form validation, do not submit to the server

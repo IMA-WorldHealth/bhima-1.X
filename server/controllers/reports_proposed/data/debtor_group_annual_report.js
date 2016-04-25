@@ -107,6 +107,7 @@ exports.compile = function (options) {
       object[id] = {};
       object[id].openingCredits = account.credit;
       object[id].openingDebits = account.debit;
+      object[id].balance = (account.debit - account.credit);
       object[id].name = account.name;
       object[id].account_number = account.account_number;
 
@@ -135,6 +136,7 @@ exports.compile = function (options) {
         var o = context.accounts[a.account_number] = {};
         o.openingCredits = 0;
         o.openingDebits = 0;
+        o.balance = 0;
         o.name = a.name;
         o.account_number = a.account_number;
       }
@@ -142,8 +144,18 @@ exports.compile = function (options) {
       var ref = context.accounts[a.account_number];
       ref.debits = a.debit;
       ref.credits = a.credit;
+      ref.simpleDebits = a.debit;
+      ref.simpleCredits = a.credit;
+
+      // remove previous debt in current value
+      if(ref.balance >= 0) {
+        ref.simpleDebits = ref.debits - ref.balance;
+      }else{
+        ref.simpleCredits = ref.credits - (ref.balance * -1);
+      }
 
       ref.closingBalance = ref.debits - ref.credits;
+      ref.simpleClosingBalance = ref.simpleDebits - ref.simpleCredits;
     });
 
     return q.when(accounts);
@@ -157,9 +169,13 @@ exports.compile = function (options) {
     var aggregates = {
       openingDebits:  0,
       openingCredits: 0,
+      balance :       0,
       debits:         0,
       credits:        0,
-      closingBalance: 0
+      simpleDebits :  0,
+      simpleCredits : 0,
+      closingBalance: 0,
+      simpleClosingBalance : 0
     };
 
     // loop through accounts and sum up all the balances
@@ -167,9 +183,9 @@ exports.compile = function (options) {
       // pull in the account information
       var a = context.accounts[account];   
 
-      if(!a.debits) {a.debits = 0};
-      if(!a.credits) {a.credits = 0}; 
-      if(!a.closingBalance) {a.closingBalance = a.debits - a.credits;}
+      if(!a.debits) { a.debits = 0; a.simpleDebits = 0; };
+      if(!a.credits) { a.credits = 0; a.simpleCredits = 0; }; 
+      if(!a.closingBalance) { a.closingBalance = a.debits - a.credits; a.simpleClosingBalance = a.simpleDebits - a.simpleCredits; }
 
       // loop through the account's properties, adding up each to the aggregate
       Object.keys(totals).forEach(function (k) {

@@ -6,7 +6,34 @@
   <div class="panel panel-default">
     <div class="panel-heading">{{'DEBTOR_GROUP_ANNUAL_REPORT.DOCUMENT_CONFIG' | translate }}</div>
     <div class="panel-body">
-      <form name="AnnualReportForm" novalidate>
+      <form name="AnnualReportForm" novalidate>        
+
+        <div class="form-group" ng-class="{ 'has-error' : AnnualReportForm.$submitted && AnnualReportForm.$invalid }">
+          <label class="required">
+            {{ "COLUMNS.FISCAL_YEAR" | translate }}
+          </label>
+          <select class="form-bhima" name="fiscalYear" ng-model="AnnualCtrl.fiscalYearId" ng-options="fy.id as fy.fiscal_year_txt for fy in AnnualCtrl.fiscalYears" required>
+            <option value="" disabled="disabled">--{{ 'SELECT.FISCAL_YEAR' | translate }} --</option>
+          </select>
+          <p class="help-block" ng-if="AnnualReportForm.$submitted && AnnualReportForm.$invalid">
+            This is a required field!
+          </p>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+              <label>
+                <input type="checkbox"
+                  ng-true-value="1"
+                  ng-false-value="0"
+                  ng-model="AnnualCtrl.session.with_report">
+                {{ 'DEBTOR_GROUP_ANNUAL_REPORT.WITH_REPORT' | translate }}
+              </label>
+            </div>
+          </div>
+        </div>
+
         <div class="form-group">
           <label>{{ 'UTIL.LANGUAGE' | translate }}</label>
 
@@ -20,18 +47,6 @@
               </button>
             </span>
           </div>
-        </div>
-
-        <div class="form-group" ng-class="{ 'has-error' : AnnualReportForm.$submitted && AnnualReportForm.$invalid }">
-          <label class="required">
-            {{ "COLUMNS.FISCAL_YEAR" | translate }}
-          </label>
-          <select class="form-bhima" name="fiscalYear" ng-model="AnnualCtrl.fiscalYearId" ng-options="fy.id as fy.fiscal_year_txt for fy in AnnualCtrl.fiscalYears" required>
-            <option value="" disabled="disabled">--{{ 'SELECT.FISCAL_YEAR' | translate }} --</option>
-          </select>
-          <p class="help-block" ng-if="AnnualReportForm.$submitted && AnnualReportForm.$invalid">
-            This is a required field!
-          </p>
         </div>
 
         <div class="form-group">
