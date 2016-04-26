@@ -218,3 +218,11 @@ table.clean-table tfoot tr:first-child {
 .gray-line {
   background-color: #DDD;
 }
+
+.page-break {
+    page-break-after: always;
+}
+
+.repeat-motif {
+  display: table-header-group;
+}

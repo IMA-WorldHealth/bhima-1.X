@@ -945,7 +945,8 @@
    "DOCUMENT_CONFIG" : "Configuration rapport groupe de debiteur",
    "DEBITOR_GROUP"   : "Groupe de Debiteur",
    "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document",
-   "GENERATE_DOC"    : "Generer document"
+   "GENERATE_DOC"    : "Generer document",
+   "WITH_REPORT"     : "Avec report"
 },
 
 "DEPOT": {

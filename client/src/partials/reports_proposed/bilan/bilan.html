@@ -32,6 +32,20 @@
             </div>
           </div>
 
+          <div class="form-group" ng-if="session.ohada_structure === 1">
+            <div class="col-sm-offset-2 col-sm-10">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox"
+                    ng-true-value="1"
+                    ng-false-value="0"
+                    ng-model="session.net_only">
+                  {{ 'BILAN.NET_ONLY' | translate }}
+                </label>
+              </div>
+            </div>
+          </div>
+
           <div class="form-group">
             <label>{{'BILAN.LANGUAGE' | translate}}</label>
 

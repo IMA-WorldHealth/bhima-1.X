@@ -942,7 +942,8 @@
    "DOCUMENT_CONFIG" : "Configuration of Debitor Group Report",
    "DEBITOR_GROUP" : "Debitor Group",
    "DOC_SUCCES"   : "Document Build Success - Open Document",
-   "GENERATE_DOC"    : "Generate document"
+   "GENERATE_DOC"    : "Generate document",
+   "WITH_REPORT"     : "With report"
 },
 "DEPOT": {
   "ADD"              : "Add a Depot",

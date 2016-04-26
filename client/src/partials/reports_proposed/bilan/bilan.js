@@ -47,6 +47,7 @@ angular.module('bhima.controllers')
       $scope.session.fiscal_year_id = $scope.fiscalYears.data[$scope.fiscalYears.data.length-1].id;
       $scope.session.parents = getParents($scope.session.fiscal_year_id);
       $scope.session.ohada_structure = 1; //ohada structure checked
+      $scope.session.net_only = 0;
     }
 
     function getParents (fid){
@@ -95,6 +96,7 @@ angular.module('bhima.controllers')
       configurationObject.fy_txt = $scope.fiscalYears.get(configurationObject.fy).fiscal_year_txt;
       configurationObject.enterprise = configuration.enterprise;
       configurationObject.project = configuration.project;
+      configurationObject.net_only = $scope.session.net_only;
       configurationObject.parentIds = $scope.session.parents.map(function (item){
         return item.id;
       });

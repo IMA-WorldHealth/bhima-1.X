@@ -5,7 +5,7 @@
   <meta charset="utf-8" />
 </head>
 
-<body>
+<main>
 
   <hgroup class="text-uppercase">
       <h6>{{=it.options.enterprise.name}}</h6>
@@ -13,12 +13,12 @@
   </hgroup>
 
   <h6 class="clean-title">
-    {{=it.i18nBilan.TITLE}} {{=it.options.fy_txt}}
+    {{=it.i18nBilan.TITLE}} {{=it.options.fy_txt}} ({{=it.i18nBilan.ACTIF}})
   </h6>
 
   <section>
     <!-- asset side -->
-      <table class="clean-table" border="1">
+      <table class="clean-table page-break" border="1">
         <thead>
           <tr>
             <th>{{=it.i18nBilan.ACTIF}}</th>
@@ -76,7 +76,18 @@
           </tr>
         </tbody>
       </table>
+  </section>
 
+  <hgroup class="text-uppercase">
+      <h6>{{=it.options.enterprise.name}}</h6>
+      <h6>{{=it.i18nBilan.ACCOUNTING_DEPT }}</h6>      
+  </hgroup>
+
+  <h6 class="clean-title">
+    {{=it.i18nBilan.TITLE}} {{=it.options.fy_txt}} ({{=it.i18nBilan.PASSIF}})
+  </h6>
+
+  <section>
     <!-- passive side -->
       <table class="clean-table" border="1">
         <thead>
