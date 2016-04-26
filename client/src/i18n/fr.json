@@ -196,7 +196,8 @@
   "GENERATE_DOC"    : "Générer le document",
   "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document",
   "OHADA_STRUCTURE" : "Structure OHADA",
-  "LOADING"         : "Chargement ..."
+  "LOADING"         : "Chargement ...",
+  "NET_ONLY"        : "Afficher seulement la situation net"
   },
 "BUDGET": {
    "ANALYSIS" : {

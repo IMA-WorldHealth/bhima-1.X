@@ -195,7 +195,8 @@
   "GENERATE_DOC"    : "Generate Document",
   "DOC_SUCCES"      : "Document Build Success - Open Document",
   "OHADA_STRUCTURE" : "OHADA Structure",
-  "LOADING"         : "Loading ..."
+  "LOADING"         : "Loading ...",
+  "NET_ONLY"        : "Show only net amount"
   },
 "BUDGET": {
   "ANALYSIS" : {

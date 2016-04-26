@@ -117,7 +117,8 @@ exports.compile = function (options) {
               item['brut_view' + index] = numeral(item['brut' + index]).format(formatDollar);
 
               //processing depreciation or provision for previous year
-              item['amort_prov' + index] = getAmortProv(item, previousYearData.assets, section.sectionBilanIsActif);
+              var provAmor = getAmortProv(item, previousYearData.assets, section.sectionBilanIsActif);
+              item['amort_prov' + index] = provAmor < 0 ? provAmor * -1 : provAmor;
               item['amort_prov_view' + index] = numeral(item['amort_prov' + index]).format(formatDollar);
 
               //processing previous net for previous year
