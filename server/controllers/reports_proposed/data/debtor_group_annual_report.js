@@ -151,11 +151,11 @@ exports.compile = function (options) {
       if(ref.balance >= 0) {
         ref.simpleDebits = ref.debits - ref.balance;
       }else{
-        ref.simpleCredits = ref.credits - (ref.balance * -1);
+        ref.simpleCredits = ref.credits - (ref.balance * -1) + ref.balance;
       }
 
       ref.closingBalance = ref.debits - ref.credits;
-      ref.simpleClosingBalance = ref.simpleDebits - ref.simpleCredits;
+      ref.simpleClosingBalance = (ref.simpleDebits - ref.simpleCredits) + ref.balance;
     });
 
     return q.when(accounts);
@@ -185,7 +185,7 @@ exports.compile = function (options) {
 
       if(!a.debits) { a.debits = 0; a.simpleDebits = 0; };
       if(!a.credits) { a.credits = 0; a.simpleCredits = 0; }; 
-      if(!a.closingBalance) { a.closingBalance = a.debits - a.credits; a.simpleClosingBalance = a.simpleDebits - a.simpleCredits; }
+      if(!a.closingBalance) { a.closingBalance = a.debits - a.credits; a.simpleClosingBalance = (a.simpleDebits - a.simpleCredits) + a.balance; }
 
       // loop through the account's properties, adding up each to the aggregate
       Object.keys(totals).forEach(function (k) {
