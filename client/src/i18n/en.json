@@ -313,6 +313,7 @@
      "OPENNING_BALANCE"   : "Cash on Hand (Openning balance)",
      "PATIENT_PAYMENT"    : "Patients Payemnts",
      "PCASH_EMPLOYEE"     : "Paiement des prises en charge",
+     "REPORT"             : "Report",
      "SALARY_ADVANCE"     : "Salary Advance",
      "TAX_PAYMENT"        : "Payroll - Taxes",
      "TITLE"              : "Cash Flow ",
@@ -2077,8 +2078,10 @@
    "UNABLE_TO_DELETE" : "Price list cannot be deleted - it may currently be assigned to patient/ debtor groups"
    },
 "PRIMARY_CASH": {
-   "CONFIGURE"        : "Configure Cash Box",
-   "DEFAULT_CURRENCY" : "currency",
+   "CASH_CDF_USD"       : "IMCK CASHBOX CDF(Fc) AND USD($)",
+   "CASH_CDF_USD_TITLE" : "Cashboxes Synthetic Report",
+   "CONFIGURE"          : "Configure Cash Box",
+   "DEFAULT_CURRENCY"   : "currency",
    "EXPENSE": {
       "ACCOUNT"                  : "Account",
       "ADVANTAGES"               : "Advantages",

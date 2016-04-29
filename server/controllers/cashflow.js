@@ -30,13 +30,13 @@ function queryIncomeExpense (params, dateFrom, dateTo) {
 						'`posting_journal`.`credit_equiv`, `posting_journal`.`debit`, `posting_journal`.`credit`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, '+
 						'`posting_journal`.`currency_id`, `posting_journal`.`doc_num`, posting_journal.trans_id, `posting_journal`.`description`, `posting_journal`.`comment`, `posting_journal`.`origin_id`, `posting_journal`.`user_id` ' +
 					'FROM `posting_journal` ' +
-					'WHERE `posting_journal`.`account_id`= ? AND `posting_journal`.`trans_date` >= ? AND `posting_journal`.`trans_date` <= ? ' +
+					'WHERE `posting_journal`.`account_id` IN (?) AND `posting_journal`.`trans_date` >= ? AND `posting_journal`.`trans_date` <= ? ' +
 				') UNION (' +
 					'SELECT `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, ' +
 						'`general_ledger`.`credit_equiv`, `general_ledger`.`debit`, `general_ledger`.`credit`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
 						'`general_ledger`.`doc_num`, general_ledger.trans_id, `general_ledger`.`description`, `general_ledger`.`comment`, `general_ledger`.`origin_id`, `general_ledger`.`user_id` ' +
 					'FROM `general_ledger` ' +
-					'WHERE `general_ledger`.`account_id`= ? AND `general_ledger`.`trans_date` >= ? AND `general_ledger`.`trans_date` <= ? ' +
+					'WHERE `general_ledger`.`account_id` IN (?) AND `general_ledger`.`trans_date` >= ? AND `general_ledger`.`trans_date` <= ? ' +
 				')' +
 			') AS `t`, account AS a, transaction_type as o, user as u WHERE `t`.`account_id` = `a`.`id` AND `t`.`origin_id` = `o`.`id` AND `t`.`user_id` = `u`.`id` ' + 
 			'GROUP BY `t`.`trans_id`, MONTH(`t`.`trans_date`), YEAR(`t`.`trans_date`) ;';
@@ -76,6 +76,10 @@ function cashFlowReport (req, res, next) {
 
 	var currentDate = new Date();
 	var currentYear = currentDate.getYear() + 1900;
+
+	// case of account's array 
+	params.account_id = params.onlyCashes ? params.account_ids : params.account_id;
+	console.log('>>> ', params.account_id);
 
 	// get all periods for the the current fiscal year 
 	fiscalYearPeriods(params.dateFrom, params.dateTo)
@@ -154,14 +158,13 @@ function closingBalance(accountId, periodStart) {
 	    '(' + 
 	    	'SELECT `debit_equiv`, `credit_equiv`, `account_id`, `currency_id` ' + 
 	    	'FROM `posting_journal` ' + 
-	    	'WHERE `account_id` = ? AND `fiscal_year_id` = ? ' +
+	    	'WHERE `account_id` IN (?) AND `fiscal_year_id` = ? ' +
 	    ') UNION ALL (' + 
 	    	'SELECT `debit_equiv`, `credit_equiv`, `account_id`, `currency_id` ' + 
 	    	'FROM `general_ledger` ' + 
-	    	'WHERE `account_id` = ? AND `fiscal_year_id` = ? ' +
+	    	'WHERE `account_id` IN (?) AND `fiscal_year_id` = ? ' +
 	    ')' + 
-	  ') as `t` ' +
-    'GROUP BY `account_id`';
+	  ') as `t` ';
 
     return getFiscalYear(periodStart)
     .then(function (rows) {

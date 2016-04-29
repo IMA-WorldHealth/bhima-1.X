@@ -314,9 +314,12 @@
       "OPENNING_BALANCE"   : "Cash (Balance d'ouverture)",
       "PATIENT_PAYMENT"    : "Paiement des patients",
       "PCASH_EMPLOYEE"     : "Paiement des prises en charge",
+      "PERIOD_START"       : "Debut Periode",
+      "PERIOD_STOP"        : "Fin Periode",
+      "REPORT"             : "Rapport",
       "SALARY_ADVANCE"     : "Avance Salaire",
       "TAX_PAYMENT"        : "Payroll - Taxes",
-      "TITLE"              : "Flux de liquidité (Cash Flow) ",
+      "TITLE"              : "Flux de Tresorerie (Cash Flow) ",
       "TOTALS"             : "Totaux"
     },
    "HELP_TXT_1"       : "Cette module permettre des payer contre plusiers factures",
@@ -2080,8 +2083,10 @@
    "UNABLE_TO_DELETE" : "La liste de prix ne peut être supprimer - car elle peut être courament assignée à un groupe de patient / groupes débiteurs"
    },
 "PRIMARY_CASH": {
-   "CONFIGURE"        : "Configuration",
-   "DEFAULT_CURRENCY" : "Monnaie",
+   "CASH_CDF_USD"       : "IMCK CAISSE PPL CDF(Fc) et USD($)",
+   "CASH_CDF_USD_TITLE" : "Rapport Synthese des Caisses",
+   "CONFIGURE"          : "Configuration",
+   "DEFAULT_CURRENCY"   : "Monnaie",
    "EXPENSE": {
       "ACCOUNT"                  : "Compte",
       "ADVANTAGES"               : "Avantages",
