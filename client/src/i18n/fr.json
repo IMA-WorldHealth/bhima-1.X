@@ -3297,7 +3297,19 @@
    "VALIDATE"          : "Accepter",
    "YEARS"             : "Annees",
    "YES"               : "Oui"
-   },
+},
+
+"VARIATION_EXPLOITATION" : {
+  "BUILD_VARIATION_EXPLOITATION" : "Configuration variation compte exploitation",
+  "DOCUMENT_CONFIG" : "Configuration du Document",
+  "FISCAL_YEAR" : "Annee Fiscale",
+  "IGNORED_TRANSACTION_CURRENT" : "Transactions a ignorer pour l'annee en cours",
+  "IGNORED_TRANSACTION_PREVIEW" : "Transactions a ignorer pour l'annee en precedente",
+  "LANGUAGE" : "Langue",
+  "GENERATE_DOC" : "Generer Document",
+  "DOC_SUCCES" : "Generation avec succes",
+  "EXAMPLE"    : "Une transaction : HBB1, Plusieurs transactions : HBB1;HBB2"
+},
 "VERSEMENT": {
    "ASSOCIATED_TO"     : "Les comptes associe à : ",
    "AVAILABLE_ACCOUNT" : "Les comptes disponibles",

@@ -3292,7 +3292,19 @@
    "VALIDATE"          : "Accept",
    "YEARS"             : "Years",
    "YES"               : "Yes"
-   },
+},
+
+"VARIATION_EXPLOITATION" : {
+  "BUILD_VARIATION_EXPLOITATION" : "Income expense account variation",
+  "DOCUMENT_CONFIG" : "Document configuration",
+  "FISCAL_YEAR" : "Fiscal year",
+  "IGNORED_TRANSACTION_CURRENT" : "Transactions list to ignore for current year",
+  "IGNORED_TRANSACTION_PREVIEW" : "Transactions list to ignore for previews year",
+  "LANGUAGE" : "Language",
+  "GENERATE_DOC" : "Generer Document",
+  "DOC_SUCCES" : "Generated sucessfully",
+  "EXAMPLE"    : "One transaction : HBB1, Many transactions : HBB1;HBB2"
+},
 "VERSEMENT": {
    "ASSOCIATED_TO"     : "Accounts associated to         : ",
    "AVAILABLE_ACCOUNT" : "Availables accounts",
