@@ -17,6 +17,7 @@ angular.module('bhima.controllers')
 
     // Set up default option for year
     data = $scope.data = { year : 'true' };
+    $scope.createWithoutClosing = false;
 
     // module steps
     var steps = [
@@ -51,6 +52,7 @@ angular.module('bhima.controllers')
     $scope.stepThree = stepThree;
     $scope.stepFour = stepFour;
     $scope.submitFiscalYearData = submitFiscalYearData;
+    $scope.checkClosing = checkClosing;
 
     // dependencies
     dependencies.accounts = {
@@ -64,8 +66,7 @@ angular.module('bhima.controllers')
           }
         },
         join : ['account.account_type_id=account_type.id'],
-        where : [['account_type.type=balance', 'OR', 'account_type.type=title'],
-                'AND']
+        where : [['account_type.type=balance', 'OR', 'account_type.type=title'], 'AND']
       }
     };
 
@@ -163,7 +164,6 @@ angular.module('bhima.controllers')
     function parseAccountDepth(accountModel) {
       accountModel.data.forEach(function (account) {
         var parent, depth = 0;
-
         parent = accountModel.get(account.parent);
         while (parent) {
           depth += 1;
@@ -184,6 +184,18 @@ angular.module('bhima.controllers')
     function stepTwo() {
       var hasPreviousYear = angular.isDefined(data.previous_fiscal_year);
       $scope.step = steps[hasPreviousYear ?  1 : 2];
+      if (hasPreviousYear) {
+        session.previous_fiscal_year = $scope.fiscal.get(data.previous_fiscal_year).fiscal_year_txt;
+      }
+    }
+
+    function checkClosing (close_fy, previous_fy_id) {
+      if (close_fy) {
+        stepThree(previous_fy_id);
+      } else {
+        $scope.createWithoutClosing = true;
+        $scope.step = steps[2];
+      }
     }
 
     // STEP 3: opening with resultat
@@ -227,8 +239,10 @@ angular.module('bhima.controllers')
     function observation () {
       if ((session.solde7 - session.solde6) > 0) {
         session.observation = 1;
-      } else {
+      } else if ((session.solde7 - session.solde6) < 0)  {
         session.observation = -1;
+      } else {
+        session.observation = 0;
       }
     }
 
@@ -270,8 +284,8 @@ angular.module('bhima.controllers')
         $http.post('/posting_fiscal_resultat/', { params: 
           {
             new_fy_id : data.new_fy_id,
-            user_id : data.user_id,
-            resultat : data.resultat
+            user_id   : data.user_id,
+            resultat  : data.resultat
           }
         });
       });
@@ -322,7 +336,7 @@ angular.module('bhima.controllers')
       // if no previous fiscal year is selected, we must ship back
       // the opening balances for each account to be inserted into
       // period 0 on the server.
-      if (!hasPreviousYear) {
+      if (!hasPreviousYear || $scope.createWithoutClosing) {
         bundle.balances = $scope.accounts.data
           .filter(function (account) {
             return account.type !== 'title' && (account.debit > 0 || account.credit > 0);
@@ -346,7 +360,7 @@ angular.module('bhima.controllers')
         // submit data the server
         postCreateFiscalYear();
 
-      } else if (!hasPreviousYear) {
+      } else if (!hasPreviousYear || $scope.createWithoutClosing) {
         // First Fiscal year
         if (checkEquilibrium(bundle.balances)) {
           // submit data the server
