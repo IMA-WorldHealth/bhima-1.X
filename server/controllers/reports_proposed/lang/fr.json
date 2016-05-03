@@ -122,11 +122,12 @@
 		"CADRE" : "Cadre",
 		"COMPTE" : "Compte",
 		"DESIGNATION" : "Designation",
-		"PREVIOUS"    : "Precedente",
-		"CURRENT" : "Courante",
-		"VARIATION_PERCENT" : "Variation (%)",
-		"VARIATION_MONTANT" : "Variation (Montant)",
-		"INCOME_ACCOUNT" : "COMPTE DE PROFIT",
-		"EXPENSE_ACCOUNT" : "COMPTE DE CHARGE"
+		"REALISATION"    : "valeur",
+		"VARIATION" : "Variation",
+		"PERCENT"   : "%",
+		"VARIATION_MONTANT" : "(Montant)",
+		"INCOME_ACCOUNT" : "COMPTES DE PRODUITS",
+		"EXPENSE_ACCOUNT" : "COMPTES DE CHARGES",
+		"ACCOUNT_FRAME"   : "Compte Cadre"
 	}
 }	
