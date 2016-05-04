@@ -118,6 +118,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
       // Caisse Principale USD : 2939
       request.account_ids = [2935, 2939];
       request.onlyCashes  = true;
+      session.currency_id = 2;
     }
     else {
       request.account_id = null;
