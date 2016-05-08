@@ -944,7 +944,9 @@
    "DEBITOR_GROUP" : "Debitor Group",
    "DOC_SUCCES"   : "Document Build Success - Open Document",
    "GENERATE_DOC"    : "Generate document",
-   "WITH_REPORT"     : "With report"
+   "WITH_REPORT"     : "With report",
+   "IGNORED_CLIENT_ACCOUNT" : "Ignored client account",
+   "EXAMPLE"    : "One Account Client : 41XXXXXX, Many Account Client : 41XXXXXX;41XXXXXX"
 },
 "DEPOT": {
   "ADD"              : "Add a Depot",

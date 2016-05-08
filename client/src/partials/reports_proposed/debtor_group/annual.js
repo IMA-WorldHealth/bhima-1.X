@@ -67,6 +67,7 @@ function DebtorGroupAnnualReportController($http, ReportConfigService) {
     // Temporarily set configuration options - This shouldn't be manually compiled
     configurationObject.language = vm.configuration.language.selected.value;
     configurationObject.fy = vm.fiscalYearId;
+    configurationObject.ignoredAccounts = vm.ignoredAccounts;
 
     // Update state
     vm.state = 'loading';

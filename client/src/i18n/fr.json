@@ -947,7 +947,9 @@
    "DEBITOR_GROUP"   : "Groupe de Debiteur",
    "DOC_SUCCES"      : "Document généré avec succès - Ouvrir le document",
    "GENERATE_DOC"    : "Generer document",
-   "WITH_REPORT"     : "Avec report"
+   "WITH_REPORT"     : "Avec report",
+   "IGNORED_CLIENT_ACCOUNT" : "Compte client a ignorer",
+   "EXAMPLE"    : "Un Compte client : 41XXXXXX, Plusieurs comptes clients : 41XXXXXX;41XXXXXX"
 },
 
 "DEPOT": {

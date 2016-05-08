@@ -21,6 +21,17 @@
         </div>
 
         <div class="form-group">
+          <label>
+            {{ "DEBTOR_GROUP_ANNUAL_REPORT.IGNORED_CLIENT_ACCOUNT" | translate }}
+          </label>
+          <div>
+            <input class="form-bhima" type="text" ng-model="AnnualCtrl.ignoredAccounts"/>
+          </div>
+        </div>
+
+        <small>{{"DEBTOR_GROUP_ANNUAL_REPORT.EXAMPLE" | translate }}</small>        
+
+        <div class="form-group">
           <div class="col-sm-offset-2 col-sm-10">
             <div class="checkbox">
               <label>
