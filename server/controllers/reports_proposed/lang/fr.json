@@ -54,13 +54,13 @@
 		"RUBRICS"               : "Rubriques",
 		"DESCRIPTION"           : "Description",
 		"MARGE_MARCHANDISE"     : "MARGE BRUTE SUR MARCHANDISES",
-		"MARGE_MARCHANDISE_DESC" : "Si positive, alors l'entreprise a ete capable de couvrir ses dépenses consacrées à l’achat des médicaments (en comprime, sirop, ...) par les ventes de ces meme médicaments.",
+		"MARGE_MARCHANDISE_DESC" : "Si positive, alors l'entreprise a ete capable de couvrir ses dépenses consacrées à l’achat des médicaments (en comprime, sirop, ...) par les ventes de ces meme médicaments. <br/><br/><b>Formule : Marge brute sur marchandises </b> = Ventes de marchandises – (Prix Achats ± Variation de stocks de marchandises)",
 		"MARGE_MATIERE"         : "MARGE BRUTE SUR MATIERE",
-		"MARGE_MATIERE_DESC"    : "Si positive, alors l'entreprise a ete capable de couvrir les dépenses liées à l’achat des fournitures (Nursing et bureau), produits d’entretien, réactifs labo, produits de radio et autres fournitures par les ventes des services.",
+		"MARGE_MATIERE_DESC"    : "Si positive, alors l'entreprise a ete capable de couvrir les dépenses liées à l’achat des fournitures (Nursing et bureau), produits d’entretien, réactifs labo, produits de radio et autres fournitures par les ventes des services. <br/><br/> <b>Formule : Marge brute sur matières</b> Ventes des produits fabriqués ± Production stockée (ou déstockage) + Production immobilisée – (Achats de matières et fournitures ± Variation  de stocks de matières premières et fournitures liées)",
 		"VALEUR_AJOUTEE"        : "VALEUR AJOUTEE",
-		"VALEUR_AJOUTEE_DESC"   : "Exprime la capacite de l'entreprise a creer des richesses, represente aussi ce que l'entreprise possede pour supporter la charge du personnel.",
+		"VALEUR_AJOUTEE_DESC"   : "Exprime la capacite de l'entreprise a creer des richesses, represente aussi ce que l'entreprise possede pour supporter la charge du personnel.<br/><br/><b>Formule : V .A.</b> (Marge Brute sur marchandises +Marge Brute sur matières+ Produits accessoires + Subventions d’exploitation+Autres produits) – (Autres achats ± Variations des stocks d’autres approvisionnements+Transports+Services extérieurs+Impôts et taxes + Autres charges)",
 		"EXCEDENT_BRUT"         : "EXCEDENT BRUT D'EXPLOITATION",
-		"EXCEDENT_BRUT_DESC"    : "Si positive, alors l'entreprise etait capable de couvrir les charges de son personnel par sa valeur ajoutée, il est la vraie richesse créée par l’Hôpital. Si negative, alors l'entreprise etait incapable à couvrir les charges de son personnel par sa valeur ajouté pendant l’année. D’où, les arriérés des salaires, des primes voir le non paiements des décomptes finaux des agents en retraite ou en âge de retraite"
+		"EXCEDENT_BRUT_DESC"    : "Si positive, alors l'entreprise etait capable de couvrir les charges de son personnel par sa valeur ajoutée, il est la vraie richesse créée par l’Hôpital. Si negative, alors l'entreprise etait incapable à couvrir les charges de son personnel par sa valeur ajouté pendant l’année. D’où, les arriérés des salaires, des primes voir le non paiements des décomptes finaux des agents en retraite ou en âge de retraite. <br/><br/><b>Formule : E.B.E. </b>Valeur Ajoutée – Charges du Personnel"
 	},
 
 	"EMPLOYEE_STATE" : {
@@ -132,6 +132,6 @@
   		"TOTAL_INCOME" : "TOTAL PRODUIT",
   		"TOTAL_EXPENSE" : "TOTAL CHARGE",
   		"RESULTAT"      : "RESULTAT",
-  		"RESULTAT_WITHOUT" : "RESULTAT WITHOUT "
+  		"RESULTAT_WITHOUT" : "RESULTAT SANS "
 	}
 }	
