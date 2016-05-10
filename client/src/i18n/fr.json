@@ -3310,7 +3310,8 @@
   "LANGUAGE" : "Langue",
   "GENERATE_DOC" : "Generer Document",
   "DOC_SUCCES" : "Generation avec succes",
-  "EXAMPLE"    : "Une transaction : HBB1, Plusieurs transactions : HBB1;HBB2"
+  "EXAMPLE"    : "Une transaction : HBB1, Plusieurs transactions : HBB1;HBB2",
+  "ACCOUNT_GROUP_DEDUCT" : "Groupe de compte a deduire du resultat"
 },
 "VERSEMENT": {
    "ASSOCIATED_TO"     : "Les comptes associe à : ",

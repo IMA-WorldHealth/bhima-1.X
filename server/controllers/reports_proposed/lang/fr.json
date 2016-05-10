@@ -131,6 +131,7 @@
 		"ACCOUNT_FRAME"   : "Compte Cadre",
   		"TOTAL_INCOME" : "TOTAL PRODUIT",
   		"TOTAL_EXPENSE" : "TOTAL CHARGE",
-  		"RESULTAT"      : "RESULTAT"
+  		"RESULTAT"      : "RESULTAT",
+  		"RESULTAT_WITHOUT" : "RESULTAT WITHOUT "
 	}
 }	
