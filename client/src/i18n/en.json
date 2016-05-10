@@ -3046,6 +3046,7 @@
    "CLIENT"                    : "Clients",
    "SECTION_RESULTAT"          : "Result Section",
    "COMPTE_RESULTAT"           : "Result Account",
+   "COMPTE_EXPLOITATION"       : "Income expense variation",
    "CONFIG_ACCOUNTING"         : "Configuration accounting",
    "CONFIG_RUBRIC"             : "Configuration Rubrics",
    "CONFIG_TAX"                : "Configuration Taxes",
@@ -3306,7 +3307,11 @@
   "GENERATE_DOC" : "Generer Document",
   "DOC_SUCCES" : "Generated sucessfully",
   "EXAMPLE"    : "One transaction : HBB1, Many transactions : HBB1;HBB2",
-  "ACCOUNT_GROUP_DEDUCT" : "Acount group to deduct from result"
+  "ACCOUNT_GROUP_DEDUCT" : "Acount group to deduct from result",
+  "EXAMPLE_DEDUCT" : "One account group : 718, Many account Group : 718;7182, simultenous deduction : 718,7182",
+  "ACCOUNT_AMOUNT_DEDUCTION_PREVIOUS" : "Account and amount to deduct for previous year",
+  "EXAMPLE_ACCOUNT_AMOUNT_DEDUCT" : "One account 65XXXXXX:300, Many accounts 65XXXXXX:300;75XXXXXX:150",
+  "ACCOUNT_AMOUNT_DEDUCTION_CURRENT" : "Account and amount to deduct for current year"
 },
 "VERSEMENT": {
    "ASSOCIATED_TO"     : "Accounts associated to         : ",

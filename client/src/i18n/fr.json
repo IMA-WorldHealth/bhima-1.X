@@ -3052,6 +3052,7 @@
    "CUSTOMER_DEBT_REPORT"      : "Créances des clients",
    "SECTION_RESULTAT"          : "Section Resultat",
    "COMPTE_RESULTAT"           : "Compte Resultat",
+   "COMPTE_EXPLOITATION"       : "Variation exploitation",
    "CONFIG_ACCOUNTING"         : "Configuration Comptes",
    "CONFIG_RUBRIC"             : "Configuration Rubriques",
    "CONFIG_TAX"                : "Configuration Taxes",
@@ -3311,7 +3312,11 @@
   "GENERATE_DOC" : "Generer Document",
   "DOC_SUCCES" : "Generation avec succes",
   "EXAMPLE"    : "Une transaction : HBB1, Plusieurs transactions : HBB1;HBB2",
-  "ACCOUNT_GROUP_DEDUCT" : "Groupe de compte a deduire du resultat"
+  "ACCOUNT_GROUP_DEDUCT" : "Groupe de compte a deduire du resultat",
+  "EXAMPLE_DEDUCT" : "Un groupe de compte : 718, Plusieurs groupe des comptes : 718;7182, reduction Plusieurs groupes simultanee : 718,7182",
+  "ACCOUNT_AMOUNT_DEDUCTION_PREVIOUS" : "Compte et montant a deduire pour l'annee precedente",
+  "EXAMPLE_ACCOUNT_AMOUNT_DEDUCT" : "Un compte 65XXXXXX:300, Plusieurs comptes 65XXXXXX:300;75XXXXXX:150",
+  "ACCOUNT_AMOUNT_DEDUCTION_CURRENT" : "Compte et montant a deduire pour l'annee courante"
 },
 "VERSEMENT": {
    "ASSOCIATED_TO"     : "Les comptes associe à : ",
