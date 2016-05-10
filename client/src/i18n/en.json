@@ -3305,7 +3305,8 @@
   "LANGUAGE" : "Language",
   "GENERATE_DOC" : "Generer Document",
   "DOC_SUCCES" : "Generated sucessfully",
-  "EXAMPLE"    : "One transaction : HBB1, Many transactions : HBB1;HBB2"
+  "EXAMPLE"    : "One transaction : HBB1, Many transactions : HBB1;HBB2",
+  "ACCOUNT_GROUP_DEDUCT" : "Acount group to deduct from result"
 },
 "VERSEMENT": {
    "ASSOCIATED_TO"     : "Accounts associated to         : ",
