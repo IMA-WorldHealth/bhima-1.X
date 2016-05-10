@@ -13,6 +13,7 @@
 var db      = require('../../../lib/db');
 var numeral = require('numeral');
 var q       = require('q');
+var sanitize = require('../../../lib/sanitize');
 
 // takes in a date object, spits out
 // dd-MM-yyyy format
@@ -47,6 +48,11 @@ exports.compile = function (options) {
 
   context.timestamp = dateFmt(new Date());
 
+  context.ignoredAccounts = (options.ignoredAccounts) ?
+  'AND account.account_number NOT IN (' + 
+    options.ignoredAccounts.split(';')
+    .map(function (item){ return sanitize.escape(item);}).join(',') + ')' : '';
+
   // get some metadata about the fiscal year
   sql =
     'SELECT fy.fiscal_year_txt AS label, MIN(p.period_start) AS start, MAX(p.period_stop) AS stop, fy.previous_fiscal_year ' +
@@ -56,6 +62,8 @@ exports.compile = function (options) {
   return db.exec(sql, [fiscalYearId])
   .then(function (rows) {
     var year = rows[0];
+
+    context.year = year;
 
     context.meta = {
       label : year.label,
@@ -91,10 +99,10 @@ exports.compile = function (options) {
       'FROM debitor_group AS dg LEFT JOIN period_total AS pt ON dg.account_id = pt.account_id ' +
       'JOIN account ON account.id = dg.account_id ' +
       'JOIN period AS p ON pt.period_id = p.id ' +
-      'WHERE p.period_stop <= DATE(?) ' +
+      'WHERE p.fiscal_year_id = ? ' + context.ignoredAccounts + 
       'GROUP BY account.id;';
 
-    return db.exec(sql, [context.meta.startDate]);
+    return db.exec(sql, [context.year.previous_fiscal_year]);
   })
   .then(function (accounts) {
 
@@ -121,10 +129,10 @@ exports.compile = function (options) {
       'FROM debitor_group AS dg LEFT JOIN period_total AS pt ON dg.account_id = pt.account_id ' +
       'JOIN account ON account.id = dg.account_id ' +
       'JOIN period AS p ON pt.period_id = p.id ' +
-      'WHERE p.fiscal_year_id = ? ' +
+      'WHERE p.fiscal_year_id = ? ' + context.ignoredAccounts +
       'GROUP BY account.id;';
 
-    return db.exec(sql, [fiscalYearId]);
+    return db.exec(sql, [options.fy]);
   })
   .then(function (accounts) {
 
@@ -142,6 +150,7 @@ exports.compile = function (options) {
       }
 
       var ref = context.accounts[a.account_number];
+
       ref.debits = a.debit;
       ref.credits = a.credit;
       ref.simpleDebits = a.debit;
@@ -149,13 +158,13 @@ exports.compile = function (options) {
 
       // remove previous debt in current value
       if(ref.balance >= 0) {
-        ref.simpleDebits = ref.debits - ref.balance;
+        ref.simpleDebits = ref.simpleDebits - ref.balance;
       }else{
-        ref.simpleCredits = ref.credits - (ref.balance * -1) + ref.balance;
+        ref.simpleCredits = ref.simpleCredits - (ref.balance * -1);
       }
 
       ref.closingBalance = ref.debits - ref.credits;
-      ref.simpleClosingBalance = (ref.simpleDebits - ref.simpleCredits) + ref.balance;
+      ref.simpleClosingBalance = (ref.balance + ref.simpleDebits) - ref.simpleCredits;
     });
 
     return q.when(accounts);

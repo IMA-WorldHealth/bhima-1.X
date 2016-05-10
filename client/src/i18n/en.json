@@ -944,7 +944,9 @@
    "DEBITOR_GROUP" : "Debitor Group",
    "DOC_SUCCES"   : "Document Build Success - Open Document",
    "GENERATE_DOC"    : "Generate document",
-   "WITH_REPORT"     : "With report"
+   "WITH_REPORT"     : "With report",
+   "IGNORED_CLIENT_ACCOUNT" : "Ignored client account",
+   "EXAMPLE"    : "One Account Client : 41XXXXXX, Many Account Client : 41XXXXXX;41XXXXXX"
 },
 "DEPOT": {
   "ADD"              : "Add a Depot",
@@ -3292,7 +3294,20 @@
    "VALIDATE"          : "Accept",
    "YEARS"             : "Years",
    "YES"               : "Yes"
-   },
+},
+
+"VARIATION_EXPLOITATION" : {
+  "BUILD_VARIATION_EXPLOITATION" : "Income expense account variation",
+  "DOCUMENT_CONFIG" : "Document configuration",
+  "FISCAL_YEAR" : "Fiscal year",
+  "IGNORED_TRANSACTION_CURRENT" : "Transactions list to ignore for current year",
+  "IGNORED_TRANSACTION_PREVIEW" : "Transactions list to ignore for previews year",
+  "LANGUAGE" : "Language",
+  "GENERATE_DOC" : "Generer Document",
+  "DOC_SUCCES" : "Generated sucessfully",
+  "EXAMPLE"    : "One transaction : HBB1, Many transactions : HBB1;HBB2",
+  "ACCOUNT_GROUP_DEDUCT" : "Acount group to deduct from result"
+},
 "VERSEMENT": {
    "ASSOCIATED_TO"     : "Accounts associated to         : ",
    "AVAILABLE_ACCOUNT" : "Availables accounts",
