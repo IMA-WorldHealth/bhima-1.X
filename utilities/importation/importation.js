@@ -4,8 +4,8 @@ var xlsx = require('xlsx');
 var sanitize = require('../../server/lib/sanitize');
 var fs = require('fs');
 
-var book = xlsx.readFile('report.xlsx');
-var sheet = book.Sheets[book.SheetNames[1]];
+var book = xlsx.readFile('solde_2015.xlsx');
+var sheet = book.Sheets[book.SheetNames[0]];
 var JSONSheet = xlsx.utils.sheet_to_json(sheet);
 
 //base config
@@ -16,11 +16,11 @@ var pcgc = [], errors = [],
 
 //invariant info in posting_journal
 var project_id = 1, fiscal_year_id = 2,
-	period_id = 15, trans_date = "2015-01-01", currency_id = 2,
-	comment = 'Report 2013', origin_id = 9,
+	period_id = 15, trans_date = "2015-12-31", currency_id = 2,
+	comment = 'Solde compte exploitation', origin_id = 9,
 	user_id = 1;
 
-console.log('[INFO] traitement feuille : ' + book.SheetNames[1] + " en cours ...");
+console.log('[INFO] traitement feuille : ' + book.SheetNames[0] + " en cours ...");
 
 
 db.initialise();
@@ -160,9 +160,9 @@ getPCGCAccounts()
 				  " `debit_equiv`, `credit_equiv`, `currency_id`, `comment`, `origin_id`, `user_id`) VALUES " +
 				  lines.join(', ') + ";";
 
-	console.log("[INFO] Ecriture dans le fichier" + "report_" + book.SheetNames[1] + ".sql" + " encours ...");
+	console.log("[INFO] Ecriture dans le fichier" + "report_" + book.SheetNames[0] + ".sql" + " encours ...");
 
-	fs.writeFile("report_" + book.SheetNames[1] + ".sql" , request, function(err) {
+	fs.writeFile("report_" + book.SheetNames[0] + ".sql" , request, function(err) {
 	    if(err) {
 	    	console.log(err);
 	        return; 
