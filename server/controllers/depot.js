@@ -273,20 +273,28 @@ function getAvailableLots(req, res, next) {
 
   sql =
     'SELECT unit_price, tracking_number, lot_number, SUM(quantity) AS quantity, code, label, expiration_date FROM ' +
-    '(SELECT purchase_item.unit_price, stock.tracking_number, stock.lot_number, (consumption.quantity * -1) as quantity, inventory.code, inventory.text AS label, stock.expiration_date FROM ' +
-    'consumption JOIN stock ON consumption.tracking_number = stock.tracking_number JOIN inventory ON inventory.uuid = stock.inventory_uuid ' +
-    'JOIN purchase_item ON purchase_item.purchase_uuid = stock.purchase_order_uuid AND purchase_item.inventory_uuid = stock.inventory_uuid  ' +
-    'WHERE consumption.canceled = 0 AND depot_uuid = ? ' +
+      '(SELECT purchase_item.unit_price, stock.tracking_number, stock.lot_number, (consumption.quantity * -1) as quantity, ' + 
+      'inventory.code, inventory.text AS label, stock.expiration_date ' + 
+      'FROM consumption ' + 
+      'JOIN stock ON consumption.tracking_number = stock.tracking_number ' +
+      'JOIN inventory ON inventory.uuid = stock.inventory_uuid ' +
+      'JOIN purchase_item ON purchase_item.purchase_uuid = stock.purchase_order_uuid AND purchase_item.inventory_uuid = stock.inventory_uuid ' +
+      'WHERE consumption.canceled = 0 AND depot_uuid = ? ' + 
     'UNION ALL ' +
-    'SELECT purchase_item.unit_price, stock.tracking_number, stock.lot_number, (CASE WHEN movement.depot_entry= ? THEN movement.quantity ELSE movement.quantity*-1 END) AS quantity, ' +
-    'inventory.code, inventory.text AS label, stock.expiration_date FROM movement JOIN stock ON movement.tracking_number = stock.tracking_number JOIN inventory ' +
-    'ON inventory.uuid = stock.inventory_uuid JOIN purchase_item ON purchase_item.purchase_uuid = stock.purchase_order_uuid AND purchase_item.inventory_uuid = stock.inventory_uuid ' +
-    'WHERE movement.depot_entry= ? OR movement.depot_exit= ?) ' +
-    'AS t GROUP BY tracking_number;';
+      'SELECT inventory.purchase_price AS unit_price, stock.tracking_number, stock.lot_number, ' + 
+        'SUM(if (movement.depot_entry= ?, movement.quantity, (movement.quantity*-1))) as quantity, ' + 
+        'inventory.code, inventory.text AS label, stock.expiration_date ' +
+        'FROM stock ' +
+        'JOIN inventory ' + 
+        'JOIN movement ON stock.inventory_uuid = inventory.uuid ' +
+        'AND stock.tracking_number = movement.tracking_number ' +
+        'WHERE (movement.depot_entry = ? OR movement.depot_exit= ? ) ' +  
+        'GROUP BY movement.tracking_number) ' +
+    'AS t GROUP BY tracking_number ' +
+    'HAVING quantity > 0; ';
 
   return db.exec(sql, [depot, depot, depot, depot])
-  .then(function (rows) {
-    var ans = rows.filter(function (item){return item.quantity > 0});
+  .then(function (ans) { 
     res.status(200).json(ans);
   })
   .catch(next)
