@@ -55,7 +55,7 @@
               </td>
             </tr>
 
-            <tr ng-repeat="item in indirect_purchase.data | filter : session.filter"
+            <tr ng-repeat="item in indirect_purchase.data | filter : session.filter | orderBy:'-purchase_date'"
                 ng-class="{'selected-success': session.selected.uuid===item.uuid}">
                 <td>{{item.purchase_date | date}}</td>
                 <td><a href="/#/invoice/purchase/{{item.uuid}}">{{item.abbr}}{{item.reference}}</td>
