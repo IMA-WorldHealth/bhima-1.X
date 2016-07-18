@@ -50,7 +50,7 @@
 
           <div class="form-group">
             <label for="select-cred">{{ 'PURCHASE.CREATE.TO_DELIVER_TO' | translate }}</label>
-            <select id="select-cred" ng-change="initPanelSuccess()" ng-model="session.receiver" ng-options="e as e.name for e in employee.data" class="form-bhima" required>
+            <select id="select-cred" ng-change="initPanelSuccess()" ng-model="session.receiver" ng-options="e as e.names for e in employee.data" class="form-bhima" required>
               <option value="" ng-value="" disabled="disabled">--{{ 'PURCHASE.CREATE.SELECT_HEADER' | translate }}--</option>
             </select>
           </div>
@@ -60,7 +60,7 @@
             <div ng-switch-when="false">
               <div class="form-group">
                 <label for="select-employee">{{ 'PURCHASE.CREATE.BUYER' | translate}}</label>
-                <select id="select-employee" ng-model="session.employee" ng-options="e as e.name for e in employee.data" class="form-bhima" ng-change="initPanelSuccess()">
+                <select id="select-employee" ng-model="session.employee" ng-options="e as e.names for e in employee.data" class="form-bhima" ng-change="initPanelSuccess()">
                   <!-- hack default select value to force a selection of an item -->
                   <option ng-value="" disabled="disabled">--{{ 'PURCHASE.CREATE.SELECT_EMPLOYEE' | translate }}--</option>
                 </select>
