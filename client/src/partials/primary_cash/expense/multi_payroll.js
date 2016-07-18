@@ -313,12 +313,16 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
     var tranches = session.tranches_ipr;
     if (!tranches.length) {return 0;}
 
+    //Update way to calculate IPR
+    var baseIpr = row.net_before_taxe - row.ins1;
+
     var net_imposable = exchange.convertir(
-      row.net_before_taxe,
+      baseIpr,
       session.selectedCurrency.id,
       tranches[0].currency_id,
       util.sqlDate(new Date())
     );
+    
     var montant_annuel = net_imposable * 12;
     var ind = -1;
     for(var i = 0; i< tranches.length; i++) {
