@@ -698,20 +698,16 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
           elmt[tax.abbr] = newIPR;
         }
 
+        // Adding taxable prime in calculation of Tax
         if (tax.is_percent) {
           var primePercentCotisation = ((somPrime * tax.value) / 100);
           elmt[tax.abbr] += primePercentCotisation;
         }
 
-
         if (tax.is_employee) {
           SomTax += elmt[tax.abbr];
         }
       });
-
-      console.log('PPPPPPPPPPPPPPPPPPPPPPP');
-      console.log(elmt);
-      console.log('UUUUUUUUUUUUUUUUUUUUUUU');
 
       elmt.gross_salary = elmt.net_before_taxe + somRub;
       elmt.net_after_taxe = elmt.net_before_taxe - somCot - SomTax;
