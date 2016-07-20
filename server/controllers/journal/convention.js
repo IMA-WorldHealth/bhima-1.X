@@ -52,7 +52,7 @@ function invoice(id, userId, cb) {
       throw new Error('Negative cost detected for invoice id: ' + id);
     }
 
-    return core.queries.origin('group_deb_invoice');
+    return core.queries.origin('group_invoice');
   })
   .then(function (originId) {
     cfg.originId = originId;
