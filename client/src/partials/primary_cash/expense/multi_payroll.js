@@ -310,6 +310,7 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
   }
 
   function getIPR(row) {
+
     var tranches = session.tranches_ipr;
     if (!tranches.length) {return 0;}
 
@@ -322,7 +323,7 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
       tranches[0].currency_id,
       util.sqlDate(new Date())
     );
-    
+
     var montant_annuel = net_imposable * 12;
     var ind = -1;
     for(var i = 0; i< tranches.length; i++) {
@@ -667,14 +668,10 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
       });
 
       cotisation_config_list.forEach(function (cotisation) {
-        // FIXME: it's necessary to keep catisation value unmodifiable
-        // the code below it commented because we offer to user the possibility
-        // to change manually cotisation value...
-        // FIXME: we need a function which update the cotisation value
-        // if (cotisation.is_percent) {
-        //   var primePercentCotisation = ((somPrime * cotisation.value) / 100);
-        //   elmt[cotisation.abbr] += primePercentCotisation;
-        // }
+        if (cotisation.is_percent) {
+          var primePercentCotisation = ((somPrime * cotisation.value) / 100);
+          elmt[cotisation.abbr] += primePercentCotisation;
+        }
 
         if (cotisation.is_employee) {
           somCot += elmt[cotisation.abbr];
@@ -682,18 +679,6 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
       });
 
       elmt.net_before_taxe += somPrime;
-      // FIXME: IPR value must be modifiable in a input zone
-      // var newIPR = getIPR(elmt);
-
-      tax_config_list.forEach(function (tax) {
-        // FIXME: Dont reset the IPR value after a user change
-        // if (tax.is_ipr) {
-        //   elmt[tax.abbr] = newIPR;
-        // }
-        if (tax.is_employee) {
-          SomTax += elmt[tax.abbr];
-        }
-      });
 
       rubric_config_list.forEach(function (rub) {
         var change = elmt[rub.abbr];
@@ -703,6 +688,24 @@ function MultiPayrollController($scope, $translate, $http, $timeout, messenger, 
 
         if (rub.is_social_care) {
           somRub += change;
+        }
+      });
+
+      var newIPR = getIPR(elmt);
+
+      tax_config_list.forEach(function (tax) {
+        if (tax.is_ipr) {
+          elmt[tax.abbr] = newIPR;
+        }
+
+        // Adding taxable prime in calculation of Tax
+        if (tax.is_percent) {
+          var primePercentCotisation = ((somPrime * tax.value) / 100);
+          elmt[tax.abbr] += primePercentCotisation;
+        }
+
+        if (tax.is_employee) {
+          SomTax += elmt[tax.abbr];
         }
       });
 

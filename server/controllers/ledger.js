@@ -270,7 +270,7 @@ function employeeInvoice(id) {
       return line.inv_po_id;
     });
 
-    var account_id = ans.pop().account_id;
+    var account_id = ans[0].account_id;
 
     var sql =
       'SELECT s.reference, s.project_id, s.is_distributable, `t`.`inv_po_id`, `t`.`trans_date`, SUM(`t`.`debit_equiv`) AS `debit`,  ' +

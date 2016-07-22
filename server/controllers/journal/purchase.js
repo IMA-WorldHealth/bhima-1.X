@@ -218,10 +218,10 @@ function indirectPurchase(id, userId, cb) {
       'primary_cash.date, primary_cash.deb_cred_uuid, primary_cash.deb_cred_type, primary_cash.currency_id, ' +
       'primary_cash.account_id, primary_cash.cost, primary_cash.user_id, primary_cash.description, ' +
       'primary_cash.cash_box_id, primary_cash.origin_id, primary_cash_item.debit, primary_cash_item.credit, ' +
-      'primary_cash_item.inv_po_id, primary_cash_item.document_uuid, creditor.group_uuid ' +
-     'FROM primary_cash JOIN primary_cash_item JOIN creditor ON ' +
+      'primary_cash_item.inv_po_id, primary_cash_item.document_uuid, debitor.group_uuid ' +
+     'FROM primary_cash JOIN primary_cash_item JOIN debitor ON ' +
        'primary_cash.uuid = primary_cash_item.primary_cash_uuid AND ' +
-       'primary_cash.deb_cred_uuid = creditor.uuid ' +
+       'primary_cash.deb_cred_uuid = debitor.uuid ' +
      'WHERE primary_cash.uuid = ?;';
 
   db.exec(sql, [id])
@@ -261,7 +261,7 @@ function indirectPurchase(id, userId, cb) {
         'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
         'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
       'SELECT ?, ?, ?, ?, ?, ?, ?, account_id, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ' +
-      'FROM creditor_group WHERE creditor_group.uuid = ?;';
+      'FROM debitor_group WHERE debitor_group.uuid = ?;';
 
     params = [
       uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
