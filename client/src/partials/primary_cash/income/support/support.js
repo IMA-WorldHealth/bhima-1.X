@@ -86,6 +86,8 @@ function PrimaryCashSupportController($scope, $q, $location, $routeParams, valid
   }
 
   function ready(model) {
+    $scope.accountId =     
+
     $scope.som = 0;
     $scope.overviews = model.situations.data.filter(function (situation) {
       if (situation.balance > 0)  {
@@ -120,7 +122,7 @@ function PrimaryCashSupportController($scope, $q, $location, $routeParams, valid
       date            : util.sqlDate(new Date().toString()),
       currency_id     : $scope.selectedItem.currency_id,
       deb_cred_uuid   : $scope.selectedEmployee.creditor_uuid,
-      account_id      : $scope.selectedEmployee.account_id,
+      account_id      : $scope.model.situations.data[0].account_id,
       cost            : $scope.data.payment,
       user_id         : Session.user.id,
       description     : ['EMPLOYE', $scope.selectedEmployee.name, util.sqlDate(new Date().toString())].join('/'),
