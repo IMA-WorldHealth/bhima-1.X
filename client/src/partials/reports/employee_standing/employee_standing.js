@@ -19,10 +19,10 @@ angular.module('bhima.controllers')
       query : {
         tables : {
           employee : {columns : ['id', 'code', 'prenom', 'name', 'postnom', 'sexe', 'dob', 'location_id','creditor_uuid','debitor_uuid']},
-          creditor : { columns : ['text']},
-          creditor_group : { columns : ['account_id', 'uuid']}
+          debitor : { columns : ['text']},
+          debitor_group : { columns : ['account_id', 'uuid']}
         },
-        join : ['employee.creditor_uuid=creditor.uuid', 'creditor.group_uuid=creditor_group.uuid']
+        join : ['employee.debitor_uuid=debitor.uuid', 'debitor.group_uuid=debitor_group.uuid']
       }
     };
 
@@ -53,7 +53,7 @@ angular.module('bhima.controllers')
     function search() {
       $scope.state = 'generate';
       session.employee = session.selected;
-      var id = session.employee.creditor_uuid;
+      var id = session.employee.debitor_uuid;
       connect.fetch('/reports/employeeStanding/?id=' + id)
       .then(function (data) {
 

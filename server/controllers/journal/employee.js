@@ -592,21 +592,20 @@ function advancePayment(id, userId, cb) {
 
   sql =
     'SELECT rubric_paiement.id, rubric_paiement.rubric_id, rubric_paiement.paiement_uuid, rubric_paiement.value, ' +
-      'rubric.is_advance, paiement.currency_id, paiement.employee_id, employee.prenom, employee.name, employee.creditor_uuid, ' +
-      'creditor_group.account_id AS account_creditor, config_accounting.account_id AS account_paiement, primary_cash.project_id ' +
+      'rubric.is_advance, paiement.currency_id, paiement.employee_id, employee.prenom, employee.name, employee.debitor_uuid, ' +
+      'debitor_group.account_id AS account_debitor, config_accounting.account_id AS account_paiement, primary_cash.project_id ' +
     'FROM rubric_paiement ' +
     'JOIN rubric ON rubric.id = rubric_paiement.rubric_id ' +
     'JOIN paiement ON paiement.uuid = rubric_paiement.paiement_uuid ' +
     'JOIN paiement_period ON paiement_period.id = paiement_period.config_accounting_id ' +
     'JOIN config_accounting ON config_accounting.id = paiement_period.config_accounting_id ' +
     'JOIN employee ON employee.id = paiement.employee_id ' +
-    'JOIN creditor ON creditor.uuid= employee.creditor_uuid ' +
-    'JOIN creditor_group ON creditor_group.uuid=creditor.group_uuid ' +
+    'JOIN debitor ON debitor.uuid= employee.debitor_uuid ' +
+    'JOIN debitor_group ON debitor_group.uuid=debitor.group_uuid ' +
     'JOIN primary_cash_item ON primary_cash_item.inv_po_id = rubric_paiement.paiement_uuid ' +
     'JOIN primary_cash ON primary_cash.uuid = primary_cash_item.primary_cash_uuid ' +
     'WHERE rubric_paiement.paiement_uuid = ? ' +
       'AND rubric.is_advance = 1;';
-
 
   db.exec(sql, [id])
   .then(function (records) {
@@ -647,8 +646,8 @@ function advancePayment(id, userId, cb) {
 
       params = [
         uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
-        reference.account_creditor, reference.value, 0, reference.value / rate, 0, reference.currency_id,
-        reference.creditor_uuid, 'C', reference.paiement_uuid, cfg.originId, userId
+        reference.account_debitor, reference.value, 0, reference.value / rate, 0, reference.currency_id,
+        reference.debitor_uuid, 'C', reference.paiement_uuid, cfg.originId, userId
       ];
 
       return db.exec(sql, [params]);
