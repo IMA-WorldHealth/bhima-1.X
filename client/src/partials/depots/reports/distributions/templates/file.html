@@ -1,0 +1,68 @@
+<main>
+  <div class="panel panel-default">
+    <div class="panel-heading">{{'BILAN.DOCUMENT_CONFIG' | translate}}</div>
+      <div class="panel-body">
+        <form>
+
+          <div class="form-group">
+            <label class="control-label col-xs-4 required">
+              {{ "BILAN.FISCAL_YEAR" | translate }}
+            </label>
+            <div>
+              <select class="form-bhima" ng-model="session.fiscal_year_id" ng-options="fy.id as fy.fiscal_year_txt for fy in fiscalYears.data" ng-change="switchFiscal()" required>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox"
+                    ng-true-value="1"
+                    ng-false-value="0"
+                    ng-model="session.ohada_structure">
+                  {{ 'BILAN.OHADA_STRUCTURE' | translate }}
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group" ng-if="session.ohada_structure === 1">
+            <div class="col-sm-offset-2 col-sm-10">
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox"
+                    ng-true-value="1"
+                    ng-false-value="0"
+                    ng-model="session.net_only">
+                  {{ 'BILAN.NET_ONLY' | translate }}
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>{{'BILAN.LANGUAGE' | translate}}</label>
+
+            <div>
+              <span ng-repeat="language in configuration.language.options">
+                <button
+                  class="btn btn-default btn-lg"
+                  ng-class="{'active' : configuration.language.selected===language}"
+                  ng-click="selectConfiguration('language', language)">{{language.label}}</button>
+              </span>
+            </div>
+          </div>
+
+          <button
+            class="btn btn-default"
+            ng-disabled="session.building"
+            ng-click="generateDocument()" ng-if="!generatedDocumentPath">{{session.building ? loading : generate_doc}}
+          </button>
+
+          <a class="btn btn-success" href="{{generatedDocumentPath}}" target="_blank" ng-if="generatedDocumentPath" ng-click="clearPath()">{{'BILAN.DOC_SUCCES' | translate}}</a>
+        </form>
+      </div>
+  </div>
+</main>

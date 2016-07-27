@@ -41,6 +41,9 @@ function DepotStockDistributionsController($routeParams, $http, util, Dates) {
   }
 
   function search() {
+
+    if(vm.type == 'file'){ return; }
+    
     var url;
 
     vm.loading = true;

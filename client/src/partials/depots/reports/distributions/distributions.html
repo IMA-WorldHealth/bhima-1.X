@@ -2,7 +2,7 @@
   {{ DistributionsCtrl.title | translate }}
 </header>
 
-<nav>
+<nav ng-if="DistributionsCtrl.type != 'file'">
   <div class="pull-left">
     <ol class="breadcrumb" style="float: right;">
       <li><a tabindex="-1" href="#/"><span class="glyphicon glyphicon-home"></span></a></li>
@@ -38,7 +38,7 @@
   </div>
 </nav>
 
-<div class="report report-compressed">
+<div class="report report-compressed" ng-if="DistributionsCtrl.type != 'file'">
   <div class="reportBody">
     <div class="reportFrame" style="padding-top: 10px;">
       <h4 class="visible-print">{{ "DEPOT.DISTRIBUTIONS.KEY" | translate }} <small>{{ DistributionsCtrl.startDate | date }} - {{ DistributionsCtrl.endDate | date }}</small></h4>
@@ -47,7 +47,11 @@
   </div>
 </div>
 
-<footer>
+<div ng-if="DistributionsCtrl.type == 'file'" style="padding-top: 10px;">
+  <ng-include src="DistributionsCtrl.url"></ng-include>
+</div>
+
+<footer ng-if="DistributionsCtrl.type != 'file'">
   <table style="width: 99%">
     <tbody>
       <td width="50%">

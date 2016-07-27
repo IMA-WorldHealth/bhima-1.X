@@ -34,7 +34,8 @@ function DepotController($location, $translate, $window, messenger, AppCache, St
   /* ------------------------------------------------------------------------ */
 
   // these modules are shared between warehouses and regular pharmacies
-  vm.config.sharedModules = [{
+  vm.config.sharedModules = [
+  {
     key : 'STOCK.INTEGRATION.KEY',
     ico : 'glyphicon-th-large',
     link : '/depots/:uuid/integrations'
@@ -93,6 +94,11 @@ function DepotController($location, $translate, $window, messenger, AppCache, St
     key : 'STOCK_STATUS.TITLE',
     ico : 'glyphicon-th-list',
     link : '/reports/stock_store/:uuid'
+  },
+  {
+    key : 'STOCK_STATUS.STOCK_FILE',
+    ico : 'glyphicon-th-list',
+    link : '/depots/:uuid/reports/distributions/file'
   }];
 
   // generic error handler
