@@ -87,7 +87,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat='report in Reports'>
+              <tr ng-repeat='report in Reports | orderBy:"name"'>
                 <td> {{ $index + 1 }} </td>
                 <td> {{ report.code }} </td>
                 <td> {{ report.name }}  {{ report.postnom }} </td>

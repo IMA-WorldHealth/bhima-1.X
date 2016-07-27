@@ -875,9 +875,11 @@ function salaryAdvance(id, userId, cb) {
     reference = records[0];
 
     sql =
-      'SELECT creditor_group.account_id, creditor.uuid FROM primary_cash ' +
+      'SELECT debitor_group.account_id, debitor.uuid FROM primary_cash ' +
       'JOIN creditor ON creditor.uuid = primary_cash.deb_cred_uuid ' +
-      'JOIN creditor_group ON creditor_group.uuid = creditor.group_uuid ' +
+      'JOIN employee ON employee.creditor_uuid = creditor.uuid ' +
+      'JOIN debitor ON debitor.uuid = employee.debitor_uuid ' +
+      'JOIN debitor_group ON debitor_group.uuid = debitor.group_uuid ' + 
       'WHERE primary_cash.uuid = ?;';
 
     return [
@@ -892,7 +894,7 @@ function salaryAdvance(id, userId, cb) {
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
     cfg.account_id = res[0].account_id;
-    cfg.creditor_uuid = res[0].uuid;
+    cfg.debitor_uuid = res[0].uuid;
     cfg.store = store;
     rate = cfg.store.get(reference.currency_id).rate;
     return core.queries.transactionId(reference.project_id);
@@ -910,7 +912,7 @@ function salaryAdvance(id, userId, cb) {
 
     params = [
       uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description, cfg.account_id,
-      0, reference.cost, 0, reference.cost / rate, reference.currency_id, cfg.creditor_uuid, 'C', reference.document_uuid,
+      0, reference.cost, 0, reference.cost / rate, reference.currency_id, cfg.debitor_uuid, 'C', reference.document_uuid,
       cfg.originId, userId
     ];
 

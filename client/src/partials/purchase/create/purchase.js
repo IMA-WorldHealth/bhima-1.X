@@ -77,6 +77,10 @@ angular.module('bhima.controllers')
     });
 
     function initialise(model) {
+      model.employee.data.forEach(function (emp) {
+        emp.names = [emp.name, emp.postnom, emp.prenom].join(' ');
+      });
+
       $scope.idUser = Session.user.id;
       angular.extend($scope, model);
       $scope.user = Session.user;

@@ -80,18 +80,18 @@ function PurchaseOrderCashController ($routeParams, $translate, $http, messenger
       query : {
         tables : {
           employee : {
-            columns : ['creditor_uuid']
+            columns : ['debitor_uuid']
           },
-          creditor : {
+          debitor : {
             columns : ['group_uuid']
           },
-          creditor_group : {
+          debitor_group : {
             columns : ['account_id']
           }
         },
         join : [
-          'employee.creditor_uuid=creditor.uuid',
-          'creditor.group_uuid=creditor_group.uuid'
+          'employee.debitor_uuid=debitor.uuid',
+          'debitor.group_uuid=debitor_group.uuid'
         ],
         where : ['employee.id=' + session.selected.purchaser_id]
       }
@@ -101,19 +101,19 @@ function PurchaseOrderCashController ($routeParams, $translate, $http, messenger
   }
 
   function submitPayment(model) {
-    var creditorId = model.employee.data[0].creditor_uuid,
-        creditorAccount = model.employee.data[0].account_id;
+    var debitorId = model.employee.data[0].debitor_uuid,
+        debitorAccount = model.employee.data[0].account_id;
 
     var request = {
       details         : {
         project_id    : vm.project.id,
         type          : 'S',
         date          : new Date(),
-        deb_cred_uuid : creditorId,
+        deb_cred_uuid : debitorId,
         deb_cred_type : 'C',
         currency_id   : SessionService.enterprise.currency_id,
         cash_box_id   : cashbox.id,
-        account_id    : creditorAccount,
+        account_id    : debitorAccount,
         cost          : session.selected.cost,
         description   : 'PP/' + session.selected.uuid + '/',
         origin_id     : model.pcash_module.data[0].id

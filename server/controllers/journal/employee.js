@@ -18,14 +18,17 @@ function invoice(id, userId, cb) {
   var sql, references = {}, cfg = {};
 
   sql =
-    'SELECT employee_invoice.uuid, employee_invoice.project_id, project.enterprise_id, employee_invoice.debitor_uuid,  ' +
+    'SELECT employee_invoice.uuid, employee_invoice.project_id, project.enterprise_id, employee_invoice.debitor_uuid, ' +
       'employee_invoice.note, employee_invoice.authorized_by, employee_invoice.date, ' +
       'employee_invoice.total, employee_invoice_item.invoice_uuid, employee_invoice_item.cost, ' +
-      'employee_invoice_item.uuid as gid ' +
-    'FROM employee_invoice JOIN employee_invoice_item JOIN sale JOIN project ON ' +
+      'employee_invoice_item.uuid as gid, debitor_group.account_id ' +
+    'FROM employee_invoice JOIN employee_invoice_item JOIN sale JOIN project JOIN employee JOIN debitor JOIN debitor_group ON ' + 
       'employee_invoice.uuid = employee_invoice_item.payment_uuid AND ' +
       'employee_invoice_item.invoice_uuid = sale.uuid AND ' +
-      'project.id = employee_invoice.project_id ' +
+      'project.id = employee_invoice.project_id AND ' +
+      'employee.creditor_uuid = employee_invoice.creditor_uuid AND ' +
+      'debitor.uuid = employee.debitor_uuid AND ' +
+      'debitor_group.uuid = debitor.group_uuid ' +
     'WHERE employee_invoice.uuid = ?;';
 
   db.exec(sql, [id])
@@ -77,8 +80,8 @@ function invoice(id, userId, cb) {
             'project_id, uuid, fiscal_year_id, period_id, trans_id, trans_date, ' +
             'description, account_id, debit, credit, debit_equiv, credit_equiv, ' +
             'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
-          'SELECT employee_invoice.project_id, ?, ?, ?, ?, ?, ?, ' +
-            'creditor_group.account_id, employee_invoice_item.cost, 0, ' +
+          'SELECT employee_invoice.project_id, ?, ?, ?, ?, ?, ?, ?, ' +
+            'employee_invoice_item.cost, 0, ' +
             'employee_invoice_item.cost, 0, enterprise.currency_id,  ' +
             'employee_invoice.creditor_uuid, \'C\', employee_invoice_item.invoice_uuid, ?, ? ' +
           'FROM employee_invoice JOIN employee_invoice_item JOIN debitor JOIN creditor JOIN debitor_group JOIN creditor_group JOIN sale JOIN project JOIN enterprise ON ' +
@@ -94,7 +97,7 @@ function invoice(id, userId, cb) {
 
         params = [
           uuid(), cfg.fiscal_year_id, cfg.period_id, transId, new Date(),
-          cfg.description, cfg.originId, userId, row.gid
+          cfg.description, row.account_id, cfg.originId, userId, row.gid
         ];
 
         // execute the debit query
@@ -589,21 +592,20 @@ function advancePayment(id, userId, cb) {
 
   sql =
     'SELECT rubric_paiement.id, rubric_paiement.rubric_id, rubric_paiement.paiement_uuid, rubric_paiement.value, ' +
-      'rubric.is_advance, paiement.currency_id, paiement.employee_id, employee.prenom, employee.name, employee.creditor_uuid, ' +
-      'creditor_group.account_id AS account_creditor, config_accounting.account_id AS account_paiement, primary_cash.project_id ' +
+      'rubric.is_advance, paiement.currency_id, paiement.employee_id, employee.prenom, employee.name, employee.debitor_uuid, ' +
+      'debitor_group.account_id AS account_debitor, config_accounting.account_id AS account_paiement, primary_cash.project_id ' +
     'FROM rubric_paiement ' +
     'JOIN rubric ON rubric.id = rubric_paiement.rubric_id ' +
     'JOIN paiement ON paiement.uuid = rubric_paiement.paiement_uuid ' +
     'JOIN paiement_period ON paiement_period.id = paiement_period.config_accounting_id ' +
     'JOIN config_accounting ON config_accounting.id = paiement_period.config_accounting_id ' +
     'JOIN employee ON employee.id = paiement.employee_id ' +
-    'JOIN creditor ON creditor.uuid= employee.creditor_uuid ' +
-    'JOIN creditor_group ON creditor_group.uuid=creditor.group_uuid ' +
+    'JOIN debitor ON debitor.uuid= employee.debitor_uuid ' +
+    'JOIN debitor_group ON debitor_group.uuid=debitor.group_uuid ' +
     'JOIN primary_cash_item ON primary_cash_item.inv_po_id = rubric_paiement.paiement_uuid ' +
     'JOIN primary_cash ON primary_cash.uuid = primary_cash_item.primary_cash_uuid ' +
     'WHERE rubric_paiement.paiement_uuid = ? ' +
       'AND rubric.is_advance = 1;';
-
 
   db.exec(sql, [id])
   .then(function (records) {
@@ -644,8 +646,8 @@ function advancePayment(id, userId, cb) {
 
       params = [
         uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description,
-        reference.account_creditor, reference.value, 0, reference.value / rate, 0, reference.currency_id,
-        reference.creditor_uuid, 'C', reference.paiement_uuid, cfg.originId, userId
+        reference.account_debitor, reference.value, 0, reference.value / rate, 0, reference.currency_id,
+        reference.debitor_uuid, 'C', reference.paiement_uuid, cfg.originId, userId
       ];
 
       return db.exec(sql, [params]);
