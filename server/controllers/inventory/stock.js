@@ -55,13 +55,18 @@ function getStockLevelsById(uuid, options) {
   var sql;
 
   sql =
-    'SELECT s.inventory_uuid, SUM(s.quantity - IFNULL(c.quantity, 0)) AS quantity ' +
-    'FROM stock AS s LEFT JOIN consumption AS c ON ' +
-      's.tracking_number = c.tracking_number ' +
-    'WHERE s.inventory_uuid = ? ' +
-    'GROUP BY s.inventory_uuid;';
+    'SELECT inventory_uuid, SUM(quantity) AS quantity ' +
+    'FROM( ' +
+      'SELECT inventory_uuid, SUM(quantity) AS quantity ' +
+        'FROM stock ' +
+        'WHERE inventory_uuid = ? ' + 
+      'UNION SELECT stock.inventory_uuid, SUM(consumption.quantity) * (-1) AS quantity ' +
+        'FROM stock ' +
+        'LEFT JOIN consumption ON stock.tracking_number = consumption.tracking_number ' +
+        'WHERE stock.inventory_uuid = ? AND consumption.canceled <> 1 ' +
+    ') AS level WHERE level.inventory_uuid = ?';
 
-  return db.exec(sql, [uuid]);
+  return db.exec(sql, [uuid, uuid, uuid]);
 }
 
 

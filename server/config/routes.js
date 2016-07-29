@@ -194,7 +194,7 @@ exports.initialise = function (app) {
   app.get('/depots/:uuid', depot.getDepotsById);
 
   app.get('/depots/:depotId/distributions', depot.getDistributions);
-  app.get('/depots/:depotId/distributions/:uuid', depot.getDistributionsById);
+  app.get('/depots/:depotId/distributions/:documentId', depot.getDistributionsByDocumentId);
 
   // over-loaded distributions route handles patients, services, and more
   app.post('/depots/:depotId/distributions', depot.createDistributions);

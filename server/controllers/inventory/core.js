@@ -99,7 +99,7 @@ function getItemsMetadataById(uuid) {
       'JOIN inventory_unit AS iu JOIN inventory_group AS ig ON ' +
       'i.type_id = it.id AND i.group_uuid = ig.uuid AND ' +
       'i.unit_id = iu.id ' +
-    'WHERE i.uuid = ?;';
+    'WHERE i.uuid = ?;';    
 
   return db.exec(sql, [uuid]);
 }

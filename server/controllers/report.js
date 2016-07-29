@@ -970,8 +970,9 @@ function stock_store(params) {
   var requestSql =
     'SELECT stock.inventory_uuid, stock.tracking_number, ' +
     'stock.lot_number, stock.expiration_date, SUM(if (movement.depot_entry='+sanitize.escape(params.depotId)+
-    ', movement.quantity, (movement.quantity*-1))) as current, SUM(if (movement.depot_entry=' + sanitize.escape(params.depotId) +
-    ', movement.quantity, 0)) AS initial, inventory.text FROM stock JOIN inventory JOIN movement ON stock.inventory_uuid = inventory.uuid AND '+
+    ', movement.quantity, 0)) AS initial, (SUM(if (movement.depot_entry=' + sanitize.escape(params.depotId) +
+    ', movement.quantity, 0)) - SUM(if (movement.depot_exit=' + sanitize.escape(params.depotId) +
+    ', movement.quantity, 0))) AS current, inventory.text FROM stock JOIN inventory JOIN movement ON stock.inventory_uuid = inventory.uuid AND ' +
     'stock.tracking_number = movement.tracking_number WHERE (movement.depot_entry=' + sanitize.escape(params.depotId) +
     'OR movement.depot_exit=' + sanitize.escape(params.depotId) + ')  GROUP BY movement.tracking_number';
 
@@ -979,6 +980,7 @@ function stock_store(params) {
 }
 
 function stockComplete(params) {
+
   params = querystring.parse(params);
 
   var requestSql,
@@ -986,19 +988,11 @@ function stockComplete(params) {
     depot_uuid = sanitize.escape(params.depot_uuid);
 
   requestSql =
-    'SELECT SUM(cons.consumed ) AS consumed ' +
-    'FROM ( ' +
       'SELECT SUM(consumption.quantity) AS consumed ' +
       'FROM stock ' +
       'LEFT JOIN consumption ON stock.tracking_number = consumption.tracking_number ' +
       'WHERE stock.tracking_number = ' + tracking_number + ' AND consumption.canceled <> 1 '+
-      ' AND consumption.depot_uuid = ' + depot_uuid + ' '+
-    'UNION '+
-      'SELECT ((SUM(consumption.quantity)) * (-1)) AS consumed ' +
-      'FROM stock ' +
-      'LEFT JOIN consumption ON stock.tracking_number = consumption.tracking_number ' +
-      'WHERE stock.tracking_number = ' + tracking_number + ' AND consumption.canceled = 1 ' +
-      'AND consumption.depot_uuid = ' + depot_uuid + '  ) AS cons;';
+      ' AND consumption.depot_uuid = ' + depot_uuid + ';';
 
   return db.exec(requestSql);
 }

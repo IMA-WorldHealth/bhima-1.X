@@ -110,16 +110,13 @@ function getAverageItemConsumption(uuid, options) {
   //
   // We add one to the DATEDIFF to prevent division by 0
   sql =
-    'SELECT SUM(c.quantity) / (DATEDIFF(' + difference +
-      ') + 1) AS average ' +
-    'FROM (' +
-      'SELECT i.uuid, c.quantity, c.date ' +
-      'FROM consumption AS c JOIN stock AS s JOIN inventory AS i ' +
-        'ON c.tracking_number = s.tracking_number AND ' +
-        's.inventory_uuid = i.uuid ' +
-      'WHERE c.canceled <> 1 AND i.uuid = ? AND ' + where +
-    ') AS c ' +
-    'GROUP BY c.uuid;';
+    'SELECT(quantity / nb ) AS average ' +
+    'FROM ( ' +
+      'SELECT i.uuid, SUM(c.quantity) AS quantity, i.text, COUNT(DISTINCT(MONTH(c.date))) AS nb ' +
+      'FROM consumption AS c JOIN stock AS s JOIN inventory AS i ' + 
+      'ON c.tracking_number = s.tracking_number AND s.inventory_uuid = i.uuid ' +
+      'WHERE c.canceled <> 1 AND i.uuid = ? AND (c.date BETWEEN DATE_SUB(CURDATE(),INTERVAL 6 MONTH) AND CURDATE()) AND 1 ' + 
+    ') AS c ';
 
   return db.exec(sql, params);
 }
