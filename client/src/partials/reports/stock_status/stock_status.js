@@ -61,10 +61,12 @@ function StockStatusReportController($http, $timeout) {
       // How should the system handle security stock calculations when the
       // lead time doesn't exist?
 
-      // security stock is defined as leadtime multiplied by avg consumption
+      // security stock is defined as leadtime multiplied by avg consumption By Days
       // rate
+
+
       row.securityStock = row.leadtime !== null ?
-          row.leadtime * row.consumption:
+          row.leadtime * (row.consumption / 30):
           null;
 
       // make sure we have nice formatting for days remaining column.
@@ -73,7 +75,7 @@ function StockStatusReportController($http, $timeout) {
       // calculate consumption by month on the fly from the
       // NOTE: every month does not have exactly 30 days, but this is an
       // approximation anyway.
-      row.consumptionByMonth = Math.round(row.consumption * 30);
+      row.consumptionByMonth = row.consumption;
 
       // like consumption by month, show months of stock remaining.
       row.monthsRemaining = row.consumptionByMonth ?

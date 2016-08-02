@@ -970,13 +970,13 @@
     "SERVICES" : "Distributions to Services",
     "SERVICE" : {
       "LOTS_AVAILABLE" : "Lots Available",
-      "NO_LOTS"        : "Pass de stock disponibles"
+      "NO_LOTS"        : "Pas de stock disponibles"
     },
-    "PATIENTS" : "Distributions to Patients",
-    "RUMMAGE"  : "Liquidation by Rummage Sale",
+    "PATIENTS" : "Distributions aux patients",
+    "RUMMAGE"  : "Liquidation par Vente rummage",
     "CANCEL" : {
-      "TITLE"   : "Cancel Pharmacy Distribution",
-      "MESSAGE" : "You are about to cancel a distribution made from the pharmacy.  Please make sure these details are correct."
+      "TITLE"   : "Annuler pharmacie distribution",
+      "MESSAGE" : "Vous êtes sur le point d'annuler une distribution effectuée à la pharmacie. faire en sorte que ces S'il vous plaît les détails sont corrects."
    },
    "LOSS": {
      "FORM_TITLE"      : "Formulaire Perte Stock",

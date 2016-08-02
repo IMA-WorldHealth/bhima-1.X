@@ -13,7 +13,7 @@ var db = require('../lib/db'),
 exports.getDepots = getDepots;
 exports.getDepotsById = getDepotsById;
 exports.getDistributions = getDistributions;
-exports.getDistributionsById = getDistributionsById;
+exports.getDistributionsByDocumentId = getDistributionsByDocumentId;
 exports.getAvailableLots = getAvailableLots;
 exports.getAvailableLotsByInventoryId = getAvailableLotsByInventoryId;
 exports.getExpiredLots = getExpiredLots;
@@ -206,11 +206,11 @@ function getDistributions(req, res, next) {
   .done();
 }
 
-function getDistributionsById(req, res, next) {
+function getDistributionsByDocumentId(req, res, next) {
   'use strict';
 
   var sql,
-      uuid = req.params.uuid;
+      documentId = req.params.documentId;
 
   sql =
     'SELECT c.uuid, c.document_id, c.date, d.text AS depotName, ' +
@@ -219,10 +219,10 @@ function getDistributionsById(req, res, next) {
     'JOIN depot AS d ON d.uuid = c.depot_uuid ' +
     'JOIN stock AS s ON s.tracking_number = c.tracking_number ' +
     'JOIN inventory AS i ON i.uuid = s.inventory_uuid ' +
-    'WHERE d.uuid = ? AND c.uuid = ?' +
+    'WHERE d.uuid = ? AND c.document_id = ?' +
     'ORDER BY c.date DESC;';
 
-  db.exec(sql, [req.params.depotId, uuid])
+  db.exec(sql, [req.params.depotId, documentId])
   .then(function (rows) {
     if (!rows) {
       return res.status(404).json({

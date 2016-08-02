@@ -17,13 +17,13 @@ function DepotDistributionsCancelController($routeParams, $location, connect, me
   var vm = this;
 
   // bind to view
-  vm.id      = $routeParams.consumptionId;
-  vm.depotId = $routeParams.depotId;
-  vm.submit  = submit;
-  vm.loading = false;
+  vm.documentId  = $routeParams.consumptionId;
+  vm.depotId      = $routeParams.depotId;
+  vm.submit       = submit;
+  vm.loading      = false;
 
   // startup the module by loading the distribution record
-  load(vm.depotId, vm.id);
+  load(vm.depotId, vm.documentId);
 
   /* ------------------------------------------------------------------------ */
 
@@ -32,16 +32,16 @@ function DepotDistributionsCancelController($routeParams, $location, connect, me
   }
 
   function submit() {
-    connect.fetch('journal/reversing_stock/' + vm.id)
+    connect.fetch('journal/reversing_stock/' + vm.documentId)
     .then(function (response) {
 
       // flip the canceled switch in the database
       var data = {
-        uuid : vm.id,
+        document_id : vm.documentId,
         canceled : 1
       };
 
-      return connect.put('consumption', [data], ['uuid']);
+      return connect.put('consumption', [data], ['document_id']);
     })
     .then(function (){
       messenger.success('annulee avec success', false);
@@ -50,9 +50,9 @@ function DepotDistributionsCancelController($routeParams, $location, connect, me
     .catch(handler);
   }
 
-  function load(depotId, consumptionId) {
+  function load(depotId, documentId) {
     vm.loading = true;
-    connect.fetch('/depots/' + depotId + '/distributions/' + consumptionId)
+    connect.fetch('/depots/' + depotId + '/distributions/' + documentId)
     .then(function (data) {
       vm.data = data;
       vm.reference = data[0];
