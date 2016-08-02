@@ -19,6 +19,7 @@ var accountResultContext               = require('./data/account_result');
 var debitorGroupReportContext          = require('./data/debitor_group_report');
 var debtorGroupAnnualReportContext     = require('./data/debtor_group_annual_report');
 var variationExploitationContext       = require('./data/variation_exploitation');
+var stockFileContext                   = require('./data/stock_file');
 
 // Module configuration
 var writePath = path.join(__dirname, 'out/');
@@ -68,6 +69,10 @@ var documentHandler = {
   variation_exploitation : {
     template : dots.variation_exploitation,
     context : variationExploitationContext
+  },
+  stock_file : {
+    template : dots.stock_file,
+    context : stockFileContext
   }
 };
 

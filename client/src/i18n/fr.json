@@ -1280,6 +1280,15 @@
    "TITLE"        : "Liste des Lots Expirants",
    "WEEK"         : "Cette semaine"
    },
+"FILE" : {
+  "ARTICLES" : "Articles",
+  "LANGUAGE" : "Langue",
+  "DATE_FROM" : "Date Debut",
+  "DATE_TO"   : "Date Fin",
+  "GENERATE_DOC" : "Generer Document",
+  "LOADING"  : "Chargement ..."
+
+  },
 "FIND": {
     "ACCOUNT" : {
       "ACCOUNT"         : "Compte",
