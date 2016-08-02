@@ -10,6 +10,10 @@ table {
  * Invoice table style
  */
 
+ #motiv-column {
+  vertical-align: top;
+ }
+
 
  #bilan-reference {
   text-align:  left;

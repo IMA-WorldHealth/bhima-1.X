@@ -133,5 +133,26 @@
   		"TOTAL_EXPENSE" : "TOTAL CHARGE",
   		"RESULTAT"      : "RESULTAT",
   		"RESULTAT_WITHOUT" : "RESULTAT SANS "
+	},
+
+	"STOCK_FILE" : {
+		"ACCOUNTING_DEPT" : "Departement de Comptabilite",
+		"TITLE" : "FICHE DE STOCK",
+		"DEPOT" : "Depot",
+		"ARTICLE" : "Article",
+		"ARTICLE_CODE" : "Code Article",
+		"OBSERVATION" : "Observation",
+		"UNIT" : "Unite",
+		"USING" : "Usage",
+		"STOCK_MIN" : "Stock mininum",
+		"YEAR_USING" : "Usage Annuel",
+		"VALUE" : "Valeur :",
+		"DATE" : "Date",
+		"ENTRY" : "Entree",
+		"OUT"   : "Sortie",
+		"STOCK" : "Stock",
+		"TOTAL_ENTRY" : "Total Entree : ",
+		"TOTAL_EXIT" : "Total Sortie : ",
+		"INFO" : "Les donnees sont extraites entre : "
 	}
 }	

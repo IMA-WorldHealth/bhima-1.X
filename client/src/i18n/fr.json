@@ -964,6 +964,7 @@
   "DISTRIBUTION"   : {
     "ANNUL"    : "Annuler cette Transaction",
     "ANNULLED" : "Annulé",
+    "FILE" : "Fiche de Stock",
     "LOSSES"   : "Stock Losses",
     "TYPE_INVENTORY_ITEM"      : "Taper code ou nom médicament",
     "NO_ROWS"  : "Pas de données pour période sélectionnée",
@@ -1286,7 +1287,9 @@
   "DATE_FROM" : "Date Debut",
   "DATE_TO"   : "Date Fin",
   "GENERATE_DOC" : "Generer Document",
-  "LOADING"  : "Chargement ..."
+  "LOADING"  : "Chargement ...",
+  "DOCUMENT_CONFIG" : "Configuration du Document",
+  "DOC_SUCCES" : "Generer avec succes. Cliquez ici"
 
   },
 "FIND": {
@@ -2877,7 +2880,8 @@
    "NO_CONSUMPTION"        : "Aucun produits en stock",
    "QUANTITY_ORDER"        : "Quantité à commander",
    "SAFETY_STOCK"          : "Stock de sécurité",
-   "TITLE"                 : "Situation des stocks"
+   "TITLE"                 : "Situation des stocks",
+   "STOCK_FILE"            : "Fiche de Stock"
    },
 "SUBSIDY" : {
    "DETAILS"     : "",

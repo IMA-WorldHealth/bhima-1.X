@@ -2,10 +2,83 @@
   <link rel="stylesheet" href="{{=it.path}}/templates/style/normalize.css">
   <link rel="stylesheet" href="{{=it.path}}/templates/style/skeleton.css">
   <link rel="stylesheet" href="{{=it.path}}/templates/style/reports.css">
-  <meta charset='UTF-8'>
+  <meta charset="UTF-8"/>
 </head>
 
-<body>
-	<div>bonjour</div>
-</body>
+<main>
+
+	<hgroup class="text-uppercase">
+        <h6>{{=it.options.enterprise.name}}</h6>
+        <h6>{{=it.i18nStockFile.ACCOUNTING_DEPT }}</h6>      
+    </hgroup>
+
+    <h6 class="clean-title">
+      {{=it.i18nStockFile.TITLE}}
+    </h6>
+
+    <table class="clean-table" border="1">
+    	<tr>
+    		<td><b>{{=it.i18nStockFile.DEPOT}}</b></td>
+    		<td>{{=it.depot.text}}</td>
+    		<td><b>{{=it.i18nStockFile.ARTICLE}}</b></td>
+    		<td>{{=it.options.inventory.text}}</td>
+    		<td><b>{{=it.i18nStockFile.ARTICLE_CODE}}</b></td>
+    		<td>{{=it.options.inventory.code}}</td>
+    	</tr>
+    </table>
+
+    <table class="clean-table" border="1">
+    	<tr>
+    		<td><b>{{=it.i18nStockFile.UNIT}}</b></td> 
+    		<td rowspan="8" id="motiv-column"><b>{{=it.i18nStockFile.OBSERVATION}}</b></td>   		
+    	</tr>
+    	<tr>
+    		<td>{{=it.i18nStockFile.VALUE}}{{=it.options.inventory.unit}}</td>
+    	</tr>
+    	<tr>
+    		<td><b>{{=it.i18nStockFile.USING}}</b></td>
+    	</tr>
+    	<tr>
+    		<td>{{=it.i18nStockFile.VALUE}}</td>
+    	</tr>
+    	<tr>
+    		<td><b>{{=it.i18nStockFile.STOCK_MIN}}</b></td>
+    	</tr>
+    	<tr>
+    		<td>{{=it.i18nStockFile.VALUE}}</td>
+    	</tr>
+    	<tr>
+    		<td><b>{{=it.i18nStockFile.YEAR_USING}}</b></td>
+    	</tr>
+    	<tr>
+    		<td>{{=it.i18nStockFile.VALUE}}</td>
+    	</tr>
+    </table>
+
+    <center><div class="text-underline text-condensed"><b>{{=it.i18nStockFile.INFO}}{{=it.options.dateFromView}} -- {{=it.options.dateToView}}</b></div></center>
+
+    <table class="clean-table" border="1">
+    	<tr>
+    		<td><b>{{=it.i18nStockFile.DATE}}</b></td>
+    		<td><b>{{=it.i18nStockFile.ENTRY}}</b></td>
+    		<td><b>{{=it.i18nStockFile.OUT}}</b></td>
+    	</tr>
+    	{{~it.data : d : i}}
+	    	<tr>
+	    		<td>{{=d.date}}</td>
+	    		<td>{{=d.entry}}</td>
+	    		<td>{{=d.out}}</td>
+	    	</tr>
+	    {{~}}
+    </table>
+
+    <table class="clean-table" border="1">
+    	<tr>
+    		<td><b>{{=it.i18nStockFile.TOTAL_ENTRY}}</b></td> 
+    		<td>{{=it.total.totalEntry}}</td>
+    		<td><b>{{=it.i18nStockFile.TOTAL_EXIT}}</b></td>
+    		<td>{{=it.total.totalOut}}</td>   		
+    	</tr>    	
+    </table>
+</main>
 

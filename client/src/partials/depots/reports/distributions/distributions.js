@@ -16,9 +16,14 @@ function DepotStockDistributionsController($routeParams, $http, util, Dates, val
       tables : {
         'inventory' : {
           columns : ['uuid', 'code', 'text']
+        },
+        'inventory_unit' : {
+          columns : ['text::unit']
         }
       },
-      where : ['inventory.consumable=1']
+      join : ['inventory.type_id=inventory_unit.id'],
+      where : ['inventory.consumable=1'],
+      orderby: ['inventory.text','inventory.code']
     }
   };
 

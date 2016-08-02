@@ -951,7 +951,7 @@
 "DEPOT": {
   "ADD"              : "Add a Depot",
   "ALERT"            : "Manage depots stores from here",
-  "ALL"              : "All Depots",
+  "ALL"              : "All Depots",  
   "NO_LOTS"        : "No Lots Available",
   "CHANGE_DEPOT"      : "Are you sure you want to change depots?  The current depot is %depot%.",
   "CONFIRM_SELECTION" : "Are you sure you want to select %depot%?",
@@ -960,6 +960,7 @@
   "DISTRIBUTION"   : {
     "ANNUL"    : "Annul this Transaction",
     "ANNULLED" : "Annulled",
+    "FILE"     : "File of Stock",
     "TYPE_INVENTORY_ITEM"      : "Type the drug name or drug code",
     "LOSSES"   : "Stock Losses",
     "NO_ROWS"  : "No distributions found within this time frame!",
@@ -1277,6 +1278,18 @@
    "TITLE"        : "Liste des Lots Expirants",
    "WEEK"         : "This Week"
    },
+
+"FILE" : {
+  "ARTICLES" : "Article",
+  "LANGUAGE" : "Language",
+  "DATE_FROM" : "Date From",
+  "DATE_TO"   : "Date To",
+  "GENERATE_DOC" : "Generate Document",
+  "LOADING"  : "Loading ...",
+  "DOCUMENT_CONFIG" : "Configuration of Document",
+  "DOC_SUCCES" : "Genererate successfully.Click here"
+
+  },
 "FIND": {
    "ACCOUNT": {
       "ACCOUNT"       : "Account",
@@ -2855,7 +2868,7 @@
       },
    "TITLE"              : "Stock Dashboard"
    },
-"STOCK_STATUS": {
+"STOCK_STATUS": {   
    "CONSUMPTION_PER_MONTH" : "Consumption per month",
    "MAXIMUM_STOCK"         : "Maximum Stock",
    "MINIMUM_STOCK"         : "Minimum Stock",
@@ -2863,7 +2876,8 @@
    "NO_CONSUMPTION"        : "Aucun produits en stock",
    "QUANTITY_ORDER"        : "Quantity to Order",
    "SAFETY_STOCK"          : "Safety stock",
-   "TITLE"                 : "Stock Situation"
+   "TITLE"                 : "Stock Situation",
+   "STOCK_FILE"            : "File of Stcok"
    },
 "SUBSIDY" : {
    "DETAILS"     : "",
