@@ -130,7 +130,6 @@ function DepotStockDistributionsController($routeParams, $http, util, Dates, val
 
   function generateDocument (){
 
-    console.log(vm.session.inventory);
 
     var path = '/report/build/stock_file';
     var configurationObject = {};

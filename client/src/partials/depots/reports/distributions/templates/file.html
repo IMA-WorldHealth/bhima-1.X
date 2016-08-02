@@ -2,7 +2,7 @@
   <div class="panel panel-default">
     <div class="panel-heading">{{'FILE.DOCUMENT_CONFIG' | translate}}</div>
       <div class="panel-body">
-        <form>
+        <form name="configForm" novalidate>
 
           <div class="form-group">            
             <label class="control-label col-xs-4 required">
@@ -30,8 +30,9 @@
           </div> 
 
           <button
+            type="button"
             class="btn btn-default"
-            ng-disabled="DistributionsCtrl.building"
+            ng-disabled="DistributionsCtrl.building || configForm.$invalid"
             ng-click="DistributionsCtrl.generateDocument()" ng-if="!DistributionsCtrl.generatedDocumentPath">{{DistributionsCtrl.building ? DistributionsCtrl.loading : DistributionsCtrl.generate_doc}}
           </button>
 
