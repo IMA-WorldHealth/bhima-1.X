@@ -21,7 +21,7 @@ function invoice(id, userId, cb) {
     'SELECT employee_invoice.uuid, employee_invoice.project_id, project.enterprise_id, employee_invoice.debitor_uuid, ' +
       'employee_invoice.note, employee_invoice.authorized_by, employee_invoice.date, ' +
       'employee_invoice.total, employee_invoice_item.invoice_uuid, employee_invoice_item.cost, ' +
-      'employee_invoice_item.uuid as gid, debitor_group.account_id ' +
+      'employee_invoice_item.uuid as gid, debitor_group.account_id, debitor.uuid AS employeeDebitorUuid ' +
     'FROM employee_invoice JOIN employee_invoice_item JOIN sale JOIN project JOIN employee JOIN debitor JOIN debitor_group ON ' + 
       'employee_invoice.uuid = employee_invoice_item.payment_uuid AND ' +
       'employee_invoice_item.invoice_uuid = sale.uuid AND ' +
@@ -82,8 +82,8 @@ function invoice(id, userId, cb) {
             'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) ' +
           'SELECT employee_invoice.project_id, ?, ?, ?, ?, ?, ?, ?, ' +
             'employee_invoice_item.cost, 0, ' +
-            'employee_invoice_item.cost, 0, enterprise.currency_id,  ' +
-            'employee_invoice.creditor_uuid, \'C\', employee_invoice_item.invoice_uuid, ?, ? ' +
+            'employee_invoice_item.cost, 0, enterprise.currency_id, ' +
+            '?, \'C\', employee_invoice_item.invoice_uuid, ?, ? ' +
           'FROM employee_invoice JOIN employee_invoice_item JOIN debitor JOIN creditor JOIN debitor_group JOIN creditor_group JOIN sale JOIN project JOIN enterprise ON ' +
           '  employee_invoice.uuid = employee_invoice_item.payment_uuid AND ' +
           '  employee_invoice.debitor_uuid = debitor.uuid  AND ' +
@@ -97,7 +97,7 @@ function invoice(id, userId, cb) {
 
         params = [
           uuid(), cfg.fiscal_year_id, cfg.period_id, transId, new Date(),
-          cfg.description, row.account_id, cfg.originId, userId, row.gid
+          cfg.description, row.account_id, row.employeeDebitorUuid, cfg.originId, userId, row.gid
         ];
 
         // execute the debit query
