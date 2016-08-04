@@ -31,7 +31,8 @@ function HolidayController ($translate, $http, validate, messenger, connect, uti
       identifier : 'id',
       tables : {
         'employee' : { columns : ['id','name', 'postnom', 'prenom']}
-      }
+      },
+      where : ['employee.locked<>1']
     }
   };
 
