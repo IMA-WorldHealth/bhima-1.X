@@ -33,8 +33,8 @@ function close(id, user_id, data, cb) {
       resAccount = data.resultat_account,
       array6 = data.class6,
       array7 = data.class7,
-      array8Charge = data.solde8Charge,
-      array8Profit = data.solde8Profit,
+      array8Charge = data.class8Charge,
+      array8Profit = data.class8Profit,
       transactionDate,
       forcingDate;
 

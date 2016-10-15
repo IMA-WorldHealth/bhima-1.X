@@ -62,9 +62,9 @@ exports.fiscalYearResultat = function (req, res, next) {
 
   journal.request('fiscal_year_resultat', new_fy_id, user_id, function (error, result) {
     if (error) {
-      throw new Error('error::: ', error);
+      return next(error);
     }
-    res.sendStatus(200);
+    res.status(200).send();
   }, undefined, resultat);
 }
 

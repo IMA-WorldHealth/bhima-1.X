@@ -1,4 +1,4 @@
-<div class="panel panel-success" ng-controller="fiscal.create" ng-switch="step.id">
+<div class="panel panel-success" ng-controller="FiscalCreateController as FiscalCtrl" ng-switch="step.id">
   <div class="panel-heading">
     <i class="glyphicon glyphicon-calendar"></i>
     <b>{{ 'FISCAL_YEAR.NEW' | translate }}</b> {{ 'FISCAL_YEAR.STEP' | translate }} {{ step.id }}: {{ step.key | translate }}
@@ -46,12 +46,12 @@
             <option value="" disabled="disabled" selected="selected">--- {{ 'SELECT.FISCAL_YEAR' | translate }} ---</option>
           </select>
         </div>
-        
+
       </form>
     </div>
     <div class="panel-footer">
       <button class="btn btn-sm btn-success" ng-disabled="detailsForm.$invalid" ng-click="stepTwo()">
-        {{ 'FISCAL_YEAR.NEXT' | translate }} 
+        {{ 'FISCAL_YEAR.NEXT' | translate }}
         <i class="glyphicon glyphicon-arrow-right"></i>
       </button>
     </div>
@@ -131,16 +131,44 @@
           <tr>
             <th>{{ 'FISCAL_YEAR.CHARGE' | translate }} ({{ 'FISCAL_YEAR.CLASS_6' | translate }})</th>
             <th>{{ 'FISCAL_YEAR.PROFIT' | translate }} ({{ 'FISCAL_YEAR.CLASS_7' | translate }})</th>
-            <th>{{ 'FISCAL_YEAR.RESULT' | translate }}</th>
-            <th>{{ 'FISCAL_YEAR.OBSERVATION' | translate }}</th>
+            <th colspan="2"></th>
           </tr>
         </thead>
         <tbody>
           <tr>
             <td>{{ session.solde6 | currency }}</td>
             <td>{{ session.solde7 | currency }}</td>
-            <td class="alert " ng-class="{'alert-success':session.observation==1, 'alert-danger':session.observation==-1}">
-              {{ session.solde7 - session.solde6 | number:0 }} $
+            <td colspan="2"></td>
+          </tr>
+        </tbody>
+        <thead>
+          <tr>
+            <th>{{ 'FISCAL_YEAR.OTHER_CHARGE' | translate }} ({{ 'FISCAL_YEAR.CLASS_8' | translate }})</th>
+            <th>{{ 'FISCAL_YEAR.OTHER_PROFIT' | translate }} ({{ 'FISCAL_YEAR.CLASS_8' | translate }})</th>
+            <th colspan="2"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ session.solde8Charge | currency }}</td>
+            <td>{{ session.solde8Profit | currency }}</td>
+            <td colspan="2"></td>
+          </tr>
+        </tbody>
+        <thead>
+          <tr>
+            <th>{{ 'FISCAL_YEAR.TOTAL_CHARGE' | translate }} </th>
+            <th>{{ 'FISCAL_YEAR.TOTAL_PROFIT' | translate }} </th>
+            <th>{{ 'FISCAL_YEAR.RESULT' | translate }}</th>
+            <th>{{ 'FISCAL_YEAR.OBSERVATION' | translate }}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{{ session.charge | currency }}</td>
+            <td>{{ session.produit | currency }}</td>
+            <td class="alert" ng-class="{'alert-success':session.observation==1, 'alert-danger':session.observation==-1}">
+              {{ session.produit - session.charge | number:0 }} $
             </td>
             <td class="alert " ng-class="{'alert-success':session.observation==1, 'alert-danger':session.observation==-1}">
               <span ng-if="session.observation==1">
@@ -155,13 +183,13 @@
       </table>
       <hr>
       <div class="form-group">
-        <label>{{ 'FISCAL_YEAR.SELECT_RESULTAT_ACCOUNT' | translate }} 
-        <span ng-if="session.resultat_account">: 
-          <b>[{{session.resultat_account.account_number}}]</b> 
+        <label>{{ 'FISCAL_YEAR.SELECT_RESULTAT_ACCOUNT' | translate }}
+        <span ng-if="session.resultat_account">:
+          <b>[{{session.resultat_account.account_number}}]</b>
           {{session.resultat_account.account_txt}}
         </span></label>
-        <select 
-        class="form-control" 
+        <select
+        class="form-control"
         ng-model="session.resultat_account"
         ng-options="ac as formatAccount(ac) for ac in resultatAccount.data">
           <option value="" disabled>{{ 'FISCAL_YEAR.RESULTAT_ACCOUNTS' | translate }}</option>
@@ -170,7 +198,7 @@
     </div>
     <div class="panel-footer">
       <button class="btn btn-sm btn-success" ng-click="postingNewFiscalYear()" ng-disabled="formStepTwo.$invalid">
-        <i class="glyphicon glyphicon-ok-circle"></i> 
+        <i class="glyphicon glyphicon-ok-circle"></i>
         {{ 'UTIL.SUBMIT' | translate }}
       </button>
     </div>
