@@ -55,17 +55,17 @@ exports.createFiscalYear = function (req, res, next) {
 
 exports.fiscalYearResultat = function (req, res, next) {
   'use strict';
-  var data = req.body.params;
-  var user_id = data.user_id,
+  var data      = req.body.params,
+      user_id   = data.user_id,
       new_fy_id = data.new_fy_id,
-      resultat = data.resultat;
+      bundle    = data.bundle;
 
   journal.request('fiscal_year_resultat', new_fy_id, user_id, function (error, result) {
     if (error) {
       return next(error);
     }
     res.status(200).send();
-  }, undefined, resultat);
+  }, undefined, bundle);
 }
 
 // calculate the positive integer difference between two dates in months
@@ -104,12 +104,17 @@ function createOpeningBalances(data) {
       };
     });
 
+    var details = {
+      balances  : totals,
+      dateStart : util.toMysqlDate(data.start)
+    };
+
     return journal.request('create_fiscal_year', periodId, data.user_id, function (error, result) {
       if (error) {
         return error;
       }
       return result;
-    }, -1, totals);
+    }, -1, details);
 
   });
 }

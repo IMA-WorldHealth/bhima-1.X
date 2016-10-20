@@ -126,35 +126,7 @@
   <div ng-switch-when="2c">
     <div class="panel-body">
       <h4>{{ 'FISCAL_YEAR.SOLD_LAST_FY' | translate }}: {{ session.previous_fiscal_year }}</h4>
-      <table class="table table-condensed">
-        <thead>
-          <tr>
-            <th>{{ 'FISCAL_YEAR.CHARGE' | translate }} ({{ 'FISCAL_YEAR.CLASS_6' | translate }})</th>
-            <th>{{ 'FISCAL_YEAR.PROFIT' | translate }} ({{ 'FISCAL_YEAR.CLASS_7' | translate }})</th>
-            <th colspan="2"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{{ session.solde6 | currency }}</td>
-            <td>{{ session.solde7 | currency }}</td>
-            <td colspan="2"></td>
-          </tr>
-        </tbody>
-        <thead>
-          <tr>
-            <th>{{ 'FISCAL_YEAR.OTHER_CHARGE' | translate }} ({{ 'FISCAL_YEAR.CLASS_8' | translate }})</th>
-            <th>{{ 'FISCAL_YEAR.OTHER_PROFIT' | translate }} ({{ 'FISCAL_YEAR.CLASS_8' | translate }})</th>
-            <th colspan="2"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>{{ session.solde8Charge | currency }}</td>
-            <td>{{ session.solde8Profit | currency }}</td>
-            <td colspan="2"></td>
-          </tr>
-        </tbody>
+      <table class="table table-condensed table-bordered">
         <thead>
           <tr>
             <th>{{ 'FISCAL_YEAR.TOTAL_CHARGE' | translate }} </th>
@@ -164,13 +136,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr>
+          <tr ng-class="{'success':session.observation==1, 'danger':session.observation==-1}">
             <td>{{ session.charge | currency }}</td>
             <td>{{ session.produit | currency }}</td>
-            <td class="alert" ng-class="{'alert-success':session.observation==1, 'alert-danger':session.observation==-1}">
+            <td>
               {{ session.produit - session.charge | number:0 }} $
             </td>
-            <td class="alert " ng-class="{'alert-success':session.observation==1, 'alert-danger':session.observation==-1}">
+            <td>
               <span ng-if="session.observation==1">
                 {{ 'FISCAL_YEAR.BONUS' | translate }}
               </span>

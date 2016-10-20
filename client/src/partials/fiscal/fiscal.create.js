@@ -10,14 +10,19 @@ FiscalCreateController.$inject = [
   */
 function FiscalCreateController ($q, $scope, $http, $translate, validate, connect, messenger, util) {
   var data,
-      posting = $scope.posting = { rows : [] },
       imports = $scope.$parent,
       session = $scope.session = {},
+      posting = $scope.posting = { rows : [] },
       dependencies = {};
 
   // Set up default option for year
   data = $scope.data = { year : 'true' };
   $scope.createWithoutClosing = false;
+
+  // imports shared functions
+  var getSolde     = imports.getSolde,
+      getTypeSolde = imports.getTypeSolde,
+      error        = imports.error;
 
   // module steps
   var steps = [
@@ -79,10 +84,6 @@ function FiscalCreateController ($q, $scope, $http, $translate, validate, connec
     }
   };
 
-  // dependencies.user = {
-  //   query : '/user_session'
-  // };
-
   // returns true if the years array contains a
   // year with previous_fiscal_year matching the
   // year's id.
@@ -102,7 +103,6 @@ function FiscalCreateController ($q, $scope, $http, $translate, validate, connec
     var childless = years.filter(function (year) {
       return !hasChild(year, years);
     });
-
 
     // expose the years to the view
     $scope.years = childless;
@@ -133,7 +133,8 @@ function FiscalCreateController ($q, $scope, $http, $translate, validate, connec
 
       // initialise account balances
       resetBalances();
-    });
+    })
+    .catch(error);
   }
 
   // set the account balance to 0 for all accounts
@@ -210,54 +211,35 @@ function FiscalCreateController ($q, $scope, $http, $translate, validate, connec
     session.previous_fiscal_year = fy.fiscal_year_txt;
     session.previous_fiscal_year_id = fy.id;
 
-    getSolde(6, fy.id)
-    .then(function (data6) {
-      session.array6 = data6.data;
-      return getSolde(7, fy.id);
+    getTypeSolde(fy.id, 'INCOME_EXPENSE', 'CHARGE')
+    .then(function (charge) {
+      session.chargeData = charge.data;
+      return getTypeSolde(fy.id, 'INCOME_EXPENSE', 'PRODUIT');
     })
-    .then(function (data7) {
-      session.array7 = data7.data;
-      return getSolde(8, fy.id);
-    })
-    .then(function (data8) {
-      session.array8 = data8.data;
-      session.array8Charge = session.array8.filter(function (item) {
-        var prefix = Number(String(item.account_number).substr(0, 2));
-        return prefix % 2 !== 0 && item.is_charge === 1;
-      });
-      session.array8Profit = session.array8.filter(function (item) {
-        var prefix = Number(String(item.account_number).substr(0, 2));
-        return prefix % 2 === 0 && item.is_charge === 0;
-      });
+    .then(function (produit) {
+      session.produitData = produit.data;
     })
     .then(function () {
-      session.solde6       = session.array6.reduce(sumDebMinusCred, 0);
-      session.solde7       = session.array7.reduce(sumCredMinusDeb, 0);
-      session.solde8Charge = session.array8Charge.reduce(sumDebMinusCred, 0);
-      session.solde8Profit = session.array8Profit.reduce(sumCredMinusDeb, 0);
-      session.charge       = session.solde6 + session.solde8Charge;
-      session.produit      = session.solde7 + session.solde8Profit;
+      session.charge = session.chargeData.reduce(sumDebMinusCred, 0);
+      session.produit = session.produitData.reduce(sumCredMinusDeb, 0);
       observation();
-    });
+    })
+    .then(getFiscalYearLastDate(session.previous_fiscal_year_id))
+    .catch(error);
 
     // load view
-    $scope.step = closePreviousFY() ? steps[3] : steps[1];
+    $scope.step = dialogCloseFY() ? steps[3] : steps[1];
   }
 
-  function closePreviousFY () {
-    var res = confirm($translate.instant('FISCAL_YEAR.CONFIRM_CLOSING'));
-    if (res) {
-      var updateFY = {
-        id : session.previous_fiscal_year_id,
-        locked : 1
-      };
-      connect.put('fiscal_year', [updateFY], ['id']);
-      return true;
-    } else {
-      return false;
-    }
+  function dialogCloseFY () {
+    session.closeFY = confirm($translate.instant('FISCAL_YEAR.CONFIRM_CLOSING'));
+    return session.closeFY;
   }
 
+  /**
+    * This function is responsible for giving the result of the enterprise
+    * loss or profit, and we use this result in the ui
+    */
   function observation () {
     if ((session.produit - session.charge) > 0) {
       session.observation = 1;
@@ -280,13 +262,6 @@ function FiscalCreateController ($q, $scope, $http, $translate, validate, connec
     return $scope.fiscal.get(id);
   }
 
-  function getSolde (classe, fy) {
-    return $http.get('/getClassSolde/'+classe+'/'+fy)
-    .success(function (data) {
-      return data;
-    });
-  }
-
   $scope.formatAccount = function formatAccount (ac) {
     return '['+ac.account_number+'] => '+ac.account_txt;
   };
@@ -297,22 +272,34 @@ function FiscalCreateController ($q, $scope, $http, $translate, validate, connec
       var data = {
         new_fy_id : id,
         user_id   : session.user_id,
-        resultat  : {
+        bundle    : {
+          flag             : 'CREATE_WITH_LOCKING',
           resultat_account : session.resultat_account,
-          class6           : session.array6,
-          class7           : session.array7,
-          class8Charge     : session.array8Charge,
-          class8Profit     : session.array8Profit
+          charge           : session.chargeData,
+          produit          : session.produitData,
+          dateStart        : util.sqlDate($scope.data.start),
+          closedFYLastDate : util.sqlDate(session.fiscalYearLastDate)
         }
       };
       $http.post('/posting_fiscal_resultat/', { params:
         {
           new_fy_id : data.new_fy_id,
           user_id   : data.user_id,
-          resultat  : data.resultat
+          bundle    : data.bundle
         }
-      });
-    });
+      })
+      .catch(error);
+
+    })
+    .then(function () {
+      // Setting previous fiscal yaer locked
+      if (session.closeFY) {
+        var updateFY = { id : session.previous_fiscal_year_id, locked : 1 };
+        connect.put('fiscal_year', [updateFY], ['id']);
+      }
+
+    })
+    .catch(error);
   }
   // END STEP 3
 
@@ -338,24 +325,14 @@ function FiscalCreateController ($q, $scope, $http, $translate, validate, connec
     }
   }
 
-  // normalizes a date to a UTC date for the server
-  // TODO Put this functionality in a service
-  function normalizeUTCDate(date) {
-    var year = date.getFullYear(),
-        month = date.getMonth(),
-        day = date.getDate();
-    return Date.UTC(year, month, day);
-  }
-
   // submits the fiscal year to the server all at once
   function submitFiscalYearData() {
     var def = $q.defer();
     var bundle = connect.clean(data);
     var hasPreviousYear = angular.isDefined(bundle.previous_fiscal_year);
 
-    // normalize the dates to UTC timezone
-    bundle.start = normalizeUTCDate(bundle.start);
-    bundle.end = normalizeUTCDate(bundle.end);
+    bundle.start = util.sqlDate(bundle.start);
+    bundle.end = util.sqlDate(bundle.end);
 
     // if no previous fiscal year is selected, we must ship back
     // the opening balances for each account to be inserted into
@@ -397,14 +374,12 @@ function FiscalCreateController ($q, $scope, $http, $translate, validate, connec
 
     function postCreateFiscalYear () {
       $http.post('/fiscal/create', bundle)
-      .success(function (results) {
+      .then(function (results) {
         stepFour();
         $scope.$emit('fiscal-year-creation', results.id);
         def.resolve(results.id);
       })
-      .error(function (err) {
-        throw err;
-      });
+      .catch(error);
     }
 
     return def.promise;
@@ -418,6 +393,23 @@ function FiscalCreateController ($q, $scope, $http, $translate, validate, connec
 
   function checkEquilibrium (objArray) {
     return (sumObjectProperty(objArray, 'debit') === sumObjectProperty(objArray, 'credit')) ? true : false;
+  }
+
+  function getFiscalYearLastDate (fy_id) {
+    dependencies.period = {
+      query : {
+        tables : {
+          period : { columns : ['period_start', 'period_stop'] }
+        },
+        where : ['period.fiscal_year_id='+fy_id]
+      }
+    };
+
+    validate.refresh(dependencies, ['period'])
+    .then(function (model) {
+      session.fiscalYearLastDate = model.period.data[model.period.data.length-1].period_stop;
+    })
+    .catch(error);
   }
 
   // force refresh of the page

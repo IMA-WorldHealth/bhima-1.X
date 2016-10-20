@@ -196,6 +196,7 @@ exports.initialise = function (app) {
 
   // Fiscal Year Resultat
   app.get('/getClassSolde/:account_class/:fiscal_year', uncategorised.getClassSolde);
+  app.get('/getTypeSolde/:fiscal_year/:account_type_id/:is_charge', uncategorised.getTypeSolde);
   app.post('/posting_fiscal_resultat/', fiscal.fiscalYearResultat);
 
   // Stock integration
@@ -229,7 +230,7 @@ exports.initialise = function (app) {
   app.get('/analytics/cashboxes', analytics.cashflow.getCashBoxes);
   app.get('/analytics/cashboxes/:id/balance', analytics.cashflow.getCashBoxBalance);
   app.get('/analytics/cashboxes/:id/history', analytics.cashflow.getCashBoxHistory);
-  
+
   // debtor analytics
   app.get('/analytics/debtorgroups/top', analytics.cashflow.getTopDebtorGroups);
   app.get('/analytics/debtors/top', analytics.cashflow.getTopDebtors);

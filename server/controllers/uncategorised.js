@@ -1477,26 +1477,66 @@ exports.getClassSolde = function (req, res, next) {
             'SUM(`posting_journal`.`debit_equiv`) AS `debit_equiv`,' +
             'SUM(`posting_journal`.`credit_equiv`) AS `credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, `posting_journal`.`currency_id`, ' +
             '`posting_journal`.`doc_num`, `posting_journal`.`trans_id`, `posting_journal`.`description`, `posting_journal`.`comment` ' +
-          'FROM `posting_journal` JOIN `account` ON `account`.`id`=`posting_journal`.`account_id` WHERE `account`.`classe`=? GROUP BY `posting_journal`.`account_id` ' +
+          'FROM `posting_journal` JOIN `account` ON `account`.`id`=`posting_journal`.`account_id` WHERE `posting_journal`.`fiscal_year_id`=? AND `account`.`classe`=? GROUP BY `posting_journal`.`account_id` ' +
         ') UNION ALL (' +
           'SELECT `account`.`id`, `general_ledger`.`fiscal_year_id`, `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, '+
             0 + ' AS credit, ' + 0 + ' AS debit, ' +
             'SUM(`general_ledger`.`debit_equiv`) AS `debit_equiv`, ' +
             'SUM(`general_ledger`.`credit_equiv`) AS `credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
             '`general_ledger`.`doc_num`, `general_ledger`.`trans_id`, `general_ledger`.`description`, `general_ledger`.`comment` ' +
-          'FROM `general_ledger` JOIN `account` ON `account`.`id`=`general_ledger`.`account_id` WHERE `account`.`classe`=? GROUP BY `general_ledger`.`account_id` ' +
+          'FROM `general_ledger` JOIN `account` ON `account`.`id`=`general_ledger`.`account_id` WHERE `general_ledger`.`fiscal_year_id`=? AND `account`.`classe`=? GROUP BY `general_ledger`.`account_id` ' +
         ')' +
       ') AS `t`, `account` AS `ac` ' +
       'WHERE `t`.`account_id` = `ac`.`id` AND `ac`.`classe`=? AND t.fiscal_year_id = ? ';
 
-  db.exec(sql, [account_class, account_class, account_class, fiscal_year_id])
+  db.exec(sql, [fiscal_year_id, account_class, fiscal_year_id, account_class, account_class, fiscal_year_id])
   .then(function (data) {
     res.send(data);
   })
   .catch(function (err) { next(err); })
   .done();
-
 };
+
+/**
+  * Get Type Solde
+  * This function is reponsible to return a solde
+  * according `account_type`, `account is charge` and `fiscal year` given
+  */
+  exports.getTypeSolde = function (req, res, next) {
+
+      var fiscalYearId = req.params.fiscal_year,
+          accountType   = req.params.account_type_id,
+          accountIsCharge = req.params.is_charge;
+
+      var sql =
+        'SELECT `ac`.`id`, `ac`.`account_number`, `ac`.`account_txt`, `ac`.`account_type_id`, `ac`.`is_charge`, `t`.`fiscal_year_id`, `t`.`debit`, `t`.`credit`, `t`.`debit_equiv`, `t`.`credit_equiv`, `t`.`currency_id` ' +
+        'FROM (' +
+          '(' +
+            'SELECT `account`.`id`, `account`.`account_type_id`, `account`.`is_charge`, `posting_journal`.`fiscal_year_id`, `posting_journal`.`project_id`, `posting_journal`.`uuid`, `posting_journal`.`inv_po_id`, `posting_journal`.`trans_date`, ' +
+              0 + ' AS debit, ' + 0 + ' AS credit, ' +
+              'SUM(`posting_journal`.`debit_equiv`) AS `debit_equiv`,' +
+              'SUM(`posting_journal`.`credit_equiv`) AS `credit_equiv`, `posting_journal`.`account_id`, `posting_journal`.`deb_cred_uuid`, `posting_journal`.`currency_id`, ' +
+              '`posting_journal`.`doc_num`, `posting_journal`.`trans_id`, `posting_journal`.`description`, `posting_journal`.`comment` ' +
+            'FROM `posting_journal` JOIN `account` ON `account`.`id`=`posting_journal`.`account_id` WHERE `posting_journal`.`fiscal_year_id`=? AND `account`.`account_type_id`=? AND `account`.`is_charge`=? GROUP BY `posting_journal`.`account_id` ' +
+          ') UNION ALL (' +
+            'SELECT `account`.`id`, `account`.`account_type_id`, `account`.`is_charge`, `general_ledger`.`fiscal_year_id`, `general_ledger`.`project_id`, `general_ledger`.`uuid`, `general_ledger`.`inv_po_id`, `general_ledger`.`trans_date`, '+
+              0 + ' AS credit, ' + 0 + ' AS debit, ' +
+              'SUM(`general_ledger`.`debit_equiv`) AS `debit_equiv`, ' +
+              'SUM(`general_ledger`.`credit_equiv`) AS `credit_equiv`, `general_ledger`.`account_id`, `general_ledger`.`deb_cred_uuid`, `general_ledger`.`currency_id`, ' +
+              '`general_ledger`.`doc_num`, `general_ledger`.`trans_id`, `general_ledger`.`description`, `general_ledger`.`comment` ' +
+            'FROM `general_ledger` JOIN `account` ON `account`.`id`=`general_ledger`.`account_id` WHERE `general_ledger`.`fiscal_year_id`=? AND `account`.`account_type_id`=? AND `account`.`is_charge`=? GROUP BY `general_ledger`.`account_id` ' +
+          ')' +
+        ') AS `t`, `account` AS `ac` ' +
+        'WHERE `t`.`account_id` = `ac`.`id` AND (`ac`.`account_type_id`=? AND `ac`.`is_charge`=?) AND t.fiscal_year_id = ? ';
+
+    db.exec(sql, [fiscalYearId, accountType, accountIsCharge, fiscalYearId, accountType, accountIsCharge, accountType, accountIsCharge, fiscalYearId])
+    .then(function (data) {
+      res.send(data);
+    })
+    .catch(function (err) { next(err); })
+    .done();
+  };
+
 
 exports.getStockIntegration = function (req, res, next) {
 
@@ -1516,4 +1556,3 @@ exports.getStockIntegration = function (req, res, next) {
   .done();
 
 };
-
