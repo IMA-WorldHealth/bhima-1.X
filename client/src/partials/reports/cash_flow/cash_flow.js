@@ -210,15 +210,15 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
 
   function labelization () {
     var uniqueIncomes = [], uniqueExpenses = [];
-    session.incomesLabels = uniquelize(session.incomesLabels);
-    session.expensesLabels = uniquelize(session.expensesLabels);
+    session.incomesLabels = ['Clients Non Conventionnees', 'Clients Conventionnees', 'Autres Recettes'];//uniquelize(session.incomesLabels);
+    session.expensesLabels = ['Personnel', 'Achat', 'Autres Depenses']; //uniquelize(session.expensesLabels);
 
     /** incomes rows */
     session.periodicData.forEach(function (flow) {
       session.incomes[util.htmlDate(flow.period.period_start)] = {};
       session.incomesLabels.forEach(function (label) {
         session.summationIncome[util.htmlDate(flow.period.period_start)].forEach(function (transaction) {
-          if (transaction.service_txt === label) {
+          if (transactionSource.getGroup(transaction.service_txt, 1) === label) {
             session.incomes[util.htmlDate(flow.period.period_start)][label] = exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
           }
         });
@@ -238,7 +238,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
       session.expenses[util.htmlDate(flow.period.period_start)] = {};
       session.expensesLabels.forEach(function (label) {
         session.summationExpense[util.htmlDate(flow.period.period_start)].forEach(function (transaction) {
-          if (transaction.service_txt === label) {
+          if (transactionSource.getGroup(transaction.service_txt, 0) === label) {
             session.expenses[util.htmlDate(flow.period.period_start)][label] = exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
           }
         });

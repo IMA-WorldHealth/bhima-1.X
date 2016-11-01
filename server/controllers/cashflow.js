@@ -85,6 +85,7 @@ function cashFlowReport (req, res, next) {
 		return closingBalance(params.account_id, glb.periods[0].period_start);
 	})
 	.then(function (balance) {
+		console.log('closing balance', balance);
 		if (!balance.length) { balance[0] = { balance: 0, account_id: params.account_id }; }
 		glb.openningBalance = balance[0];
 		return queryIncomeExpense(params);
@@ -97,7 +98,6 @@ function cashFlowReport (req, res, next) {
 		res.status(200).send({ openningBalance : glb.openningBalance, flows : flows });
 	})
 	.catch(next);
-
 }
 
 /**
@@ -188,7 +188,7 @@ function getFiscalYear(date) {
 function fiscalYearPeriods(dateFrom, dateTo) {
 	var query = 
 		'SELECT id, period_number, period_start, period_stop ' + 
-		'FROM period WHERE period_start >= DATE(?) AND period_stop <= DATE(?)';
+		'FROM period WHERE period_start >= DATE(?) AND period_stop <= DATE(?) ORDER BY id ASC';
 	return db.exec(query, [dateFrom, dateTo]);
 }
 
