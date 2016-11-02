@@ -107,8 +107,18 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     };
 
     // Make sure the account_id has a valid value
-    if (session.selectedCash) {
+    if (session.selectedCash && !vm.onlyCashes) {
       request.account_id = session.selectedCash.account_id;
+    }
+    else if (vm.onlyCashes) {
+      request.account_id = null;
+
+      // FIXME: hard values for the set of accounts, must be dinamically affected
+      // Caisse Principale CDF : 2935
+      // Caisse Principale USD : 2939
+      request.account_ids = [2935, 2939];
+      request.onlyCashes  = true;
+      session.currency_id = 2;
     }
     else {
       request.account_id = null;
@@ -132,7 +142,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     initialization();
 
     session.periodicData = rows.data.flows;
-    session.openningBalance = exchange.convertir(rows.data.openningBalance.balance, SessionService.enterprise.currency_id, session.currency_id, new Date());
+    session.openningBalance = vm.onlyCashes ? rows.data.openningBalance.balance : exchange.convertir(rows.data.openningBalance.balance, SessionService.enterprise.currency_id, session.currency_id, new Date());
 
     session.periodicData.forEach(function (flow) {
       groupingResult(flow.incomes, flow.expenses, util.htmlDate(flow.period.period_start));
@@ -169,14 +179,16 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     
     if(session.summationIncome[period]) {
       session.summationIncome[period].forEach(function (transaction) {
-        session.sum_incomes[period] += exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
+        // if only cashes values must be in only enterprise currency
+        session.sum_incomes[period] += vm.onlyCashes ? transaction.value : exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
         session.incomesLabels.push(transaction.service_txt);
       });
     }
 
     if(session.summationExpense[period]) {
       session.summationExpense[period].forEach(function (transaction) {
-        session.sum_expense[period] += exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
+        // if only cashes values must be in only enterprise currency
+        session.sum_expense[period] += vm.onlyCashes ? transaction.value : exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
         session.expensesLabels.push(transaction.service_txt);
       });
     }
@@ -217,9 +229,11 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     session.periodicData.forEach(function (flow) {
       session.incomes[util.htmlDate(flow.period.period_start)] = {};
       session.incomesLabels.forEach(function (label) {
+        session.incomes[util.htmlDate(flow.period.period_start)][label] = 0;
+
         session.summationIncome[util.htmlDate(flow.period.period_start)].forEach(function (transaction) {
           if (transactionSource.getGroup(transaction.service_txt, 1) === label) {
-            session.incomes[util.htmlDate(flow.period.period_start)][label] = exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
+            session.incomes[util.htmlDate(flow.period.period_start)][label] += vm.onlyCashes ? transaction.value : exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
           }
         });
       });
@@ -229,7 +243,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     session.periodicData.forEach(function (flow) {
       session.totalIncomes[util.htmlDate(flow.period.period_start)] = 0;
       session.summationIncome[util.htmlDate(flow.period.period_start)].forEach(function (transaction) {
-        session.totalIncomes[util.htmlDate(flow.period.period_start)] += exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
+        session.totalIncomes[util.htmlDate(flow.period.period_start)] += vm.onlyCashes ? transaction.value : exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
       });
     });
 
@@ -237,9 +251,11 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     session.periodicData.forEach(function (flow) {
       session.expenses[util.htmlDate(flow.period.period_start)] = {};
       session.expensesLabels.forEach(function (label) {
+        session.expenses[util.htmlDate(flow.period.period_start)][label] = 0;
+
         session.summationExpense[util.htmlDate(flow.period.period_start)].forEach(function (transaction) {
           if (transactionSource.getGroup(transaction.service_txt, 0) === label) {
-            session.expenses[util.htmlDate(flow.period.period_start)][label] = exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
+            session.expenses[util.htmlDate(flow.period.period_start)][label] += vm.onlyCashes ? transaction.value : exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
           }
         });
       });
@@ -249,7 +265,7 @@ function CashFlowReportController ($q, $http, connect, validate, messenger, util
     session.periodicData.forEach(function (flow) {
       session.totalExpenses[util.htmlDate(flow.period.period_start)] = 0;
       session.summationExpense[util.htmlDate(flow.period.period_start)].forEach(function (transaction) {
-        session.totalExpenses[util.htmlDate(flow.period.period_start)] += exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
+        session.totalExpenses[util.htmlDate(flow.period.period_start)] += vm.onlyCashes ? transaction.value : exchange.convertir(transaction.value, SessionService.enterprise.currency_id, session.currency_id, new Date());
       });
     });
 

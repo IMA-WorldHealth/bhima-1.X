@@ -12,7 +12,7 @@
 
             <form name="configForm" novalidate>
               <div class="form-group">
-                <label class="control-label col-xs-4 required">
+                <label class="control-label required">
                   {{ 'SELECT.PRIMARY_CASH' | translate }}
                 </label>
                 <div>
@@ -22,11 +22,19 @@
                     </span>
                     <select
                       class="form-bhima"
+                      ng-disabled="ReportCtrl.onlyCashes"
                       ng-model="ReportCtrl.session.selectedCash"
                       ng-options="cash as cash.text + ' ' + cash.symbol for cash in ReportCtrl.session.model.cashes.data" >
                     </select>
                   </div>
                 </div>
+              </div>
+
+              <div class="form-group">
+                <label class="control-label">
+                  <input type="checkbox" ng-model="ReportCtrl.onlyCashes"> 
+                  {{ 'PRIMARY_CASH.CASH_CDF_USD' | translate }}
+                </label>
               </div>
 
               <div class="form-group">
@@ -60,7 +68,7 @@
               <div class="pull-right">
                 <button class="btn btn-sm btn-success" type="button"
                   ng-click="ReportCtrl.setSelectedCash(ReportCtrl.session.selectedCash)"
-                  ng-disabled="configForm.$invalid">
+                  ng-disabled="configForm.$invalid && !!ReportCtrl.onlyCashes">
                   {{ "REPORT.GENERATE" | translate }}
                 </button>
               </div>
@@ -73,8 +81,14 @@
   </div>
   <div ng-switch-when="generate">
     <header>
+      <span ng-if="ReportCtrl.onlyCashes"> 
+        <b> {{ "PRIMARY_CASH.CASH_CDF_USD_TITLE" | translate | uppercase }}</b> 
+        {{ ReportCtrl.session.dateFrom | date }} - {{ ReportCtrl.session.dateTo | date }}
+      </span>
+      <span ng-if="!ReportCtrl.onlyCashes">
       {{ "CASH.FLOW.TITLE" | translate }}: <b> {{ ReportCtrl.session.selectedCash.text }} {{ ReportCtrl.session.selectedCash.symbol }} </b>
        / {{ ReportCtrl.session.dateFrom | date }} - {{ ReportCtrl.session.dateTo | date }}
+      </span>
     </header>
 
     <nav>
@@ -100,14 +114,62 @@
         <div class="reportFrame">
           <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
 
-          <h4 class="visible-print">
-            <b>
-              <span class="glyphicon glyphicon-stats"></span> 
-              {{ "CASH.FLOW.TITLE" | translate }} : 
-              <small>{{ ReportCtrl.session.selectedCash.text }} {{ ReportCtrl.session.selectedCash.symbol }}</small>
-            </b> :
-            <small>{{ ReportCtrl.session.dateFrom | date }} - {{ ReportCtrl.session.dateTo | date }}</small>
+          <h4 class="visible-print text-center">
+            <b ng-if="ReportCtrl.onlyCashes"> 
+              {{ "PRIMARY_CASH.CASH_CDF_USD_TITLE" | translate | uppercase }} 
+              {{ ReportCtrl.session.dateFrom | date }} - {{ ReportCtrl.session.dateTo | date }}
+            </b>
+            <b ng-if="!ReportCtrl.onlyCashes"> 
+              {{ "CASH.FLOW.REPORT" | translate | uppercase }} 
+              {{ ReportCtrl.session.selectedCash.text | uppercase }} {{ ReportCtrl.session.selectedCash.symbol }} 
+              {{ ReportCtrl.session.dateFrom | date }} - {{ ReportCtrl.session.dateTo | date }}
+            </b>
+            <br>
+            <span class="glyphicon glyphicon-stats"></span>
+            {{ "CASH.FLOW.TITLE" | translate | uppercase }}
           </h4>
+
+          <table
+            class="custom-report navy cashflow table table-bordered"
+            style="border: 3px solid #ccc;">
+            <!-- period start -->
+            <tr>
+              <td class="text-left">{{ "CASH.FLOW.PERIOD_START" | translate }}</td>
+              <td ng-repeat="flow in ReportCtrl.session.periodicData">
+                {{ flow.period.period_start | date }}
+              </td>
+            </tr>
+            
+            <!-- period stop  -->
+            <tr>
+              <td class="text-left">{{ "CASH.FLOW.PERIOD_STOP" | translate }}</td>
+              <td ng-repeat="flow in ReportCtrl.session.periodicData">
+                {{ flow.period.period_stop | date }}
+              </td>
+            </tr>
+
+            <!-- white line -->
+            <tr>
+              <td style="background-color: #efefef;" colspan="{{ ReportCtrl.session.periodicData.length + 1 }}"></td>
+            </tr>
+            
+            <!-- openning balance  -->
+            <tr>
+              <td class="text-left"><strong>{{ 'CASH.FLOW.OPENNING_BALANCE' | translate }}<strong></td>
+              <td ng-repeat="flow in ReportCtrl.session.periodicData">
+                {{ ReportCtrl.session.periodicOpenningBalance[ReportCtrl.util.htmlDate(flow.period.period_start)] | currency:ReportCtrl.session.currency_id }}
+              </td>
+            </tr>
+            
+            <!-- closing balance  -->
+            <tr>
+              <td class="text-left"><strong>{{ 'CASH.FLOW.CLOSING_BALANCE' | translate }}<strong></td>
+              <td ng-repeat="flow in ReportCtrl.session.periodicData">
+                {{ ReportCtrl.session.periodicBalance[ReportCtrl.util.htmlDate(flow.period.period_start)] | currency:ReportCtrl.session.currency_id }}
+              </td>
+            </tr>
+
+          </table>
 
           <!-- Cashflow report -->
           <table class="custom-report navy cashflow table table-stripped table-bordered">
