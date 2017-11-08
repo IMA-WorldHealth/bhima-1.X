@@ -54,6 +54,24 @@
         </div>
 
         <div class="form-group">
+          <label class="control-label">
+            {{ "UTIL.CURRENCY" | translate }}
+          </label>
+
+          <br />
+
+          <label class="radio-inline">
+            <input type="radio" name="currency_id" ng-value="1" ng-model="debtorGroupReportCtrl.currency_id">
+            <span translate>UTIL.FRANCS</span>
+          </label>
+
+          <label class="radio-inline">
+            <input type="radio" name="currency_id" ng-value="2" ng-model="debtorGroupReportCtrl.currency_id">
+            <span translate>UTIL.DOLLARS</span>
+          </label>
+        </div>
+
+        <div class="form-group">
           <label>
             {{'DEBITOR_GROUP_REPORT.LANGUAGE' | translate}}
           </label>
@@ -66,17 +84,17 @@
                 ng-click="debtorGroupReportCtrl.selectConfiguration('language', language)">{{language.label}}</button>
             </span>
           </div>
-        </div>          
+        </div>
 
         <button
           class="btn btn-default"
           ng-disabled="debtorGroupReportCtrl.building || !debtorGroupReportCtrl.debitor_group_uuid"
-          ng-click="debtorGroupReportCtrl.generateDocument()" 
+          ng-click="debtorGroupReportCtrl.generateDocument()"
           ng-if="!debtorGroupReportCtrl.generatedDocumentPath">{{debtorGroupReportCtrl.building ? debtorGroupReportCtrl.loading : debtorGroupReportCtrl.generate_doc}}
         </button>
 
         <a class="btn btn-success" href="{{debtorGroupReportCtrl.generatedDocumentPath}}" target="_blank" ng-if="debtorGroupReportCtrl.generatedDocumentPath" ng-click="debtorGroupReportCtrl.clearPath()">{{'DEBITOR_GROUP_REPORT.DOC_SUCCES' | translate}}</a>
       </form>
     </div>
-  </div>  
+  </div>
 </main>
