@@ -5,7 +5,7 @@
   "main": "server/app.js",
   "scripts": {
     "test": "mocha server/test/",
-    "app": "gulp build && cd bin && node server/app.js"
+    "app": "./node_modules/.bin/gulp build && cd bin && node server/app.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "body-parser": "^1.14.1",
+    "bower": "^1.8.2",
     "compression": "^1.5.2",
     "connect-multiparty": "^2.0.0",
     "csv": "^0.4.1",
@@ -44,7 +45,7 @@
     "chai": "^3.3.0",
     "chai-as-promised": "^5.1.0",
     "chai-http": "^1.0.0",
-    "gulp": "^3.9.0",
+    "gulp": "^3.9.1",
     "gulp-concat": "^2.6.0",
     "gulp-flatten": "^0.2.0",
     "gulp-if": "^2.0.0",
