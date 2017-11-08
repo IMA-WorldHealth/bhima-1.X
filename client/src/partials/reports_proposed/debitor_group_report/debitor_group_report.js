@@ -1,5 +1,4 @@
 var DebtorGroupReportController = function ($http, $translate, validate, reportConfigService, messenger) {
-
   var vm = this,
   generatedDocumentPath = null,
   serverUtilityPath = '/report/build/debitor_group_report',
@@ -39,15 +38,18 @@ var DebtorGroupReportController = function ($http, $translate, validate, reportC
     selectConfiguration('language', configuration.language.options[1]);
   }
 
+  vm.currency_id = vm.configuration.enterprise && vm.configuration.enterprise.currency_id;
+
   // POST configuration object to /report/build/:target
   function generateDocument() {
     var path = serverUtilityPath;
     var configurationObject = {};
     configurationObject.language = configuration.language.selected.value;
     configurationObject.enterprise = configuration.enterprise;
-    configurationObject.project = configuration.project;    
+    configurationObject.project = configuration.project;
     configurationObject.dg = vm.debitorGroup.get(vm.debitor_group_uuid);
     configurationObject.unsoldOnly = vm.unsold_only;
+    configurationObject.currency_id = vm.currency_id;
     configurationObject.involveJournal = vm.involve_journal;
     configurationObject.dateFrom = vm.dateFrom;
     configurationObject.dateTo = vm.dateTo;

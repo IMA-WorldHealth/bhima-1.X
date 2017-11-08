@@ -23,9 +23,9 @@
           <th>{{=it.dataStructure.SALE_NUMBER}}</th>
           <th>{{=it.dataStructure.PATIENT}}</th>
           <th>{{=it.dataStructure.BILL_DATE}}</th>
-          <th>{{=it.dataStructure.AMOUNT_BILLED}}</th>
-          <th>{{=it.dataStructure.AMOUNT_PAYED}}</th>
-          <th>{{=it.dataStructure.DIFFERENCE}}</th>
+          <th>{{=it.dataStructure.AMOUNT_BILLED}} ({{=it.symbol}})</th>
+          <th>{{=it.dataStructure.AMOUNT_PAYED}} ({{=it.symbol}})</th>
+          <th>{{=it.dataStructure.DIFFERENCE}} ({{=it.symbol}})</th>
           <th>{{=it.dataStructure.TRANS_NUMBER}}</th>
         </tr>
       </thead>
@@ -34,11 +34,11 @@
         {{~it.data :value : index}}
           <tr class="contenu">
             <td>{{=value.saleNumber}}</td>
-            <td>{{=value.patientName}}</td>
+            <td style="text-align:left;">{{=value.patientName}}</td>
             <td>{{=value.invoice_date}}</td>
-            <td>{{=value.cost}}</td>
-            <td>{{=value.credit}}</td>
-            <td>{{=value.difference}}</td>
+            <td style="text-align:right;">{{=value._cost}}</td>
+            <td style="text-align:right;">{{=value._credit}}</td>
+            <td style="text-align:right;">{{=value._difference}}</td>
             <td>{{=value.trans_id}}</td>
           </tr>
         {{~}}
