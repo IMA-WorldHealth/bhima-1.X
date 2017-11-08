@@ -93,7 +93,7 @@
               <tr ng-if="!transactions.length && !session.loading">
                 <td colspan="4">{{ "REPORT.NO_TRANSACTIONS" | translate }}</td>
               </tr>
-              <tr ng-repeat='transaction in transactions track by uuid'>
+              <tr ng-repeat='transaction in transactions'>
                 <td>{{ transaction.trans_date | date }}</td>
                 <td>{{ transaction.description }}</td>
                 <td class="text-right">{{ transaction.debit | currency:transaction.currency_id }}</td>
