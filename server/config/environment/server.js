@@ -2,12 +2,12 @@
 var config = {
   'static': 'client/dest/',
   'rootFile' : '/index.html',
-  'port' : 8080,
+  'port' : 9090,
   'db' : {
     'host':     'localhost',
-    'user':     'bhima',
-    'password': 'HISCongo2013',
-    'database': 'bhima'
+    'user':     'tshikaji',
+    'password': 'hiscongotshikaji',
+    'database': 'tshikaji',
   },
   'session' : {
     'secret' : 'xopen blowfish',
@@ -24,7 +24,7 @@ var config = {
    *e.g : {'name' : 'mail', 'script' : '/../../plugins/mail/index.js'}
   */
   'plugins' : [
-  //{'name' : 'mail', 'script' : '/../../plugins/mail/index.js'}
+    // {'name' : 'mail', 'script' : '/../../plugins/mail/index.js'}
   ],
   'tls' : {
     'key' : 'server/config/keys/server.key',
