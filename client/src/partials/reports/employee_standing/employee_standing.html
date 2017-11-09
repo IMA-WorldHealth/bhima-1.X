@@ -8,8 +8,8 @@
           </div>
 
           <div class="panel-body">
-            
-            <form name="configForm" novalidate>   
+
+            <form name="configForm" novalidate>
               <div class="form-group">
                 <label class="control-label col-xs-4 required">
                   {{ "SELECT.EMPLOYEE" | translate }}
@@ -18,7 +18,7 @@
                   <div class="pull-left form-group input-group">
                   <span class="input-group-addon">
                     <span class="glyphicon glyphicon-user"></span>
-                  </span>  
+                  </span>
                   <input class="form-bhima" required ng-model="session.selected" typeahead="employee as formatPatient(employee) for employee in session.employees.data | filter:$viewValue | limitTo:10" typeahead-template-url="template.html" placeholder="{{ 'EMPLOYEE_STANDING.PLACEHOLDER' | translate }}">
                   </div>
                 </div>
@@ -39,17 +39,17 @@
           <span bind-html-unsafe="match.label | typeaheadHighlight:query"></span>
           <span><b>[{{ match.model.uuid }}]</b></span>
         </a>
-      </script>      
-    </main>  
+      </script>
+    </main>
   </div>
-  <div ng-switch-when="generate">  
+  <div ng-switch-when="generate">
     <header>
       {{ "EMPLOYEE_STANDING.TITLE" | translate }} <small> {{ "EMPLOYEE_STANDING.CREATED_ON" | translate }} {{ session.date | date }}</small>
     </header>
 
     <nav>
 
-      <div class="pull-right">        
+      <div class="pull-right">
         <button class="btn btn-sm btn-default" ng-click="print()">
           <span class="glyphicon glyphicon-print"></span>
           {{ "UTIL.PRINT" | translate }}
@@ -62,14 +62,14 @@
           <span class="glyphicon glyphicon-repeat"></span>
         </button>
       </div>
-    
+
     </nav>
 
     <div class="report">
       <div class="reportBody">
         <div class="reportFrame">
           <ng-include src="'partials/reports/templates/enterprise_header.html'" onload=""></ng-include>
-          
+
           <h4>{{ "EMPLOYEE_STANDING.TITLE" | translate }} <small> {{ "EMPLOYEE_STANDING.CREATED_ON" | translate }} {{ session.date | date }}</small></h4>
 
           <div class="media" ng-show="!session.noRecord">
@@ -90,10 +90,10 @@
                     </div>
 
                     <label class="control-label col-xs-2">
-                      {{ "COLUMNS.REGISTERED" | translate }}
+                      {{ "COLUMNS.DATE_EMBAUCHE" | translate }}
                     </label>
                     <div class="col-xs-4">
-                      <p class="form-control-static">{{ session.employee.registration_date | date }}</p>
+                      <p class="form-control-static">{{ session.employee.date_embauche | date }}</p>
                     </div>
                   </div>
 
@@ -114,13 +114,6 @@
                   </div>
 
                   <div class="form-group">
-                    <label class="control-label col-xs-2">
-                      {{ "EMPLOYEE_STANDING.ACCOUNT_NUMBER" | translate }}
-                    </label>
-                    <div class="col-xs-4">
-                      <p class="form-control-static">{{ session.accounts.get(session.employee.account_id).account_number }}</p>
-                    </div>
-
                     <label class="control-label col-xs-2">
                       {{ "EMPLOYEE_STANDING.ACCOUNT_BALANCE" | translate }}
                     </label>
@@ -153,34 +146,34 @@
           <table class="reportTable">
             <thead>
               <tr>
-                <th>{{ "COLUMNS.INVOICE_ID" | translate }}</th>
                 <th>{{ "COLUMNS.TRANSACTION_ID" | translate }}</th>
+                <th>{{ "COLUMNS.ACCOUNT_NUMBER" | translate }}</th>
                 <th>{{ "COLUMNS.LABEL" | translate }}</th>
-                <th>{{ "COLUMNS.DATE_BILLED" | translate }}</th>
+                <th>{{ "COLUMNS.TRANS_DATE" | translate }}</th>
                 <th>{{ "COLUMNS.DEBIT" | translate }}</th>
                 <th>{{ "COLUMNS.CREDIT" | translate }}</th>
               </tr>
             </thead>
             <tbody>
               <tr ng-repeat="receipt in session.receipts | filter:isOutstanding | orderBy:'trans_date'">
-                <td> {{ receipt.inv_po_id || 'Unreferenced Balance' }} </td>
                 <td> {{ receipt.trans_id }} </td>
+                <td> {{ receipt.account_number }} </td>
                 <td> {{ receipt.description }} </td>
                 <td> {{ receipt.trans_date | date }} </td>
-                <td> {{ receipt.billed | currency }} </td>
-                <td> {{ receipt.billed - receipt.due | currency }} </td>
+                <td style="text-align: right;"> {{ receipt.billed | currency }} </td>
+                <td style="text-align: right;"> {{ receipt.billed - receipt.due | currency }} </td>
               </tr>
             </tbody>
             <tfoot>
               <tr>
                 <th colspan="4">{{ "COLUMNS.TOTAL" | translate }}</th>
-                <td>{{ session.employee.total_amount | currency }}</td>
-                <td>{{ session.employee.total_amount - session.employee.total_due | currency }}</td>
+                <td style="text-align: right;">{{ session.employee.total_amount | currency }}</td>
+                <td style="text-align: right;">{{ session.employee.total_amount - session.employee.total_due | currency }}</td>
               </tr>
             </tfoot>
           </table>
-        </div>        
+        </div>
       </div>
     </div>
-  </div>    
-</div>  
+  </div>
+</div>
