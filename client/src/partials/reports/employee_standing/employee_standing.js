@@ -18,7 +18,7 @@ angular.module('bhima.controllers')
       required : true,
       query : {
         tables : {
-          employee : {columns : ['id', 'code', 'prenom', 'name', 'postnom', 'sexe', 'dob', 'location_id','creditor_uuid','debitor_uuid']},
+          employee : {columns : ['id', 'code', 'prenom', 'name', 'postnom', 'sexe', 'dob', 'location_id','creditor_uuid','debitor_uuid', 'date_embauche' ]},
           debitor : { columns : ['text']},
           debitor_group : { columns : ['account_id', 'uuid']}
         },
@@ -72,7 +72,7 @@ angular.module('bhima.controllers')
             balance += receipt.debit - receipt.credit;
             sumBilled += receipt.billed;
             sumDue += receipt.due;
-          }          
+          }
         });
 
         session.employee.total_amount = sumBilled;
@@ -105,6 +105,8 @@ angular.module('bhima.controllers')
     function reconfigure () {
       $scope.state = null;
       session.selected = null;
+      delete session.receipts;
+      delete session.employee;
     }
 
     $scope.search = search;

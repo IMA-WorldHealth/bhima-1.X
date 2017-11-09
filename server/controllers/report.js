@@ -444,38 +444,48 @@ function patientStanding(params) {
 
 function employeeStanding(params) {
   params = querystring.parse(params);
+
+  var entityUuidLookupSql =
+   'SELECT creditor_uuid FROM employee WHERE debitor_uuid = ?;';
+
   var id = sanitize.escape(params.id),
       employee = {},
       defer = q.defer(),
       sql =
-      'SELECT `aggregate`.`uuid`, `aggregate`.`trans_id`, `aggregate`.`trans_date`, sum(`aggregate`.`credit_equiv`) as credit, sum(`aggregate`.`debit_equiv`) as debit, `aggregate`.`description`, `aggregate`.`inv_po_id` ' +
+      'SELECT `aggregate`.`uuid`, `aggregate`.`trans_id`, account.account_number, `aggregate`.`trans_date`, sum(`aggregate`.`credit_equiv`) as credit, sum(`aggregate`.`debit_equiv`) as debit, `aggregate`.`description`, `aggregate`.`inv_po_id` ' +
       'FROM (' +
-        'SELECT `posting_journal`.`uuid`, `posting_journal`.`trans_id`, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`description`, `posting_journal`.`inv_po_id` ' +
+        'SELECT `posting_journal`.`uuid`, `posting_journal`.`trans_id`, posting_journal.account_id, `posting_journal`.`trans_date`, `posting_journal`.`debit_equiv`, `posting_journal`.`credit_equiv`, `posting_journal`.`description`, `posting_journal`.`inv_po_id` ' +
         'FROM `posting_journal` ' +
         'JOIN `transaction_type` ON `transaction_type`.`id`= `posting_journal`.`origin_id` '+
-        ' WHERE `posting_journal`.`deb_cred_uuid`= ? AND `posting_journal`.`deb_cred_type`=\'C\' ' +
+        ' WHERE `posting_journal`.`deb_cred_uuid` IN (?, ?) ' +
       'UNION ' +
-        'SELECT `general_ledger`.`uuid`, `general_ledger`.`trans_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`description`, `general_ledger`.`inv_po_id` ' +
+        'SELECT `general_ledger`.`uuid`, `general_ledger`.`trans_id`, `general_ledger`.`account_id`, `general_ledger`.`trans_date`, `general_ledger`.`debit_equiv`, `general_ledger`.`credit_equiv`, `general_ledger`.`description`, `general_ledger`.`inv_po_id` ' +
         'FROM `general_ledger` ' +
         'JOIN `transaction_type` ON `transaction_type`.`id`= `general_ledger`.`origin_id` '+
-        'WHERE `general_ledger`.`deb_cred_uuid`=? AND `general_ledger`.`deb_cred_type`=\'C\') as aggregate ' +
-      'GROUP BY `aggregate`.`inv_po_id` ORDER BY `aggregate`.`trans_date` DESC;';
+        'WHERE `general_ledger`.`deb_cred_uuid` IN (?, ?)' +
+      ') as aggregate JOIN account ON aggregate.account_id = account.id ' +
+      'GROUP BY `aggregate`.`trans_id` ORDER BY `aggregate`.`trans_date` DESC;';
 
-  db.exec(sql,[params.id, params.id])
+  var creditor_uuid;
+  db.exec(entityUuidLookupSql, [params.id])
+  .then(function (rows) {
+    creditor_uuid = rows[0].creditor_uuid;
+    return db.exec(sql,[params.id, creditor_uuid, params.id, creditor_uuid])
+  })
   .then(function (rows) {
     if (!rows.length) { return defer.resolve([]); }
 
     employee.receipts = rows;
     sql =
       'SELECT trans_date FROM (' +
-      ' SELECT trans_date FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid`=? AND `posting_journal`.`deb_cred_type`=\'C\' ' +
+      ' SELECT trans_date FROM `posting_journal` WHERE `posting_journal`.`deb_cred_uuid` IN (?, ?)  ' +
       'AND `posting_journal`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'cash\' OR `transaction_type`.`service_txt`=\'caution\' LIMIT 1)' +
       ' UNION ' +
-      'SELECT trans_date FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid`=? AND `general_ledger`.`deb_cred_type`=\'C\' ' +
+      'SELECT trans_date FROM `general_ledger` WHERE `general_ledger`.`deb_cred_uuid` IN (?, ?) ' +
       'AND `general_ledger`.`origin_id`=(SELECT `transaction_type`.`id` FROM `transaction_type` WHERE `transaction_type`.`service_txt`=\'cash\' OR `transaction_type`.`service_txt`=\'caution\' LIMIT 1)' +
       ') as aggregate ORDER BY trans_date DESC LIMIT 1;';
 
-    return db.exec(sql, [params.id, params.id]);
+    return db.exec(sql, [params.id, creditor_uuid, params.id, creditor_uuid]);
   })
   .then(function (rows) {
     if (!rows.length) {
@@ -655,7 +665,7 @@ function incomeReport (params) {
         ')' +
       ') AS `t` ' +
       'JOIN `account` a ON `t`.`account_id` = `a`.`id` ' +
-      'JOIN `transaction_type` o ON `t`.`origin_id` = `o`.`id` ' + 
+      'JOIN `transaction_type` o ON `t`.`origin_id` = `o`.`id` ' +
       'JOIN `user` u ON `t`.`user_id` = `u`.`id` ' +
       'WHERE `t`.`debit` > 0 GROUP BY `t`.`trans_id`;';
 
@@ -686,7 +696,7 @@ function incomePrimaryReport (params) {
         ')' +
       ') AS `t` ' +
       'JOIN `account` a ON `t`.`account_id` = `a`.`id` ' +
-      'JOIN `transaction_type` o ON `t`.`origin_id` = `o`.`id` ' + 
+      'JOIN `transaction_type` o ON `t`.`origin_id` = `o`.`id` ' +
       'JOIN `user` u ON `t`.`user_id` = `u`.`id` ' +
       'WHERE `t`.`debit` > 0 GROUP BY `t`.`trans_id`;';
 
@@ -715,9 +725,9 @@ function expenseReport (params) {
           'LEFT JOIN `primary_cash_item` ON `primary_cash_item`.`document_uuid` = `general_ledger`.`inv_po_id`  ' +
           'WHERE `general_ledger`.`account_id`= ? AND (`general_ledger`.`trans_date` >=? AND `general_ledger`.`trans_date` <=?) ' +
         ')' +
-      ') AS `t` ' + 
+      ') AS `t` ' +
       'JOIN `account` a ON `t`.`account_id` = `a`.`id` ' +
-      'JOIN `transaction_type` o ON `t`.`origin_id` = `o`.`id` ' + 
+      'JOIN `transaction_type` o ON `t`.`origin_id` = `o`.`id` ' +
       'JOIN `user` u ON `t`.`user_id` = `u`.`id` ' +
       'WHERE `t`.`credit` > 0 GROUP BY `t`.`trans_id`;';
 
