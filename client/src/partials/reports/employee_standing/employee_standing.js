@@ -18,7 +18,7 @@ angular.module('bhima.controllers')
       required : true,
       query : {
         tables : {
-          employee : {columns : ['id', 'code', 'prenom', 'name', 'postnom', 'sexe', 'dob', 'location_id','creditor_uuid','debitor_uuid']},
+          employee : {columns : ['id', 'code', 'prenom', 'name', 'postnom', 'sexe', 'dob', 'location_id','creditor_uuid','debitor_uuid', 'date_embauche']},
           debitor : { columns : ['text']},
           debitor_group : { columns : ['account_id', 'uuid']}
         },
@@ -42,6 +42,7 @@ angular.module('bhima.controllers')
     };
 
     function processModels(models) {
+      console.log('models;', models);
       angular.extend(session, models);
       session.date = new Date();
     }
@@ -72,7 +73,7 @@ angular.module('bhima.controllers')
             balance += receipt.debit - receipt.credit;
             sumBilled += receipt.billed;
             sumDue += receipt.due;
-          }          
+          }
         });
 
         session.employee.total_amount = sumBilled;
