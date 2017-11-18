@@ -2,7 +2,7 @@ angular.module('bhima.controllers')
 .controller('ExchangeRateController', ExchangeRateController);
 
 ExchangeRateController.$inject = [
-  'connect', 'appstate', 'validate', 'exchange', 'SessionService', 'DateService'
+  'connect', 'appstate', 'validate', 'exchange', 'SessionService', 'DateService', 'util'
 ];
 
 /**
@@ -15,7 +15,7 @@ ExchangeRateController.$inject = [
 *
 * @controller ExchangeRateController
 */
-function ExchangeRateController(connect, appstate, validate, exchange, Session, Dates) {
+function ExchangeRateController(connect, appstate, validate, exchange, Session, Dates, util) {
   var vm = this;
   var dependencies = {};
 
@@ -89,7 +89,7 @@ function ExchangeRateController(connect, appstate, validate, exchange, Session, 
       enterprise_currency_id : vm.enterprise.currency_id,
       foreign_currency_id    : vm.form.foreign_currency_id,
       rate                   : vm.form.rate / 100.0,
-      date                   : vm.form.date
+      date                   : util.sqlDate(vm.form.date)
     };
 
     connect.post('exchange_rate', [data])

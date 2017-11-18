@@ -519,6 +519,10 @@ function bhimaconfig($routeProvider) {
     controller : 'stock.entry.report',
     templateUrl : 'partials/stock/entry/report.html'
   })
+  .when('/stock/rummage/report/:documentId?', {
+    controller : 'stock.rummage.report',
+    templateUrl : 'partials/stock/rummage/report.html'
+  })
   .when('/stock/search/', {
     controller : 'stock.search',
     templateUrl: 'partials/stock/search/search.html'

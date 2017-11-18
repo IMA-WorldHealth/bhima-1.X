@@ -112,54 +112,60 @@ function donation(id, userId, data, cb) {
 function serviceReturnStock(id, userId, cb) {
   'use strict';
 
-  var glb = JSON.parse(id);
+  console.log('params', id);
+
+  // iteraton dans la liste de tracking_number
+  var glb = JSON.parse(id); //this id is an object
   var sql, params, references, dayExchange, cfg = {};
 
-  sql =
-    'SELECT purchase.uuid, purchase.creditor_uuid , purchase.cost, purchase.currency_id, ' +
-      'purchase.project_id, purchase.purchaser_id, purchase.emitter_id, purchase.note, ' +
-      'purchase_item.inventory_uuid, purchase_item.total ' +
-    'FROM purchase JOIN purchase_item ON ' +
-      'purchase.uuid = purchase_item.purchase_uuid ' +
-    'WHERE purchase.uuid = ?;';
+  // sql =
+  //   'SELECT purchase.uuid, purchase.creditor_uuid , purchase.cost, purchase.currency_id, ' +
+  //     'purchase.project_id, purchase.purchaser_id, purchase.emitter_id, purchase.note, ' +
+  //     'purchase_item.inventory_uuid, purchase_item.total ' +
+  //   'FROM purchase JOIN purchase_item ON ' +
+  //     'purchase.uuid = purchase_item.purchase_uuid ' +
+  //   'WHERE purchase.uuid = ?;';
 
-  db.exec(sql, [glb.purchase_uuid])
-  .then(function (records) {
-    if (records.length === 0) {
-      throw new Error('Could not find a purchase with uuid:' + id);
-    }
+  // db.exec(sql, [glb.purchase_uuid])
+  // .then(function (records) {
+  //   if (records.length === 0) {
+  //     throw new Error('Could not find a purchase with uuid:' + id);
+  //   }
 
-    references = records;
+  //   references = records;
 
-    return [
-      core.queries.origin('service_return_stock'),
-      core.queries.period(new Date())
-    ];
-  })
+    // return [
+    //   core.queries.origin('service_return_stock'),
+    //   core.queries.period(new Date())
+    // ]
+  // })
+
+  return q.all([ core.queries.origin('service_return_stock'), core.queries.period(new Date())])
   .spread(function (originId, periodObject) {
     cfg.originId = originId;
     cfg.periodId = periodObject.id;
     cfg.fiscalYearId = periodObject.fiscal_year_id;
-    return core.queries.transactionId(references[0].project_id);
+    return core.queries.transactionId(glb.project_id);
   })
   .then(function (transId) {
     cfg.transId = transId;
     cfg.description =  'Service Return Stock/' + new Date().toISOString().slice(0, 10).toString();
 
-    var queries = references.map(function (reference) {
+    var queries = glb.stock_ids.map(function (item) {
       sql =
         'INSERT INTO posting_journal ('+
           'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
           'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id) '+
-        'SELECT ?, ?, ?, ?, ?, ?, ?, inventory_group.stock_account, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ' +
-        'FROM inventory_group WHERE inventory_group.uuid IN (' +
-          'SELECT inventory.group_uuid FROM inventory WHERE inventory.uuid = ?);';
+        'SELECT ?, p.project_id, ?, ?, ?, ?, ?, ig.stock_account, ?, pi.unit_price * ' + item.quantity + ', ?, ' +
+        'pi.unit_price * ' + item.quantity + ', p.currency_id, ?, ?, p.uuid, ?, ? ' +
+        'FROM purchase AS p JOIN purchase_item pi ON p.uuid = pi.purchase_uuid JOIN inventory i ON ' +
+        'pi.inventory_uuid = i.uuid JOIN inventory_group ig ON i.group_uuid = ig.uuid ' +
+        'WHERE p.uuid = ? AND i.uuid = ?;';
 
       params = [
-        uuid(), reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
-        reference.note, 0, reference.total, 0, reference.total, reference.currency_id,
-        null, null, reference.uuid, cfg.originId, userId, reference.inventory_uuid
+        uuid(), cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(),
+        cfg.description, 0, 0, null, null, cfg.originId, userId, item.purchase_uuid, item.inventory_uuid
       ];
 
       return db.exec(sql, params);
@@ -167,20 +173,21 @@ function serviceReturnStock(id, userId, cb) {
     return q.all(queries);
   })
   .then(function () {
-    var queries = references.map(function (reference) {
+    var queries = glb.stock_ids.map(function (item) {
       sql =
         'INSERT INTO posting_journal (' +
           'uuid, project_id, fiscal_year_id, period_id, trans_id, trans_date, ' +
           'description, account_id, credit, debit, credit_equiv, debit_equiv, ' +
           'currency_id, deb_cred_uuid, deb_cred_type, inv_po_id, origin_id, user_id, cc_id) ' +
-        'SELECT ?, ?, ?, ?, ?, ?, ?, inventory_group.cogs_account, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ? ' +
-        'FROM inventory_group WHERE inventory_group.uuid  IN (' +
-          'SELECT inventory.group_uuid FROM inventory WHERE inventory.uuid = ?);';
+        'SELECT ?, p.project_id, ?, ?, ?, ?, ?, ig.cogs_account, pi.unit_price * ' + item.quantity + ', ?, ' +
+        'pi.unit_price * ' + item.quantity + ', ?, p.currency_id, ?, ?, p.uuid, ?, ?, ? ' +
+        'FROM purchase AS p JOIN purchase_item pi ON p.uuid = pi.purchase_uuid JOIN inventory i ON ' +
+        'pi.inventory_uuid = i.uuid JOIN inventory_group ig ON i.group_uuid = ig.uuid ' +
+        'WHERE p.uuid = ? AND i.uuid = ?;';
 
       params = [
-        uuid(),reference.project_id, cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), reference.note,
-        reference.total, 0, reference.total, 0, reference.currency_id, null, null, reference.uuid, cfg.originId,
-        userId, glb.cost_center_id, reference.inventory_uuid
+        uuid(), cfg.fiscalYearId, cfg.periodId, cfg.transId, new Date(), cfg.description, 0, 0, null, null,
+        cfg.originId, userId, glb.cost_center_id, item.purchase_uuid, item.inventory_uuid
       ];
 
       return db.exec(sql, params);
@@ -190,6 +197,6 @@ function serviceReturnStock(id, userId, cb) {
   .then(function (res){
     return cb(null, res);
   })
-  .catch(cb)
+  .catch(function (err){console.log('err', err);})
   .done();
 }

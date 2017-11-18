@@ -2,12 +2,12 @@
 var config = {
   'static': 'client/dest/',
   'rootFile' : '/index.html',
-  'port' : 9090,
+  'port' : 8080,
   'db' : {
     'host':     'localhost',
-    'user':     'tshikaji',
-    'password': 'hiscongotshikaji',
-    'database': 'tshikaji',
+    'user':     'bhima',
+    'password': 'HISCongo2013',
+    'database': 'bhima',
   },
   'session' : {
     'secret' : 'xopen blowfish',

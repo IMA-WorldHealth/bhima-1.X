@@ -18,7 +18,8 @@
 var db      = require('../../lib/db'),
     q       = require('q'),
     journal = require('../journal'),
-    uuid    = require('../../lib/guid');
+    uuid    = require('../../lib/guid'),
+    util    = require('../../lib/util');
 
 exports.createDistributions = createDistributions;
 
@@ -61,7 +62,7 @@ function createDistributions(depotId, body, session) {
   queries = body.data.map(function (row) {
     row.id = uuid();
 
-    return db.exec(sql, [row.id, depotId, row.date, docId, row.tracking_number, row.quantity, row.unit_price])
+    return db.exec(sql, [row.id, depotId, util.toMysqlDate(row.date), docId, row.tracking_number, row.quantity, row.unit_price])
     .then(function () {
       return fmap[body.type](depotId, row);
     });

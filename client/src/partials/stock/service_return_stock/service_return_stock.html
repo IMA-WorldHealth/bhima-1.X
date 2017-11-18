@@ -86,10 +86,7 @@
                   <th>{{ "DONATION_MANAGEMENT.ITEM" | translate }}</th>
                   <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
                   <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
-                  <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
                   <th>{{ "COLUMNS.QTY" | translate }}</th>
-                  <th>{{ "COLUMNS.PURCHASE_PRICE" | translate }}</th>
-                  <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
                   <th></th>
                   <th></th>
                 </tr>
@@ -126,19 +123,7 @@
                   </td>
 
                   <td>
-                    <input ng-show="stockItem.isSet" class="form-invoice" type="date" ng-model="stockItem.expiration_date" ng-change="ReturnCtrl.isValidLine(stockItem)">
-                  </td>
-
-                  <td>
                     <input type="number" ng-change="ReturnCtrl.isValidLine(stockItem)" ng-show="stockItem.isSet" class="form-invoice" ng-model="stockItem.quantity">
-                  </td>
-
-                  <td>
-                    <input ng-show="stockItem.isSet" class="form-invoice" ng-model="stockItem.purchase_price" ng-change="ReturnCtrl.isValidLine(stockItem)">
-                  </td>
-
-                  <td>
-                    <input ng-show="stockItem.isSet" class="form-invoice" disabled value="{{stockItem.quantity * stockItem.purchase_price | currency}}">
                   </td>
 
                   <td>
@@ -151,16 +136,6 @@
                     <a ng-click="ReturnCtrl.removeStockItem($index)">
                       <span class="glyphicon glyphicon-trash"></span>
                     </a>
-                  </td>
-                </tr>
-
-                <tr>
-                  <!-- Style hack -->
-                  <td colspan="6" style="margin-right = 50px; text-align: right;">
-                    <b> {{ "UTIL.TOTAL" | translate }}</b>
-                  </td>
-                  <td colspan="3">
-                    <b>{{ ReturnCtrl.session.total | currency }}</b>
                   </td>
                 </tr>
               </tbody>
@@ -196,10 +171,7 @@
                   <th>{{ "COLUMNS.ITEM" | translate }}</th>
                   <th>{{ "COLUMNS.DESCRIPTION" | translate }}</th>
                   <th>{{ "COLUMNS.LOT_NUMBER" | translate }}</th>
-                  <th>{{ "COLUMNS.EXPIRATION_DATE" | translate }}</th>
                   <th>{{ "COLUMNS.QTY" | translate }}</th>
-                  <th>{{ "COLUMNS.PURCHASE_PRICE" | translate }}</th>
-                  <th>{{ "COLUMNS.AMOUNT" | translate }}</th>
                   <th style="width:3%;">{{ "COLUMNS.ACTIONS" | translate }}</th>
                 </tr>
               </thead>
@@ -209,10 +181,7 @@
                   <td>{{ stockItem.code }}</td>
                   <td>{{ stockItem.text }}</td>
                   <td>{{ stockItem.lot_number }}</td>
-                  <td>{{ stockItem.expiration_date | date }}</td>
                   <td>{{ stockItem.quantity }}</td>
-                  <td>{{ stockItem.purchase_price | currency }}</td>
-                  <td>{{ stockItem.quantity * stockItem.purchase_price | currency }}</td>
                   <td>
                     <div ng-show="stockItem.isValidStock" class="pull-right">
                       <span class="correct glyphicon glyphicon-ok-circle"></span>
@@ -220,12 +189,6 @@
                   </td>
                 </tr>
               </tbody>
-              <tfoot>
-                <tr>
-                  <th colspan="7">{{ "COLUMNS.TOTAL" | translate }}</th>
-                  <th colspan="2">{{ ReturnCtrl.session.total | currency}}</th>
-                </tr>
-              </tfoot>
             </table>
 
             <div class="panel-footer">
